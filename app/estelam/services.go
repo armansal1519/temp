@@ -27,7 +27,7 @@ import (
 // @param Authorization header string true "Authorization"
 // @Success 200 {object} []string{}
 // @Failure 404 {object} string{}
-// @Router /estelam/supplier/create [post]
+// @Router /estelam/create [post]
 func createEstelamRequest(c *fiber.Ctx) error {
 	cer := new(CreateEstelamRequest)
 
@@ -188,6 +188,18 @@ func getEstelamForSupplier(supplierKey string) (*[]estelamSupplierOut, error) {
 	return &data, err
 }
 
+
+// getEstelamForUser  get estelam request for user
+// @Summary get estelam request for user
+// @Description get estelam request for user
+// @Tags estelam
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} []estelamSupplierOut{}
+// @Failure 404 {object} string{}
+// @Router /estelam/user [get] 
 func getEstelamCart(userKey string) (*[]estelamCartOut, error) {
 	query := fmt.Sprintf("for i in estelamCart\nfilter i.userKey==\"%v\"\nreturn i\n", userKey)
 	db := database.GetDB()

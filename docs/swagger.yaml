@@ -3685,36 +3685,7 @@ paths:
       summary: return drivers by its name
       tags:
       - driverInfo
-  /estelam/supplier:
-    get:
-      consumes:
-      - application/json
-      description: get estelam request for supplier
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/estelam.estelamSupplierOut'
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: get estelam request for supplier
-      tags:
-      - estelam
-  /estelam/supplier/create:
+  /estelam/create:
     post:
       consumes:
       - application/json
@@ -3747,6 +3718,35 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: create estelam by user
+      tags:
+      - estelam
+  /estelam/supplier:
+    get:
+      consumes:
+      - application/json
+      description: get estelam request for supplier
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/estelam.estelamSupplierOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get estelam request for supplier
       tags:
       - estelam
   /estelam/supplier/response:
@@ -3782,6 +3782,35 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get estelam request for supplier
+      tags:
+      - estelam
+  /estelam/user:
+    get:
+      consumes:
+      - application/json
+      description: get estelam request for user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/estelam.estelamSupplierOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get estelam request for user
       tags:
       - estelam
   /faq:

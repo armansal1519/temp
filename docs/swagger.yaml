@@ -1,0 +1,7086 @@
+basePath: /api/v1
+definitions:
+  addBuyMethod.EstelamOut:
+    properties:
+      _from:
+        type: string
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      _to:
+        type: string
+      codeForSupplier:
+        type: string
+      createdAt:
+        type: integer
+      oneMonthPrice:
+        type: boolean
+      price:
+        type: boolean
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: boolean
+      twoMonthPrice:
+        type: boolean
+      variant:
+        type: string
+    type: object
+  addBuyMethod.PriceIn:
+    properties:
+      codeForSupplier:
+        type: string
+      oneMonthPrice:
+        type: integer
+      price:
+        type: integer
+      productId:
+        type: string
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: integer
+      totalNumber:
+        type: integer
+      totalNumberInCart:
+        type: integer
+      twoMonthPrice:
+        type: integer
+      variant:
+        type: string
+    required:
+    - productId
+    - variant
+    type: object
+  addBuyMethod.PriceOut:
+    properties:
+      _from:
+        type: string
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      _to:
+        type: string
+      codeForSupplier:
+        type: string
+      createdAt:
+        type: integer
+      oneMonthPrice:
+        type: integer
+      price:
+        type: integer
+      priceRepetition:
+        type: integer
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: integer
+      totalNumber:
+        type: integer
+      totalNumberInCart:
+        type: integer
+      twoMonthPrice:
+        type: integer
+      variant:
+        type: string
+    type: object
+  addBuyMethod.Product:
+    properties:
+      brand:
+        type: string
+      buyNumber:
+        type: integer
+      categoryKey:
+        type: string
+      categoryName:
+        type: string
+      commissionPercent:
+        type: integer
+      completeSpec:
+        items:
+          $ref: '#/definitions/addBuyMethod.csType'
+        type: array
+      createdAt:
+        type: integer
+      description:
+        type: string
+      filterString:
+        type: string
+      imageArr:
+        items:
+          type: string
+        type: array
+      lowestPrice:
+        type: integer
+      mainSpecs:
+        items:
+          $ref: '#/definitions/addBuyMethod.f'
+        type: array
+      seenNumber:
+        type: integer
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      variationsObj:
+        $ref: '#/definitions/addBuyMethod.v'
+    type: object
+  addBuyMethod.csType:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/addBuyMethod.f'
+        type: array
+      name:
+        type: string
+    type: object
+  addBuyMethod.estelamIn:
+    properties:
+      codeForSupplier:
+        type: string
+      oneMonthPrice:
+        type: boolean
+      price:
+        type: boolean
+      productId:
+        type: string
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: boolean
+      twoMonthPrice:
+        type: boolean
+      variant:
+        type: string
+    required:
+    - productId
+    type: object
+  addBuyMethod.f:
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    type: object
+  addBuyMethod.groupUpdateEstelamIn:
+    properties:
+      changeBuyMode:
+        type: boolean
+      changeStatus:
+        type: boolean
+      oneMonthPrice:
+        type: boolean
+      price:
+        type: boolean
+      priceKeys:
+        items:
+          type: string
+        type: array
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: boolean
+      twoMonthPrice:
+        type: boolean
+    type: object
+  addBuyMethod.groupUpdatePriceIn:
+    properties:
+      changeNumber:
+        type: boolean
+      changeNumberMethod:
+        type: string
+      changeNumberValue:
+        type: integer
+      changePrice:
+        type: boolean
+      changePriceMethod:
+        type: string
+      changePriceValue:
+        type: integer
+      changeStatus:
+        type: boolean
+      oneMonthPrice:
+        type: boolean
+      price:
+        type: boolean
+      priceKeys:
+        items:
+          type: string
+        type: array
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: boolean
+      twoMonthPrice:
+        type: boolean
+    type: object
+  addBuyMethod.priceAndProduct:
+    properties:
+      price:
+        $ref: '#/definitions/addBuyMethod.PriceOut'
+      product:
+        $ref: '#/definitions/addBuyMethod.Product'
+    type: object
+  addBuyMethod.updateEstelam:
+    properties:
+      codeForSupplier:
+        type: string
+      oneMonthPrice:
+        type: boolean
+      price:
+        type: boolean
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: boolean
+      twoMonthPrice:
+        type: boolean
+    type: object
+  addBuyMethod.updatePrice:
+    properties:
+      codeForSupplier:
+        type: string
+      oneMonthPrice:
+        type: integer
+      price:
+        type: integer
+      show:
+        type: boolean
+      threeMonthPrice:
+        type: integer
+      totalNumber:
+        type: integer
+      totalNumberInCart:
+        type: integer
+      twoMonthPrice:
+        type: integer
+    type: object
+  addBuyMethod.v:
+    properties:
+      title:
+        type: string
+      variations:
+        items:
+          properties:
+            description:
+              type: string
+            name:
+              type: string
+          type: object
+        type: array
+    type: object
+  admin.adminIn:
+    properties:
+      access:
+        items:
+          type: string
+        type: array
+      birthDate:
+        type: string
+      createAt:
+        type: integer
+      firstName:
+        type: string
+      hashPassword:
+        type: string
+      hashRefreshToken:
+        type: string
+      lastLogin:
+        type: integer
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      shabaNumber:
+        type: string
+      shenasNameCode:
+        type: string
+      status:
+        type: string
+    type: object
+  admin.changePasswordIn:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    type: object
+  admin.loginRequest:
+    properties:
+      password:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  admin.updateAdminIn:
+    properties:
+      access:
+        items:
+          type: string
+        type: array
+      birthDate:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      shabaNumber:
+        type: string
+      shenasNameCode:
+        type: string
+      status:
+        type: string
+    type: object
+  brands.Brand:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      categoryKey:
+        type: string
+      description:
+        type: string
+      eName:
+        type: string
+      imageUrl:
+        type: string
+      name:
+        type: string
+      seen:
+        type: string
+    required:
+    - categoryKey
+    - description
+    - eName
+    - imageUrl
+    - name
+    type: object
+  brands.brandDto:
+    properties:
+      categoryKey:
+        type: string
+      description:
+        type: string
+      eName:
+        type: string
+      imageUrl:
+        type: string
+      name:
+        type: string
+      seen:
+        type: string
+    required:
+    - categoryKey
+    - description
+    - eName
+    - imageUrl
+    - name
+    type: object
+  brands.editBrand:
+    properties:
+      description:
+        type: string
+      eName:
+        type: string
+      imageUrl:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - eName
+    - imageUrl
+    - name
+    type: object
+  cart.CartOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      PricingType:
+        type: string
+      checkCommissionPercent:
+        type: number
+      commissionPercent:
+        type: number
+      createdAt:
+        type: integer
+      number:
+        type: integer
+      priceId:
+        type: string
+      pricePerNumber:
+        type: integer
+      productId:
+        type: string
+      productImageUrl:
+        type: string
+      productTitle:
+        type: string
+      supplierKey:
+        type: string
+      userKey:
+        type: string
+    type: object
+  categories.BaseCategoryDto:
+    properties:
+      imageUrl:
+        type: string
+      name:
+        maxLength: 32
+        minLength: 3
+        type: string
+      text:
+        type: string
+      url:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - name
+    - text
+    - url
+    type: object
+  categories.BaseCategoryOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      graphPath:
+        type: string
+      imageUrl:
+        type: string
+      name:
+        maxLength: 32
+        minLength: 3
+        type: string
+      status:
+        type: string
+      text:
+        type: string
+      url:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - name
+    - url
+    type: object
+  categories.CreateCategoryType:
+    properties:
+      Name:
+        maxLength: 32
+        minLength: 3
+        type: string
+      checkCommissionPercent:
+        type: number
+      commissionPercent:
+        type: number
+      customerReviewItems:
+        items:
+          type: string
+        type: array
+      from:
+        maxLength: 32
+        minLength: 3
+        type: string
+      imageUrl:
+        type: string
+      text:
+        type: string
+      url:
+        type: string
+    required:
+    - Name
+    - from
+    - url
+    type: object
+  categories.ResponseHTTP:
+    properties:
+      status:
+        type: string
+    type: object
+  commentOnProduct.adminUpdateCommentType:
+    properties:
+      imageUrls:
+        items:
+          type: string
+        type: array
+      isAnonymous:
+        type: boolean
+      likes:
+        items:
+          type: string
+        type: array
+      scoreArr:
+        items:
+          $ref: '#/definitions/commentOnProduct.score'
+        type: array
+      status:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  commentOnProduct.comment:
+    properties:
+      createdAt:
+        type: integer
+      imageUrls:
+        items:
+          type: string
+        type: array
+      isAnonymous:
+        type: boolean
+      isBuyer:
+        type: boolean
+      likes:
+        items:
+          type: string
+        type: array
+      productId:
+        type: string
+      scoreArr:
+        items:
+          $ref: '#/definitions/commentOnProduct.score'
+        type: array
+      status:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      userFullName:
+        type: string
+      userKey:
+        type: string
+    type: object
+  commentOnProduct.score:
+    properties:
+      score:
+        type: number
+      title:
+        type: string
+    type: object
+  commentOnProduct.updateCommentType:
+    properties:
+      imageUrls:
+        items:
+          type: string
+        type: array
+      isAnonymous:
+        type: boolean
+      likes:
+        items:
+          type: string
+        type: array
+      scoreArr:
+        items:
+          $ref: '#/definitions/commentOnProduct.score'
+        type: array
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  contactUs.contactIn:
+    properties:
+      fullName:
+        type: string
+      imageArr:
+        items:
+          type: string
+        type: array
+      phoneNumber:
+        type: string
+      status:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  contactUs.contactOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      createdAt:
+        type: integer
+      fullName:
+        type: string
+      imageArr:
+        items:
+          type: string
+        type: array
+      phoneNumber:
+        type: string
+      status:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  driversRegister.Description:
+    properties:
+      name:
+        type: string
+      role:
+        type: string
+      text:
+        type: string
+    type: object
+  driversRegister.carCategory:
+    properties:
+      carTonnage:
+        type: number
+      carTypes:
+        maxLength: 32
+        minLength: 2
+        type: string
+      carVolume:
+        type: number
+      createdAt:
+        type: integer
+    required:
+    - carTonnage
+    - carTypes
+    - carVolume
+    type: object
+  driversRegister.driverInfo:
+    properties:
+      BarbandStatus:
+        type: string
+      accountNo:
+        type: integer
+      address:
+        type: string
+      appearanceStatus:
+        type: integer
+      birthdayDate:
+        type: string
+      carColor:
+        type: string
+      carTechnical:
+        type: integer
+      carTools:
+        type: integer
+      carType:
+        type: string
+      cardNo:
+        type: integer
+      city:
+        type: string
+      createdAt:
+        type: integer
+      description:
+        items:
+          $ref: '#/definitions/driversRegister.Description'
+        type: array
+      driverEthics:
+        type: integer
+      faceImage:
+        type: string
+      firstName:
+        type: string
+      gender:
+        maxLength: 32
+        minLength: 2
+        type: string
+      idBookPageOneImage:
+        type: string
+      idBookPageTwoImage:
+        type: string
+      idCardImage:
+        type: string
+      insurancePolicyImage:
+        type: string
+      insuranceStatus:
+        type: integer
+      lastName:
+        maxLength: 32
+        minLength: 2
+        type: string
+      latitude:
+        type: number
+      licenseImage:
+        type: string
+      longitude:
+        type: number
+      nationalNo:
+        type: integer
+      panctuality:
+        type: integer
+      phoneNo:
+        type: integer
+      physicalCondition:
+        type: integer
+      plateNo:
+        type: string
+      postCode:
+        type: integer
+      province:
+        maxLength: 32
+        minLength: 2
+        type: string
+      sabeghe:
+        type: integer
+    required:
+    - BarbandStatus
+    - accountNo
+    - address
+    - appearanceStatus
+    - birthdayDate
+    - carColor
+    - carTechnical
+    - carTools
+    - carType
+    - cardNo
+    - city
+    - driverEthics
+    - faceImage
+    - firstName
+    - gender
+    - idBookPageOneImage
+    - idBookPageTwoImage
+    - idCardImage
+    - insurancePolicyImage
+    - insuranceStatus
+    - lastName
+    - latitude
+    - licenseImage
+    - longitude
+    - nationalNo
+    - panctuality
+    - phoneNo
+    - physicalCondition
+    - plateNo
+    - postCode
+    - province
+    - sabeghe
+    type: object
+  driversRegister.input:
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+    type: object
+  estelam.CreateEstelamRequest:
+    properties:
+      createdAt:
+        type: integer
+      number:
+        type: integer
+      oneMoundPrice:
+        type: boolean
+      price:
+        type: boolean
+      productId:
+        type: string
+      threeMoundPrice:
+        type: boolean
+      twoMoundPrice:
+        type: boolean
+      userKey:
+        type: string
+      variant:
+        type: string
+    required:
+    - productId
+    - variant
+    type: object
+  estelam.estelamSupplierOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      createdAt:
+        type: integer
+      estelamCartKey:
+        type: string
+      imageUrl:
+        type: string
+      number:
+        type: integer
+      oneMoundPrice:
+        type: boolean
+      price:
+        type: boolean
+      productId:
+        type: string
+      productTitle:
+        type: string
+      supplierKey:
+        type: string
+      threeMoundPrice:
+        type: boolean
+      twoMoundPrice:
+        type: boolean
+      variant:
+        type: string
+      willExpireAt:
+        type: integer
+    type: object
+  estelam.responseToEstelamIn:
+    properties:
+      ToNumber:
+        type: integer
+      createdAt:
+        type: integer
+      estelamCartKey:
+        type: string
+      formNumber:
+        type: integer
+      oneMoundPrice:
+        type: integer
+      price:
+        type: integer
+      threeMoundPrice:
+        type: integer
+      twoMoundPrice:
+        type: integer
+    required:
+    - ToNumber
+    - estelamCartKey
+    type: object
+  faq.category:
+    properties:
+      createdAt:
+        type: integer
+      imageUrl:
+        type: string
+      isForSupplier:
+        type: boolean
+      title:
+        minLength: 3
+        type: string
+    required:
+    - title
+    type: object
+  faq.feedBack:
+    properties:
+      comment:
+        type: string
+      isUseful:
+        type: boolean
+      multiSelect:
+        type: string
+      questionKey:
+        type: string
+    type: object
+  faq.info:
+    properties:
+      imageUrl:
+        minLength: 3
+        type: string
+      text:
+        minLength: 3
+        type: string
+    required:
+    - imageUrl
+    - text
+    type: object
+  faq.input:
+    properties:
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  faq.question:
+    properties:
+      categoryKey:
+        type: string
+      createAt:
+        type: integer
+      info:
+        items:
+          $ref: '#/definitions/faq.info'
+        type: array
+      isForSupplier:
+        type: boolean
+      isPopular:
+        type: boolean
+      moreInfoLink:
+        type: string
+      title:
+        minLength: 3
+        type: string
+    required:
+    - categoryKey
+    - title
+    type: object
+  faq.questionIn:
+    properties:
+      categoryKey:
+        type: string
+      info:
+        items:
+          $ref: '#/definitions/faq.info'
+        type: array
+      isPopular:
+        type: boolean
+      moreInfoLink:
+        type: string
+      title:
+        minLength: 3
+        type: string
+    required:
+    - categoryKey
+    - title
+    type: object
+  paymentAndWallet.PaymentByImage:
+    properties:
+      imageUrl:
+        type: string
+      includeTransportation:
+        type: boolean
+      orderKey:
+        type: string
+      overwritePaymentKey:
+        type: boolean
+      type:
+        type: string
+    type: object
+  paymentAndWallet.addToWallet:
+    properties:
+      amount:
+        type: integer
+    type: object
+  paymentAndWallet.checkByImage:
+    properties:
+      amount:
+        type: integer
+      checkNumber:
+        type: string
+      imageUrl:
+        type: string
+      orderKey:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
+  paymentAndWallet.filter:
+    properties:
+      checkNumber:
+        type: string
+      orderKey:
+        type: string
+      payerKey:
+        type: string
+      shaparakRefId:
+        type: string
+      status:
+        type: string
+      txType:
+        type: string
+    type: object
+  paymentAndWallet.getSupplierConfirmationResponse:
+    properties:
+      cart:
+        $ref: '#/definitions/cart.CartOut'
+      info:
+        $ref: '#/definitions/paymentAndWallet.supplierInfoForConfirmationOut'
+    type: object
+  paymentAndWallet.paymentOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      ShaparakRefId:
+        type: string
+      amount:
+        type: integer
+      cardHolder:
+        type: string
+      checkNumber:
+        type: string
+      createdAt:
+        type: integer
+      imageUrl:
+        type: string
+      includeTransportation:
+        type: boolean
+      orderKey:
+        type: string
+      payerKey:
+        type: string
+      status:
+        type: string
+      transId:
+        type: string
+      txType:
+        type: string
+    type: object
+  paymentAndWallet.rejectionPoolItemOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      createdAt:
+        type: integer
+      number:
+        type: integer
+      paymentKey:
+        type: string
+      price:
+        type: integer
+      productId:
+        type: string
+      productImageUrl:
+        type: string
+      productTitle:
+        type: string
+      rejectBy:
+        type: string
+      sendInfoKey:
+        type: string
+      status:
+        type: string
+      txType:
+        type: string
+      userKey:
+        type: string
+    type: object
+  paymentAndWallet.supplierInfoForConfirmationOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      cartKey:
+        type: string
+      orderKey:
+        type: string
+      supplierKey:
+        type: string
+    type: object
+  paymentAndWallet.supplierPageResponse:
+    properties:
+      history:
+        items:
+          $ref: '#/definitions/paymentAndWallet.supplierWalletOut'
+        type: array
+      totalIn:
+        type: integer
+      totalOut:
+        type: integer
+      walletAmount:
+        type: integer
+    type: object
+  paymentAndWallet.supplierWalletOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      amount:
+        type: integer
+      createdAt:
+        type: integer
+      income:
+        type: boolean
+      paymentKey:
+        type: string
+      supplierKey:
+        type: string
+      txStatus:
+        type: string
+      txType:
+        type: string
+    type: object
+  productQA.adminUpdateDto:
+    properties:
+      rejectionText:
+        type: string
+      status:
+        type: string
+      text:
+        type: string
+    type: object
+  productQA.productQA:
+    properties:
+      createdAt:
+        type: integer
+      fullName:
+        type: string
+      likes:
+        items:
+          type: string
+        type: array
+      productId:
+        type: string
+      questionKey:
+        type: string
+      rejectionText:
+        type: string
+      status:
+        type: string
+      text:
+        type: string
+      userKey:
+        type: string
+    type: object
+  productQA.updateDto:
+    properties:
+      status:
+        type: string
+      text:
+        type: string
+    type: object
+  productSuggestion.betterPrice:
+    properties:
+      createdAt:
+        type: string
+      price:
+        type: string
+      productId:
+        type: string
+      shopAddress:
+        type: string
+      shopName:
+        type: string
+      shopPhone:
+        type: string
+      shopType:
+        type: string
+      state:
+        type: string
+      userKey:
+        type: string
+    type: object
+  productSuggestion.betterPriceOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      createdAt:
+        type: string
+      price:
+        type: string
+      productId:
+        type: string
+      shopAddress:
+        type: string
+      shopName:
+        type: string
+      shopPhone:
+        type: string
+      shopType:
+        type: string
+      state:
+        type: string
+      userKey:
+        type: string
+    type: object
+  productSuggestion.productSuggestion:
+    properties:
+      description:
+        type: string
+      imageUrl:
+        type: string
+      supplierKey:
+        type: string
+      title:
+        type: string
+    type: object
+  productSuggestion.productSuggestionOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      description:
+        type: string
+      imageUrl:
+        type: string
+      supplierKey:
+        type: string
+      title:
+        type: string
+    type: object
+  productSuggestion.sampleSuggestion:
+    properties:
+      description:
+        type: string
+      imageUrls:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      userKey:
+        type: string
+    type: object
+  productSuggestion.sampleSuggestionOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      description:
+        type: string
+      imageUrls:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      userKey:
+        type: string
+    type: object
+  products.Product:
+    properties:
+      brand:
+        type: string
+      buyNumber:
+        type: integer
+      categoryKey:
+        type: string
+      categoryName:
+        type: string
+      checkCommissionPercent:
+        type: number
+      commissionPercent:
+        type: number
+      completeSpec:
+        items:
+          $ref: '#/definitions/products.csType'
+        type: array
+      createdAt:
+        type: integer
+      description:
+        type: string
+      filterArr:
+        items:
+          type: string
+        type: array
+      imageArr:
+        items:
+          type: string
+        type: array
+      lowestPrice:
+        type: integer
+      mainSpecs:
+        items:
+          $ref: '#/definitions/products.f'
+        type: array
+      seenNumber:
+        type: integer
+      spId:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      variationsObj:
+        $ref: '#/definitions/products.v'
+    type: object
+  products.advanceFilter:
+    properties:
+      FilterStringArr:
+        items:
+          $ref: '#/definitions/products.fItem'
+        type: array
+      brand:
+        items:
+          type: string
+        type: array
+      inStock:
+        type: boolean
+      priceFrom:
+        type: integer
+      priceTo:
+        type: integer
+      sort:
+        type: string
+    type: object
+  products.colorOut:
+    properties:
+      main:
+        $ref: '#/definitions/products.productOut'
+      sub:
+        items:
+          $ref: '#/definitions/products.productOut'
+        type: array
+    type: object
+  products.csType:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/products.f'
+        type: array
+      name:
+        type: string
+    type: object
+  products.f:
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    type: object
+  products.fItem:
+    properties:
+      name:
+        type: string
+      value:
+        items:
+          type: string
+        type: array
+    type: object
+  products.filter:
+    properties:
+      brand:
+        type: string
+    type: object
+  products.getProductByKeyResponse:
+    properties:
+      Product:
+        $ref: '#/definitions/products.productOut'
+      estelamArr:
+        items:
+          $ref: '#/definitions/addBuyMethod.EstelamOut'
+        type: array
+      priceArr:
+        items:
+          $ref: '#/definitions/addBuyMethod.PriceOut'
+        type: array
+    type: object
+  products.productInfo:
+    properties:
+      brand:
+        type: string
+      categoryKey:
+        type: string
+      description:
+        type: string
+      fields:
+        items:
+          $ref: '#/definitions/products.f'
+        type: array
+      imageArr:
+        items:
+          type: string
+        type: array
+      spId:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      variationsObj:
+        items:
+          properties:
+            description:
+              type: string
+            name:
+              type: string
+          type: object
+        type: array
+    type: object
+  products.productOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      brand:
+        type: string
+      buyNumber:
+        type: integer
+      categoryKey:
+        type: string
+      categoryName:
+        type: string
+      checkCommissionPercent:
+        type: number
+      commissionPercent:
+        type: number
+      completeSpec:
+        items:
+          $ref: '#/definitions/products.csType'
+        type: array
+      createdAt:
+        type: integer
+      description:
+        type: string
+      filterArr:
+        items:
+          type: string
+        type: array
+      imageArr:
+        items:
+          type: string
+        type: array
+      lowestPrice:
+        type: integer
+      mainSpecs:
+        items:
+          $ref: '#/definitions/products.f'
+        type: array
+      seenNumber:
+        type: integer
+      spId:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      variationsObj:
+        $ref: '#/definitions/products.v'
+    type: object
+  products.search:
+    properties:
+      searchString:
+        type: string
+    type: object
+  products.v:
+    properties:
+      title:
+        type: string
+      variations:
+        items:
+          properties:
+            description:
+              type: string
+            name:
+              type: string
+          type: object
+        type: array
+    type: object
+  search.mostSearch:
+    properties:
+      id:
+        type: string
+      nameOrTitle:
+        type: string
+      searchCount:
+        type: integer
+      url:
+        type: string
+      userKey:
+        type: string
+    required:
+    - id
+    - nameOrTitle
+    type: object
+  search.mostSearchOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      id:
+        type: string
+      nameOrTitle:
+        type: string
+      searchCount:
+        type: integer
+      url:
+        type: string
+      userKey:
+        type: string
+    required:
+    - id
+    - nameOrTitle
+    type: object
+  search.search:
+    properties:
+      searchString:
+        type: string
+    required:
+    - searchString
+    type: object
+  search.searchResponse:
+    properties:
+      categories:
+        items:
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            url:
+              type: string
+          type: object
+        type: array
+      mostSearch:
+        items:
+          $ref: '#/definitions/search.mostSearchOut'
+        type: array
+      products:
+        items:
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+          type: object
+        type: array
+    type: object
+  sendingInfo.addIntervalRequest:
+    properties:
+      _key:
+        type: string
+      interval:
+        $ref: '#/definitions/sendingInfo.interval'
+    type: object
+  sendingInfo.interval:
+    properties:
+      from:
+        type: integer
+      to:
+        type: integer
+    type: object
+  sendingInfo.sendDayInterval:
+    properties:
+      _key:
+        type: string
+      intervals:
+        items:
+          $ref: '#/definitions/sendingInfo.interval'
+        type: array
+    type: object
+  sendingInfo.sendingInfo:
+    properties:
+      addressKey:
+        type: string
+      sendIntervalString:
+        type: string
+      sendingMethod:
+        type: string
+      transportationPrice:
+        type: integer
+      transportationType:
+        type: string
+      userKey:
+        type: string
+    required:
+    - addressKey
+    - sendIntervalString
+    - sendingMethod
+    type: object
+  sendingInfo.sendingInfoOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      addressKey:
+        type: string
+      sendIntervalString:
+        type: string
+      sendingMethod:
+        type: string
+      transportationPrice:
+        type: integer
+      transportationType:
+        type: string
+      userKey:
+        type: string
+    required:
+    - addressKey
+    - sendIntervalString
+    - sendingMethod
+    type: object
+  sendingInfo.updateSendingInfo:
+    properties:
+      addressKey:
+        type: string
+      sendIntervalString:
+        type: string
+      sendingMethod:
+        type: string
+      transportationPrice:
+        type: integer
+      transportationType:
+        type: string
+    type: object
+  sendingUnit.sendUnit:
+    properties:
+      approvedOrderKey:
+        type: string
+      createdAt:
+        type: integer
+      number:
+        type: integer
+      status:
+        type: string
+      transportationUnitKey:
+        type: string
+    type: object
+  sendingUnit.sendUnitOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      approvedOrderKey:
+        type: string
+      createdAt:
+        type: integer
+      number:
+        type: integer
+      status:
+        type: string
+      transportationUnitKey:
+        type: string
+    type: object
+  similarityGraph.SimilarityNodeRequest:
+    properties:
+      color:
+        type: string
+      description:
+        type: string
+      isCollection:
+        type: boolean
+      pattern:
+        type: string
+      productsKeyArray:
+        items:
+          type: string
+        type: array
+      public:
+        type: boolean
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      userMade:
+        type: boolean
+    type: object
+  similarityGraph.similarityEdge:
+    properties:
+      _from:
+        type: string
+      _key:
+        type: string
+      _to:
+        type: string
+      coreEdge:
+        type: boolean
+      type:
+        type: string
+    required:
+    - _from
+    - _to
+    - type
+    type: object
+  similarityGraph.similarityNode:
+    properties:
+      color:
+        type: string
+      createdAt:
+        type: integer
+      createdBy:
+        type: string
+      description:
+        type: string
+      imageUrl:
+        items:
+          type: string
+        type: array
+      isCollection:
+        type: boolean
+      pattern:
+        type: string
+      productsKeyArray:
+        items:
+          type: string
+        type: array
+      public:
+        type: boolean
+      seen:
+        type: integer
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: integer
+      updatedBy:
+        type: string
+      userKey:
+        type: string
+      userMade:
+        type: boolean
+    required:
+    - title
+    type: object
+  similarityGraph.similarityNodeOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      color:
+        type: string
+      createdAt:
+        type: integer
+      createdBy:
+        type: string
+      description:
+        type: string
+      imageUrl:
+        items:
+          type: string
+        type: array
+      isCollection:
+        type: boolean
+      pattern:
+        type: string
+      productsKeyArray:
+        items:
+          type: string
+        type: array
+      public:
+        type: boolean
+      seen:
+        type: integer
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: integer
+      updatedBy:
+        type: string
+      userKey:
+        type: string
+      userMade:
+        type: boolean
+    required:
+    - title
+    type: object
+  supplierEmployees.CustomErrorResponse:
+    properties:
+      code:
+        type: integer
+      devInfo:
+        type: string
+      error:
+        type: string
+      userMsg:
+        type: string
+    type: object
+  supplierEmployees.ResponseHTTP:
+    properties:
+      status:
+        type: string
+    type: object
+  supplierEmployees.changePasswordWithLoginRequest:
+    properties:
+      password:
+        type: string
+    type: object
+  supplierEmployees.changePasswordWithoutLoginRequest:
+    properties:
+      code:
+        type: string
+      password:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  supplierEmployees.checkValidationCodeDto:
+    properties:
+      code:
+        type: string
+      phoneNumber:
+        type: string
+    required:
+    - code
+    - phoneNumber
+    type: object
+  supplierEmployees.createSupplierPreview:
+    properties:
+      address:
+        type: string
+      birthDate:
+        type: string
+      categoriesToSale:
+        items:
+          type: string
+        type: array
+      city:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      idBookPageOneImage:
+        type: string
+      idBookPageTwoImage:
+        type: string
+      idCardImage:
+        type: string
+      lastName:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      postalCode:
+        type: string
+      salesPermitImage:
+        type: string
+      shabaNumber:
+        type: string
+      shenasNameCode:
+        type: string
+      shopName:
+        type: string
+      state:
+        type: string
+    required:
+    - address
+    - birthDate
+    - city
+    - firstName
+    - lastName
+    - latitude
+    - longitude
+    - nationalCode
+    - phoneNumber
+    - shabaNumber
+    - shenasNameCode
+    - shopName
+    - state
+    type: object
+  supplierEmployees.employee:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      access:
+        items:
+          type: string
+        type: array
+      birthDate:
+        type: string
+      createAt:
+        type: integer
+      email:
+        type: string
+      firstName:
+        type: string
+      hashPassword:
+        type: string
+      hashRefreshToken:
+        type: string
+      idBookPageOneImage:
+        type: string
+      idBookPageTwoImage:
+        type: string
+      idCardImage:
+        type: string
+      lastLogin:
+        type: integer
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      role:
+        type: string
+      salesPermitImage:
+        type: string
+      shabaNumber:
+        type: string
+      shenasNameCode:
+        type: string
+      status:
+        type: string
+      supplierKey:
+        type: string
+    required:
+    - birthDate
+    - firstName
+    - lastName
+    - nationalCode
+    - phoneNumber
+    - shabaNumber
+    - shenasNameCode
+    type: object
+  supplierEmployees.getValidationCodeDto:
+    properties:
+      phoneNumber:
+        type: string
+    required:
+    - phoneNumber
+    type: object
+  supplierEmployees.loginRequest:
+    properties:
+      password:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  supplierEmployees.loginResponse:
+    properties:
+      accessToken:
+        type: string
+      employee:
+        $ref: '#/definitions/supplierEmployees.employee'
+      isFirstLogin:
+        type: boolean
+      refreshToken:
+        type: string
+    type: object
+  supplierEmployees.refreshTokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  supplierEmployees.updateEmployee:
+    properties:
+      CreateAt:
+        type: integer
+      supplierEmployeeKey:
+        type: string
+      updateData:
+        properties:
+          birthDate:
+            type: string
+          email:
+            type: string
+          firstName:
+            type: string
+          idBookPageOneImage:
+            type: string
+          idBookPageTwoImage:
+            type: string
+          idCardImage:
+            type: string
+          lastName:
+            type: string
+          nationalCode:
+            type: string
+          phoneNumber:
+            type: string
+          salesPermitImage:
+            type: string
+          shabaNumber:
+            type: string
+          shenasNameCode:
+            type: string
+        type: object
+    type: object
+  suppliers.Fav:
+    properties:
+      _key:
+        type: string
+      categoryUrl:
+        type: string
+      productKey:
+        type: string
+      status:
+        type: string
+      supplierKey:
+        type: string
+    required:
+    - categoryUrl
+    - productKey
+    - supplierKey
+    type: object
+  suppliers.updateSupplier:
+    properties:
+      CreateAt:
+        type: integer
+      supplierKey:
+        type: string
+      updateData:
+        properties:
+          address:
+            type: string
+          area:
+            type: number
+          areaWithRoof:
+            type: number
+          categoriesToSale:
+            items:
+              type: string
+            type: array
+          code:
+            type: string
+          latitude:
+            type: number
+          longitude:
+            type: number
+          name:
+            type: string
+          phoneNumber:
+            type: string
+        type: object
+    type: object
+  userAddress.AddressIn:
+    properties:
+      addressText:
+        type: string
+      city:
+        type: string
+      firstName:
+        type: string
+      isForMySelf:
+        type: boolean
+      lastName:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      nationalCode:
+        type: string
+      pelak:
+        type: string
+      phoneNumber:
+        type: string
+      postalCode:
+        type: string
+      state:
+        type: string
+      userKey:
+        type: string
+    type: object
+  userAddress.AddressOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      addressText:
+        type: string
+      city:
+        type: string
+      firstName:
+        type: string
+      isForMySelf:
+        type: boolean
+      lastName:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      nationalCode:
+        type: string
+      pelak:
+        type: string
+      phoneNumber:
+        type: string
+      postalCode:
+        type: string
+      state:
+        type: string
+      userKey:
+        type: string
+    type: object
+  users.LoginDto:
+    properties:
+      code:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  users.UserOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      birthDate:
+        type: string
+      createdAt:
+        type: integer
+      email:
+        type: string
+      firstName:
+        type: string
+      hashRefreshToken:
+        type: string
+      isAuthenticated:
+        type: boolean
+      lastLogin:
+        type: integer
+      lastName:
+        type: string
+      level:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  users.checkForLoginReq:
+    properties:
+      phoneNumber:
+        type: string
+    required:
+    - phoneNumber
+    type: object
+  users.checkForLoginRes:
+    properties:
+      isRegistered:
+        type: boolean
+      phoneNumber:
+        type: string
+    required:
+    - isRegistered
+    - phoneNumber
+    type: object
+  users.loginAndRegistrationResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/users.UserOut'
+    type: object
+info:
+  contact:
+    email: armansal1519@gmail.com
+    name: Arman Salehi
+  description: This is an API for Bamachoub Application
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Bamachoub Application
+  version: "2.0"
+paths:
+  /add-buy-method/estelam:
+    post:
+      consumes:
+      - application/json
+      description: add estelam from supplier to product
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/addBuyMethod.estelamIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/addBuyMethod.EstelamOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add estelam from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/estelam/{categoryUrl}/{productKey}:
+    delete:
+      consumes:
+      - application/json
+      description: delete estelam from supplier to product
+      parameters:
+      - description: category url
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: product key
+        in: path
+        name: productKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: delete estelam from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/estelam/{categoryurl}:
+    get:
+      consumes:
+      - application/json
+      description: return products with estelam
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/addBuyMethod.priceAndProduct'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return products with estelam
+      tags:
+      - buy method
+  /add-buy-method/estelam/{estelamColName}/{estelamKey}:
+    put:
+      consumes:
+      - application/json
+      description: update estelam from supplier to product
+      parameters:
+      - description: estelam col name
+        in: path
+        name: estelamColName
+        required: true
+        type: string
+      - description: estelam key
+        in: path
+        name: estelamKey
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/addBuyMethod.updateEstelam'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/addBuyMethod.EstelamOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update estelam from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/estelam/group_update/{estelamColName}:
+    put:
+      consumes:
+      - application/json
+      description: update group os estelams from supplier to product
+      parameters:
+      - description: estelam col name
+        in: path
+        name: estelamColName
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/addBuyMethod.groupUpdateEstelamIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            items:
+              $ref: '#/definitions/addBuyMethod.EstelamOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update group os estelams from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/price:
+    post:
+      consumes:
+      - application/json
+      description: add price from supplier to product
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/addBuyMethod.PriceIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/addBuyMethod.PriceOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add price from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/price/{categoryUrl}/{productKey}:
+    delete:
+      consumes:
+      - application/json
+      description: delete price from supplier to product
+      parameters:
+      - description: category url
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: product key
+        in: path
+        name: productKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: delete price from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/price/{categoryurl}:
+    get:
+      consumes:
+      - application/json
+      description: return products with price
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/addBuyMethod.priceAndProduct'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return products with price
+      tags:
+      - buy method
+  /add-buy-method/price/{priceColName}/{PriceKey}:
+    put:
+      consumes:
+      - application/json
+      description: update price from supplier to product
+      parameters:
+      - description: price col name
+        in: path
+        name: priceColName
+        required: true
+        type: string
+      - description: price key
+        in: path
+        name: PriceKey
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/addBuyMethod.updatePrice'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/addBuyMethod.PriceOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update price from supplier to product
+      tags:
+      - buy method
+  /add-buy-method/price/group_update/{estelamColName}:
+    put:
+      consumes:
+      - application/json
+      description: update group of prices from supplier to product
+      parameters:
+      - description: price col name
+        in: path
+        name: estelamColName
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/addBuyMethod.groupUpdatePriceIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            items:
+              $ref: '#/definitions/addBuyMethod.PriceOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update group of prices from supplier to product
+      tags:
+      - buy method
+  /admin:
+    get:
+      consumes:
+      - application/json
+      description: get all admin
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get all admin
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: create admin
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/admin.adminIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create admin
+      tags:
+      - admin
+  /admin-auth/change-password:
+    post:
+      consumes:
+      - application/json
+      description: changePassword admin  by oldPassword and newPassword
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/admin.changePasswordIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: changePassword admin
+      tags:
+      - adminAuth
+  /admin-auth/get-refresh-token/{token}:
+    get:
+      consumes:
+      - application/json
+      description: get access token by sending refresh token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: get access token by sending refresh token
+      tags:
+      - adminAuth
+  /admin-auth/login:
+    post:
+      consumes:
+      - application/json
+      description: login admin  by phoneNumber and password
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/admin.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: login admin
+      tags:
+      - adminAuth
+  /admin/{key}:
+    get:
+      consumes:
+      - application/json
+      description: get admin by key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get admin by key
+      tags:
+      - admin
+    put:
+      consumes:
+      - application/json
+      description: update admin
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/admin.updateAdminIn'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update admin
+      tags:
+      - admin
+  /admin/access:
+    get:
+      consumes:
+      - application/json
+      description: get all accesses
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get all accesses
+      tags:
+      - admin
+  /brands:
+    get:
+      consumes:
+      - application/json
+      description: get all brand
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: only seen or name
+        in: query
+        name: sort
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/brands.Brand'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get all brand
+      tags:
+      - brands
+    post:
+      consumes:
+      - application/json
+      description: create a brand
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/brands.brandDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/brands.Brand'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create a brand
+      tags:
+      - brands
+  /brands/{Key}:
+    get:
+      consumes:
+      - application/json
+      description: get brand by key
+      parameters:
+      - description: ' key'
+        in: path
+        name: Key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/brands.Brand'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get brand by key
+      tags:
+      - brands
+  /brands/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete brand
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete brand
+      tags:
+      - brands
+    put:
+      consumes:
+      - application/json
+      description: update a brand
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/brands.editBrand'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/brands.Brand'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update a brand
+      tags:
+      - brands
+  /brands/url/{categoryurl}:
+    get:
+      consumes:
+      - application/json
+      description: get all brand by category url
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: only seen or name
+        in: query
+        name: sort
+        required: true
+        type: string
+      - description: categoryurl
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/brands.Brand'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get all brand by category url
+      tags:
+      - brands
+  /brands/used/{categoryurl}/{categoryKey}:
+    get:
+      consumes:
+      - application/json
+      description: return brands that used in products attached to that category
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: category key
+        in: path
+        name: categoryKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return brands that used in products attached to that category
+      tags:
+      - brands
+  /car-category:
+    get:
+      consumes:
+      - application/json
+      description: return all categories
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.carCategory'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all types
+      tags:
+      - carCategory
+    post:
+      consumes:
+      - application/json
+      description: category for each car types
+      parameters:
+      - description: carCategory
+        in: body
+        name: carCategory
+        required: true
+        schema:
+          $ref: '#/definitions/driversRegister.carCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.carCategory'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create category for each car types
+      tags:
+      - carCategory
+  /car-category/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete car category
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.carCategory'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete car category
+      tags:
+      - carCategory
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: return at least one level to three level of categories ,first level
+        is main products
+      parameters:
+      - description: level
+        in: query
+        name: level
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/categories.BaseCategoryOut'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/categories.ResponseHTTP'
+      summary: return at least one level to three level of categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: create category in categories database
+      parameters:
+      - description: category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/categories.CreateCategoryType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create category
+      tags:
+      - categories
+  /categories/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return at least one level to three level of categories ,first level
+        is main products
+      parameters:
+      - description: category key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: level
+        in: query
+        name: level
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/categories.BaseCategoryOut'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/categories.ResponseHTTP'
+      summary: return at least one level to three level of categories
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: update category
+      parameters:
+      - description: category
+        in: body
+        name: CreateCategoryType
+        required: true
+        schema:
+          $ref: '#/definitions/categories.CreateCategoryType'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update category
+      tags:
+      - categories
+  /categories/base:
+    post:
+      consumes:
+      - application/json
+      description: create base category in categories database
+      parameters:
+      - description: category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/categories.BaseCategoryDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create base category
+      tags:
+      - categories
+  /categories/price-range/{categoryurl}/{categoryKey}:
+    get:
+      consumes:
+      - application/json
+      description: return price range in products attached to that category
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: category key
+        in: path
+        name: categoryKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: integer
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return price range in products attached to that category
+      tags:
+      - categories
+  /contact-us:
+    get:
+      consumes:
+      - application/json
+      description: return all contact
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/contactUs.contactOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all contact
+      tags:
+      - contact us
+    post:
+      consumes:
+      - application/json
+      description: create contact us
+      parameters:
+      - description: contact
+        in: body
+        name: contactIn
+        required: true
+        schema:
+          $ref: '#/definitions/contactUs.contactIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create contact us
+      tags:
+      - contact us
+  /contact-us/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete one contact
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contactUs.contactOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete one contact
+      tags:
+      - contact us
+    get:
+      consumes:
+      - application/json
+      description: return one contact
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contactUs.contactOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return one contact
+      tags:
+      - contact us
+    put:
+      consumes:
+      - application/json
+      description: update contact us
+      parameters:
+      - description: contact
+        in: body
+        name: contactIn
+        required: true
+        schema:
+          $ref: '#/definitions/contactUs.contactIn'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update contact us
+      tags:
+      - contact us
+  /drivers:
+    get:
+      consumes:
+      - application/json
+      description: return all drivers information
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all informations of drivers
+      tags:
+      - driverInfo
+    post:
+      consumes:
+      - application/json
+      description: create drivers and their information
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/driversRegister.driverInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+      summary: create drivers information
+      tags:
+      - driverInfo
+  /drivers/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete driver's information by its key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete driver information
+      tags:
+      - driverInfo
+    get:
+      consumes:
+      - application/json
+      description: return driver's information by given key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return information of driver by its key
+      tags:
+      - driverInfo
+    put:
+      consumes:
+      - application/json
+      description: update informations of driver by its key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update information of each driver by its key
+      tags:
+      - driverInfo
+  /drivers/filter:
+    post:
+      consumes:
+      - application/json
+      description: return drivers that has the car type same as given
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/driversRegister.input'
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return drivers that has the specific car type
+      tags:
+      - driverInfo
+  /drivers/search:
+    post:
+      consumes:
+      - application/json
+      description: return drivers with the given name in search box
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/driversRegister.input'
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/driversRegister.driverInfo'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return drivers by its name
+      tags:
+      - driverInfo
+  /estelam/supplier:
+    get:
+      consumes:
+      - application/json
+      description: get estelam request for supplier
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/estelam.estelamSupplierOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get estelam request for supplier
+      tags:
+      - estelam
+  /estelam/supplier/create:
+    post:
+      consumes:
+      - application/json
+      description: create estelam by user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/estelam.CreateEstelamRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create estelam by user
+      tags:
+      - estelam
+  /estelam/supplier/response:
+    post:
+      consumes:
+      - application/json
+      description: get estelam request for supplier
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/estelam.responseToEstelamIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get estelam request for supplier
+      tags:
+      - estelam
+  /faq:
+    get:
+      consumes:
+      - application/json
+      description: return all questions from faq
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: forSupplier
+        in: query
+        name: forSupplier
+        required: true
+        type: boolean
+      - description: popular
+        in: query
+        name: popular
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.question'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all questions
+      tags:
+      - question
+    post:
+      consumes:
+      - application/json
+      description: create questions in faq database
+      parameters:
+      - description: question
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/faq.questionIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.question'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create questions
+      tags:
+      - question
+  /faq-category:
+    get:
+      consumes:
+      - application/json
+      description: return category
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: forSupplier
+        in: query
+        name: forSupplier
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/faq.category'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return each category by its key
+      tags:
+      - faq category
+    post:
+      consumes:
+      - application/json
+      description: create category
+      parameters:
+      - description: category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/faq.category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create category
+      tags:
+      - faq category
+  /faq-category/{catKey}:
+    delete:
+      consumes:
+      - application/json
+      description: delete category
+      parameters:
+      - description: cat key
+        in: path
+        name: catKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.category'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete category by its key
+      tags:
+      - faq category
+  /faq/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete questions
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.feedBack'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete questions
+      tags:
+      - question
+    get:
+      consumes:
+      - application/json
+      description: return question by its key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.question'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return question by its key
+      tags:
+      - question
+    put:
+      consumes:
+      - application/json
+      description: update questions
+      parameters:
+      - description: question
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/faq.question'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update questions
+      tags:
+      - question
+  /faq/FeedBack:
+    post:
+      consumes:
+      - application/json
+      description: create feedback
+      parameters:
+      - description: feed back
+        in: body
+        name: feedBack
+        required: true
+        schema:
+          $ref: '#/definitions/faq.feedBack'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.feedBack'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create feedback
+      tags:
+      - feedBack
+  /faq/FeedBack/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return feedbacks by its key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.feedBack'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return feedbacks by its key
+      tags:
+      - feedBack
+  /faq/cat/{catKey}:
+    get:
+      consumes:
+      - application/json
+      description: return question by its category key
+      parameters:
+      - description: cat Key
+        in: path
+        name: catKey
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.question'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return question by its category
+      tags:
+      - question
+  /faq/srch:
+    post:
+      consumes:
+      - application/json
+      description: return questions similar with given input
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/faq.input'
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/faq.question'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return questions similar with given input
+      tags:
+      - question
+  /homepage:
+    get:
+      consumes:
+      - application/json
+      description: return homepage data
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return homepage data
+      tags:
+      - homepage
+  /p-similarity:
+    get:
+      consumes:
+      - application/json
+      description: return all similarity nodes
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/similarityGraph.similarityNode'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all similarity nodes
+      tags:
+      - product similarity
+  /p-similarity/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete similarity node
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: delete similarity node
+      tags:
+      - product similarity
+    get:
+      consumes:
+      - application/json
+      description: return all similar products
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.Product'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all similar products
+      tags:
+      - product similarity
+    put:
+      consumes:
+      - application/json
+      description: update similarity node
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/similarityGraph.similarityNode'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update similarity node
+      tags:
+      - product similarity
+  /p-similarity/{op}/{productKey}/{nodeKey}:
+    post:
+      consumes:
+      - application/json
+      description: add or remove product to a node
+      parameters:
+      - description: op
+        in: path
+        name: op
+        required: true
+        type: string
+      - description: productKey
+        in: path
+        name: productKey
+        required: true
+        type: string
+      - description: nodeKey
+        in: path
+        name: nodeKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/similarityGraph.similarityNode'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: add or remove product to a node
+      tags:
+      - product similarity
+  /p-similarity/edge:
+    post:
+      consumes:
+      - application/json
+      description: create similarity edge
+      parameters:
+      - description: data
+        in: body
+        name: similarityEdge
+        required: true
+        schema:
+          $ref: '#/definitions/similarityGraph.similarityEdge'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create similarity edge
+      tags:
+      - product similarity
+  /p-similarity/graph-sim/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return all similar nodes
+      parameters:
+      - description: similarity type
+        in: query
+        name: type
+        type: string
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/similarityGraph.similarityNodeOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all similar nodes
+      tags:
+      - product similarity
+  /p-similarity/node:
+    post:
+      consumes:
+      - application/json
+      description: create similarity node
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/similarityGraph.SimilarityNodeRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create similarity node
+      tags:
+      - product similarity
+  /p-similarity/node/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return one node with products
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.Product'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return one node with products
+      tags:
+      - product similarity
+  /p-similarity/node/admin:
+    post:
+      consumes:
+      - application/json
+      description: create similarity node by admin
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/similarityGraph.SimilarityNodeRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create similarity node by admin
+      tags:
+      - product similarity
+  /payment/by-check:
+    post:
+      consumes:
+      - application/json
+      description: create check by image
+      parameters:
+      - description: data
+        in: body
+        name: checkByImage
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.checkByImage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/paymentAndWallet.paymentOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create check by image
+      tags:
+      - payment
+  /payment/by-image:
+    post:
+      consumes:
+      - application/json
+      description: get payment by image
+      parameters:
+      - description: data
+        in: body
+        name: PaymentByImage
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.PaymentByImage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/paymentAndWallet.paymentOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get payment by image
+      tags:
+      - payment
+  /payment/by-url:
+    post:
+      consumes:
+      - application/json
+      description: get payment by url
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get payment by url
+      tags:
+      - payment
+  /payment/filter:
+    post:
+      consumes:
+      - application/json
+      description: fet filtered payment if filter is empty return all
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: data
+        in: body
+        name: filter
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.filter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: fet filtered payment
+      tags:
+      - payment
+  /payment/verify-check/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verity check
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: verity check
+      tags:
+      - payment
+  /payment/verify-image/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verity payment
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: verity payment
+      tags:
+      - payment
+  /payment/verify-url/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verity payment by url
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: verity payment by url
+      tags:
+      - payment
+  /product-comment:
+    get:
+      consumes:
+      - application/json
+      description: return all comment
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: sort
+        in: query
+        name: sort
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all comment
+      tags:
+      - product comment
+    post:
+      consumes:
+      - application/json
+      description: create product comment
+      parameters:
+      - description: comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/commentOnProduct.comment'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create product comment
+      tags:
+      - product comment
+  /product-comment/{categoryUrl}/{productKey}:
+    get:
+      consumes:
+      - application/json
+      description: return all comment for a product from faq
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: sort
+        in: query
+        name: sort
+        required: true
+        type: string
+      - description: score
+        in: query
+        name: score
+        required: true
+        type: boolean
+      - description: categoryUrl
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: productKey
+        in: path
+        name: productKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all comment for a product
+      tags:
+      - product comment
+  /product-comment/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete comment
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: delete comment
+      tags:
+      - product comment
+    put:
+      consumes:
+      - application/json
+      description: update comment
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: updateCommentType
+        in: body
+        name: updateCommentType
+        required: true
+        schema:
+          $ref: '#/definitions/commentOnProduct.updateCommentType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update comment
+      tags:
+      - product comment
+  /product-comment/admin/{key}:
+    put:
+      consumes:
+      - application/json
+      description: update comment
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: adminUpdateCommentType
+        in: body
+        name: adminUpdateCommentType
+        required: true
+        schema:
+          $ref: '#/definitions/commentOnProduct.adminUpdateCommentType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update comment
+      tags:
+      - product comment
+  /product-suggestion:
+    get:
+      consumes:
+      - application/json
+      description: get product suggestion
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productSuggestion.productSuggestionOut'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: get product suggestion
+      tags:
+      - product suggestion
+    post:
+      consumes:
+      - application/json
+      description: add product suggestion
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/productSuggestion.productSuggestion'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productSuggestion.productSuggestionOut'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add product suggestion
+      tags:
+      - product suggestion
+  /product-suggestion/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete product suggestion
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: delete product suggestion
+      tags:
+      - product suggestion
+  /product-suggestion/better-price:
+    post:
+      consumes:
+      - application/json
+      description: add product suggestion with better price
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/productSuggestion.betterPrice'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productSuggestion.betterPriceOut'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add product suggestion with better price
+      tags:
+      - product suggestion
+  /product-suggestion/sample:
+    post:
+      consumes:
+      - application/json
+      description: add product suggestion from sample
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/productSuggestion.sampleSuggestion'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productSuggestion.sampleSuggestionOut'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add product suggestion from sample
+      tags:
+      - product suggestion
+  /products-q-a:
+    get:
+      consumes:
+      - application/json
+      description: return all questions
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: valid or not
+        in: query
+        name: valid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productQA.productQA'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all questions
+      tags:
+      - productQA
+    post:
+      consumes:
+      - application/json
+      description: create questions
+      parameters:
+      - description: question
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/productQA.productQA'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create questions
+      tags:
+      - productQA
+  /products-q-a/{categoryUrl}/{productKey}:
+    get:
+      consumes:
+      - application/json
+      description: return question by its product key
+      parameters:
+      - description: categoryUrl
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: productKey
+        in: path
+        name: productKey
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: sort
+        in: query
+        name: sort
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productQA.productQA'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return question by its product key
+      tags:
+      - productQA
+  /products-q-a/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: remove QA
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: remove QA
+      tags:
+      - productQA
+    put:
+      consumes:
+      - application/json
+      description: update questions
+      parameters:
+      - description: question
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/productQA.updateDto'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update questions
+      tags:
+      - productQA
+  /products-q-a/admin/{key}:
+    put:
+      consumes:
+      - application/json
+      description: update questions
+      parameters:
+      - description: question
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/productQA.adminUpdateDto'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: update questions
+      tags:
+      - productQA
+  /products-q-a/likes/{op}/{questionKey}:
+    post:
+      consumes:
+      - application/json
+      description: create questions
+      parameters:
+      - description: operation only add or remove
+        in: path
+        name: op
+        required: true
+        type: string
+      - description: questionKey
+        in: path
+        name: questionKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create questions
+      tags:
+      - productQA
+  /products-q-a/user/{qa}:
+    get:
+      consumes:
+      - application/json
+      description: return all questions or answers for user
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: qa only q or a
+        in: path
+        name: qa
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/productQA.productQA'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return all questions or answers for user
+      tags:
+      - productQA
+  /products/:
+    post:
+      consumes:
+      - application/json
+      description: create products
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/products.productInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create products
+      tags:
+      - products
+  /products/{categoryurl}/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete product by key
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: Product key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: deletes product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: update product by key
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: Product key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/products.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: updates product
+      tags:
+      - products
+  /products/advance-filter/{categoryurl}/{categorykey}:
+    post:
+      consumes:
+      - application/json
+      description: advance filter in products
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: category key
+        in: path
+        name: categorykey
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/products.advanceFilter'
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: sample
+        in: query
+        name: sample
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.productOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: advance filter in products
+      tags:
+      - products
+  /products/basic-filter/{categoryurl}:
+    post:
+      consumes:
+      - application/json
+      description: basic filter in products
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/products.filter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.productOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: basic filter in products
+      tags:
+      - products
+  /products/basic-search/{categoryurl}:
+    post:
+      consumes:
+      - application/json
+      description: basic search in products
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/products.search'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.productOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: basic search in products
+      tags:
+      - products
+  /products/cat/{categoryurl}/{categorykey}:
+    get:
+      consumes:
+      - application/json
+      description: return products attached to that category
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: category key
+        in: path
+        name: categorykey
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.productOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return products attached to that category
+      tags:
+      - products
+  /products/color/{spId}/{productKey}:
+    post:
+      consumes:
+      - application/json
+      description: return products with same color code
+      parameters:
+      - description: spId
+        in: path
+        name: spId
+        required: true
+        type: string
+      - description: productKey
+        in: path
+        name: productKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.colorOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return products with same color code
+      tags:
+      - products
+  /products/one/{categoryurl}/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return Product by key with estelamArr and priceArr
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: Product key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/products.getProductByKeyResponse'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return Product by key
+      tags:
+      - products
+  /rejection/pool:
+    get:
+      consumes:
+      - application/json
+      description: get all rejection pool items
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/paymentAndWallet.rejectionPoolItemOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get all rejection pool items
+      tags:
+      - rejection pool
+  /search:
+    post:
+      consumes:
+      - application/json
+      description: search products
+      parameters:
+      - description: search term
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/search.search'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/search.searchResponse'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: search products
+      tags:
+      - search
+  /search/ms:
+    post:
+      consumes:
+      - application/json
+      description: create most search data
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/search.mostSearch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create most search data
+      tags:
+      - search
+  /sending-info/add-interval:
+    post:
+      consumes:
+      - application/json
+      description: create sending interval in faq database
+      parameters:
+      - description: addIntervalRequest
+        in: body
+        name: addIntervalRequest
+        required: true
+        schema:
+          $ref: '#/definitions/sendingInfo.addIntervalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create sending interval
+      tags:
+      - sending info
+  /sending-info/info/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return  sending info by key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sendingInfo.sendingInfoOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return  sending info by key
+      tags:
+      - sending info
+    post:
+      consumes:
+      - application/json
+      description: create sending info
+      parameters:
+      - description: sendingInfo
+        in: body
+        name: sendingInfo
+        required: true
+        schema:
+          $ref: '#/definitions/sendingInfo.sendingInfo'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create sending info
+      tags:
+      - sending info
+    put:
+      consumes:
+      - application/json
+      description: update sending info
+      parameters:
+      - description: sendingInfo
+        in: body
+        name: updateSendingInfo
+        required: true
+        schema:
+          $ref: '#/definitions/sendingInfo.updateSendingInfo'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: update sending info
+      tags:
+      - sending info
+  /sending-info/interval:
+    get:
+      consumes:
+      - application/json
+      description: return all sending interval
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/sendingInfo.sendDayInterval'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all sending interval
+      tags:
+      - sending info
+  /sending-info/remove-interval:
+    post:
+      consumes:
+      - application/json
+      description: remove sending interval
+      parameters:
+      - description: addIntervalRequest
+        in: body
+        name: addIntervalRequest
+        required: true
+        schema:
+          $ref: '#/definitions/sendingInfo.addIntervalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: remove sending interval
+      tags:
+      - sending info
+  /sending-unit:
+    get:
+      consumes:
+      - application/json
+      description: return all sending unit
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: true or false
+        in: query
+        name: not-send
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/sendingUnit.sendUnitOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all sending unit
+      tags:
+      - sending unit
+    post:
+      consumes:
+      - application/json
+      description: create sending send unit
+      parameters:
+      - description: sendUnit
+        in: body
+        name: sendUnit
+        required: true
+        schema:
+          $ref: '#/definitions/sendingUnit.sendUnit'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create sending send unit
+      tags:
+      - sending unit
+  /sending-unit/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete send unit
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: delete send unit
+      tags:
+      - sending unit
+  /sending-unit/{op}/{unitKey}/{trKey}:
+    put:
+      consumes:
+      - application/json
+      description: add or remove transportationKey to a send unit
+      parameters:
+      - description: op
+        in: path
+        name: op
+        required: true
+        type: string
+      - description: unitKey
+        in: path
+        name: unitKey
+        required: true
+        type: string
+      - description: trKey
+        in: path
+        name: trKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: add or remove transportationKey to a send unit
+      tags:
+      - sending unit
+  /sending-unit/tr/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete transportation unit from send unit
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: delete transportation unit from send unit
+      tags:
+      - sending unit
+  /supplier-employee-auth/change-password-with-login:
+    post:
+      consumes:
+      - application/json
+      description: change password by sending code
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.changePasswordWithLoginRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+      security:
+      - ApiKeyAuth: []
+      summary: change password by sending code
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/changePassword-without-login:
+    post:
+      consumes:
+      - application/json
+      description: change password by sending code
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.changePasswordWithoutLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+      summary: change password by sending code
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/check-validation-code:
+    post:
+      consumes:
+      - application/json
+      description: check validation code and if it is valid, send status:ok
+      parameters:
+      - description: phoneNumber and validation code
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.checkValidationCodeDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.CustomErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/supplierEmployees.CustomErrorResponse'
+      summary: check validation code
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/create-supplier-preview:
+    post:
+      consumes:
+      - application/json
+      description: create supplier preview for management
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.createSupplierPreview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.createSupplierPreview'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.CustomErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/supplierEmployees.CustomErrorResponse'
+      summary: create supplier preview
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/get-changePassword-code:
+    post:
+      consumes:
+      - application/json
+      description: send change password  code by sms to given phoneNumber for supplier
+      parameters:
+      - description: phoneNumber
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.getValidationCodeDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+      summary: send change password  code by sms to given phoneNumber
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/get-refresh-token/{token}:
+    get:
+      consumes:
+      - application/json
+      description: get access token by sending refresh token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.refreshTokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+      summary: get access token by sending refresh token
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/get-validation-code:
+    post:
+      consumes:
+      - application/json
+      description: send validation code by sms to given phoneNumber for supplier registration
+      parameters:
+      - description: phoneNumber
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.getValidationCodeDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.ResponseHTTP'
+      summary: send validation code by sms to given phoneNumber
+      tags:
+      - supplierAuth
+  /supplier-employee-auth/login:
+    post:
+      consumes:
+      - application/json
+      description: login supplieremployee  by phoneNumber and password
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/supplierEmployees.loginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.CustomErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/supplierEmployees.CustomErrorResponse'
+      summary: login supplieremployee
+      tags:
+      - supplierAuth
+  /supplier-employee/add-update-pool:
+    put:
+      consumes:
+      - application/json
+      description: add supplier employee to update pool
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/supplierEmployees.updateEmployee'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add supplier employee to update pool
+      tags:
+      - supplier
+  /supplier-employee/one:
+    get:
+      consumes:
+      - application/json
+      description: get supplier employee  by key
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/supplierEmployees.employee'
+      security:
+      - ApiKeyAuth: []
+      summary: get supplier employee  by key
+      tags:
+      - supplier
+  /suppliers-confirmation:
+    get:
+      consumes:
+      - application/json
+      description: get orders for supplier confirmation
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/paymentAndWallet.getSupplierConfirmationResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get orders for supplier confirmation
+      tags:
+      - supplier confirmation
+  /suppliers-confirmation/approve/{infoKey}:
+    post:
+      consumes:
+      - application/json
+      description: approve order
+      parameters:
+      - description: infoKey
+        in: path
+        name: infoKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: approve order
+      tags:
+      - supplier confirmation
+  /suppliers-confirmation/reject/{infoKey}:
+    post:
+      consumes:
+      - application/json
+      description: reject order
+      parameters:
+      - description: infoKey
+        in: path
+        name: infoKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: reject order
+      tags:
+      - supplier confirmation
+  /suppliers/add-fav/{categoryUrl}/{key}:
+    post:
+      consumes:
+      - application/json
+      description: add Favorite product to supplier
+      parameters:
+      - description: key of product you want to add
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: categoryUrl
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/suppliers.Fav'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add Favorite product to supplier
+      tags:
+      - supplier
+  /suppliers/add-update-pool:
+    put:
+      consumes:
+      - application/json
+      description: add supplier to update pool
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/suppliers.updateSupplier'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add supplier to update pool
+      tags:
+      - supplier
+  /suppliers/fav-product/{categoryUrl}:
+    get:
+      consumes:
+      - application/json
+      description: get Favorite product to supplier
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: categoryUrl
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/suppliers.Fav'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get Favorite product to supplier
+      tags:
+      - supplier
+  /suppliers/fav/{categoryUrl}:
+    get:
+      consumes:
+      - application/json
+      description: get Favorite product to supplier
+      parameters:
+      - description: categoryUrl
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/suppliers.Fav'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get Favorite product to supplier
+      tags:
+      - supplier
+  /suppliers/remove-fav/{key}:
+    post:
+      consumes:
+      - application/json
+      description: remove Favorite product to supplier
+      parameters:
+      - description: fav key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: remove Favorite product to supplier
+      tags:
+      - supplier
+  /user-address:
+    post:
+      consumes:
+      - application/json
+      description: create user address
+      parameters:
+      - description: Address
+        in: body
+        name: AddressIn
+        required: true
+        schema:
+          $ref: '#/definitions/userAddress.AddressIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userAddress.AddressOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create user address
+      tags:
+      - user address
+  /user-address/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user address
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: delete user address
+      tags:
+      - user address
+    get:
+      consumes:
+      - application/json
+      description: return user address by user key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userAddress.AddressOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return user address by user key
+      tags:
+      - user address
+    put:
+      consumes:
+      - application/json
+      description: update user address
+      parameters:
+      - description: Address
+        in: body
+        name: AddressIn
+        required: true
+        schema:
+          $ref: '#/definitions/userAddress.AddressIn'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userAddress.AddressOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update user address
+      tags:
+      - user address
+  /user-address/user:
+    get:
+      consumes:
+      - application/json
+      description: return user address by user key
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userAddress.AddressOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return user address by user key
+      tags:
+      - user address
+  /user-auth/get-refresh-token/{token}:
+    get:
+      consumes:
+      - application/json
+      description: get access token by sending refresh token
+      parameters:
+      - description: token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: get access token by sending refresh token
+      tags:
+      - user Auth
+  /user-auth/get-validation-code:
+    post:
+      consumes:
+      - application/json
+      description: send validation code by sms to given phoneNumber for user registration
+        or login
+      parameters:
+      - description: phoneNumber
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.checkForLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.checkForLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: send validation code by sms to given phoneNumber
+      tags:
+      - user Auth
+  /user-auth/login:
+    post:
+      consumes:
+      - application/json
+      description: user login with validation code
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.LoginDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.loginAndRegistrationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: user login with validation code
+      tags:
+      - user Auth
+  /user-auth/register:
+    post:
+      consumes:
+      - application/json
+      description: user registration with validation code
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.LoginDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.loginAndRegistrationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: user registration with validation code
+      tags:
+      - user Auth
+  /user/one:
+    get:
+      consumes:
+      - application/json
+      description: get user by accessToken
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/users.UserOut'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get user by accessToken
+      tags:
+      - user
+  /wallet/data:
+    get:
+      consumes:
+      - application/json
+      description: return wallet amount , income , outcome and if withHistory query
+        eq ture wallet history
+      parameters:
+      - description: withHistory
+        in: query
+        name: withHistory
+        required: true
+        type: boolean
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/paymentAndWallet.supplierPageResponse'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return wallet amount , income , outcome
+      tags:
+      - wallet
+  /wallet/url:
+    post:
+      consumes:
+      - application/json
+      description: get payment url for wallet
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.addToWallet'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get payment url for wallet
+      tags:
+      - wallet
+  /wallet/verify/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verify tx to wallet
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: verify tx to wallet
+      tags:
+      - wallet
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

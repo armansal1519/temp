@@ -1,0 +1,33 @@
+version: '3.3'
+
+#services describe the containers that will start
+services:
+  # api is the container name for our Go API
+  api:
+    # It will look for a Dockerfile in the project root and build it
+    build: "."
+    # Exposes the port 5000 from a container and binds it to a random port
+    ports:
+      - "3000:3000"
+    # If the container goes down, it will restart
+    restart: "always"
+    # Connects the API to a common api.network bridge
+#    volumes:
+#      - /home/server/choonet-server/images:/app/images
+    depends_on:
+      - redis # This service depends on redis. Start that first.
+#      environment: # Pass environment variables to the service
+#        REDIS_URL: redis:6379
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend
+
+      # Redis Service
+  redis:
+    image: "redis:alpine" # Use a public Redis image to build the redis service
+    restart: unless-stopped
+    networks:
+      - backend
+
+    # Networks to be created to facilitate communication between containers
+networks:
+  backend:

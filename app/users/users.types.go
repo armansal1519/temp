@@ -61,7 +61,8 @@ type LoginDto struct {
 }
 
 type headlessUser struct {
-	State string `json:"state"`
+	State       string `json:"state"`
+	PhoneNumber string `json:"phoneNumber"`
 }
 
 type updateLastLogin struct {

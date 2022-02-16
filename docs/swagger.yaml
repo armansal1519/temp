@@ -441,8 +441,41 @@ definitions:
         type: string
       supplierKey:
         type: string
+      uniqueString:
+        type: string
+      userAuthType:
+        type: string
       userKey:
         type: string
+    type: object
+  cart.cErr:
+    properties:
+      code:
+        type: integer
+      devInfo:
+        type: string
+      error:
+        type: integer
+      userMsg:
+        type: string
+    type: object
+  cart.cartIn:
+    properties:
+      number:
+        type: integer
+      priceId:
+        type: string
+      pricingType:
+        type: string
+    required:
+    - number
+    - priceId
+    - pricingType
+    type: object
+  cart.updateCart:
+    properties:
+      number:
+        type: integer
     type: object
   categories.BaseCategoryDto:
     properties:
@@ -3171,6 +3204,149 @@ paths:
       summary: delete car category
       tags:
       - carCategory
+  /cart:
+    get:
+      consumes:
+      - application/json
+      description: get cart by user key , by jwt or by temp-user-key
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: temp-user-key
+        in: header
+        name: temp-user-key
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/cart.CartOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/cart.cErr'
+      security:
+      - ApiKeyAuth: []
+      summary: get cart by user key
+      tags:
+      - cart
+    post:
+      consumes:
+      - application/json
+      description: adds to cart , if there is jwt or temp-user-key adds to cart of
+        user else create new temp-user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/cart.cartIn'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: temp-user-key
+        in: header
+        name: temp-user-key
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cart.CartOut'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/cart.cErr'
+      security:
+      - ApiKeyAuth: []
+      summary: adds to cart
+      tags:
+      - cart
+  /cart/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: delete cart by key , jwt or  temp-user-key must exist
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: temp-user-key
+        in: header
+        name: temp-user-key
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cart.CartOut'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/cart.cErr'
+      security:
+      - ApiKeyAuth: []
+      summary: delete cart by key
+      tags:
+      - cart
+    patch:
+      consumes:
+      - application/json
+      description: edit cart by key , jwt or  temp-user-key must exist
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/cart.updateCart'
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: temp-user-key
+        in: header
+        name: temp-user-key
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cart.CartOut'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/cart.cErr'
+      security:
+      - ApiKeyAuth: []
+      summary: edit cart by key
+      tags:
+      - cart
   /categories:
     get:
       consumes:

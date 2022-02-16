@@ -5,19 +5,30 @@ import (
 	"bamachoub-backend-go-v1/app/products"
 	"bamachoub-backend-go-v1/app/users"
 	"bamachoub-backend-go-v1/config/database"
+	"bamachoub-backend-go-v1/utils"
 	"context"
 	"fmt"
 	"github.com/arangodb/go-driver"
+	"github.com/gofiber/fiber/v2"
 	"log"
 	"strings"
 	"time"
 )
 
-
-
-
-
-func addToCart(cartIn cartIn, isLogin bool, userKey string, isAuthenticated bool) (*CartOut, cErr) {
+// addToCart  add to cart
+// @Summary adds to cart
+// @Description adds to cart , if there is jwt or temp-user-key adds to cart of user else create new temp-user
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param data body cartIn true "data"
+// @Security ApiKeyAuth
+// @param Authorization header string false "Authorization"
+// @param temp-user-key header string false "temp-user-key"
+// @Success 200 {object} CartOut{}
+// @Failure 404 {object} cErr{}
+// @Router /cart [post]
+func addToCart(cartIn cartIn, isLogin bool, userKey string, tempUserKey string, isAuthenticated bool) (*CartOut, cErr) {
 	edgeName := strings.Split(cartIn.PriceId, "/")[0]
 	edgeKey := strings.Split(cartIn.PriceId, "/")[1]
 
@@ -43,9 +54,8 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, isAuthenticated bool
 
 	if cartIn.PricingType == "price" {
 		if !isLogin {
-			if cartIn.UserKey == "" {
+			if tempUserKey == "" {
 				userKey, err = users.CreateHeadlessUser()
-				log.Print(userKey)
 				if err != nil {
 					return nil, cErr{
 						Status:    409,
@@ -55,7 +65,7 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, isAuthenticated bool
 					}
 				}
 			} else {
-				userKey = cartIn.UserKey
+				userKey = tempUserKey
 			}
 		}
 
@@ -162,6 +172,14 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, isAuthenticated bool
 	} else {
 		cp = p.CheckCommissionPercent
 	}
+	uat := ""
+	if isAuthenticated && isLogin {
+		uat = "authenticated"
+	} else if !isAuthenticated && isLogin {
+		uat = "login"
+	} else {
+		uat = "headless"
+	}
 
 	c := cart{
 		PriceId:           cartIn.PriceId,
@@ -172,9 +190,11 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, isAuthenticated bool
 		ProductImageUrl:   p.ImageArr[0],
 		CreatedAt:         time.Now().Unix(),
 		CommissionPercent: cp,
+		UserAuthType:      uat,
 		UserKey:           userKey,
 		SupplierKey:       supplierKey,
 		ProductId:         price.To,
+		UniqueString:      fmt.Sprintf("%v_%v_%v", cartIn.PriceId, cartIn.PricingType, userKey),
 	}
 
 	var co CartOut
@@ -189,4 +209,148 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, isAuthenticated bool
 		}
 	}
 	return &co, cErr{Status: -1}
+}
+
+// getCartByUserKey  get cart by user key
+// @Summary get cart by user key
+// @Description get cart by user key , by jwt or by temp-user-key
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @param Authorization header string false "Authorization"
+// @param temp-user-key header string false "temp-user-key"
+// @Success 200 {object} []CartOut{}
+// @Failure 404 {object} cErr{}
+// @Router /cart [get]
+func getCartByUserKey(isLogin bool, userKey string) (*[]CartOut, cErr) {
+	q := ""
+	if !isLogin {
+		q = fmt.Sprintf("for i in cart filter i.userKey==\"%v\"  and i.userAuthType==\"headless\" return i", userKey)
+
+	} else {
+		q = fmt.Sprintf("for i in cart filter i.userKey==\"%v\"  and i.userAuthType!=\"headless\" return i", userKey)
+
+	}
+
+	db := database.GetDB()
+	ctx := context.Background()
+	log.Println(q)
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		return nil, cErr{
+			Status:    409,
+			ErrorCode: 1,
+			DevInfo:   err.Error(),
+			UserMsg:   "مشکل در گرفتن کالا در سبد خرید",
+		}
+	}
+	defer cursor.Close()
+	var data []CartOut
+	for {
+		var doc CartOut
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			panic("error in cursor -in GetAll")
+		}
+		data = append(data, doc)
+	}
+
+	return &data, cErr{Status: -1}
+}
+
+// update edit cart by key
+// @Summary edit cart by key
+// @Description edit cart by key , jwt or  temp-user-key must exist
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param data body updateCart true "data"
+// @Param   key      path   string     true  "key"
+// @Security ApiKeyAuth
+// @param Authorization header string false "Authorization"
+// @param temp-user-key header string false "temp-user-key"
+// @Success 200 {object} CartOut{}
+// @Failure 404 {object} cErr{}
+// @Router /cart/{key} [patch]
+func update(c *fiber.Ctx) error {
+	cartKey := c.Params("key")
+	userKey := c.Locals("userKey").(string)
+	tempUserKey := c.Get("temp-user-key", "")
+
+	if tempUserKey == "" && userKey == "" {
+		return c.Status(400).SendString("user key missing ")
+	}
+	if userKey == "" && tempUserKey != "" {
+		userKey = tempUserKey
+	}
+	uc := new(updateCart)
+	if err := utils.ParseBodyAndValidate(c, uc); err != nil {
+		return c.JSON(err)
+	}
+
+	var co CartOut
+	cartCol := database.GetCollection("cart")
+	_, err := cartCol.ReadDocument(context.Background(), cartKey, &co)
+	if err != nil {
+		return c.JSON(err)
+	}
+	edgeName := strings.Split(co.PriceId, "/")[0]
+	edgeKey := strings.Split(co.PriceId, "/")[1]
+
+	var price addBuyMethod.PriceOut
+	edgeCol := database.GetCollection(edgeName)
+	_, err = edgeCol.ReadDocument(context.Background(), edgeKey, &price)
+	if err != nil {
+		return c.JSON(err)
+	}
+	log.Println(co.PriceId)
+	if uc.Number > int(price.TotalNumber) || uc.Number > int(price.TotalNumberInCart) {
+		return c.Status(400).JSON(cErr{
+			Status:    400,
+			ErrorCode: 1,
+			DevInfo:   fmt.Sprintf("%v  %v  %v", uc.Number, price.TotalNumber, price.TotalNumberInCart),
+			UserMsg:   "تعداد انتخاب شده از تعداد مچاز بیشتر است",
+		})
+	}
+
+	q := fmt.Sprintf("for i in cart filter i._key==\"%v\" and i.userKey==\"%v\" update i with {number: %v} in cart return NEW", cartKey, userKey, uc.Number)
+
+	data := database.ExecuteGetQuery(q)
+	if data == nil {
+		return c.Status(404).SendString("cart not found")
+	}
+	return c.JSON(data[0])
+
+}
+
+// remove delete cart by key
+// @Summary delete cart by key
+// @Description delete cart by key , jwt or  temp-user-key must exist
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param   key      path   string     true  "key"
+// @Security ApiKeyAuth
+// @param Authorization header string false "Authorization"
+// @param temp-user-key header string false "temp-user-key"
+// @Success 200 {object} CartOut{}
+// @Failure 404 {object} cErr{}
+// @Router /cart/{key} [delete]
+func remove(c *fiber.Ctx) error {
+	cartKey := c.Params("key")
+	userKey := c.Locals("userKey").(string)
+	tempUserKey := c.Get("temp-user-key", "")
+
+	if tempUserKey == "" && userKey == "" {
+		return c.Status(400).SendString("user key missing ")
+	}
+	if userKey == "" && tempUserKey != "" {
+		userKey = tempUserKey
+	}
+	q := fmt.Sprintf("for i in cart filter i._key==\"%v\" and i.userKey==\"%v\" remove i in cart", cartKey, userKey)
+	database.ExecuteGetQuery(q)
+	return c.Status(204).JSON("ok")
 }

@@ -13,7 +13,7 @@ import (
 // Auth is the authentication middleware
 func Auth(c *fiber.Ctx) error {
 	isAdmin := c.Locals("isAdmin")
-	
+
 	if isAdmin != nil {
 		b := isAdmin.(bool)
 		if b {
@@ -58,7 +58,9 @@ func AddToCartAuth(c *fiber.Ctx) error {
 	isLogin := true
 
 	if h == "" {
-		return fiber.ErrUnauthorized
+		c.Locals("userKey", "")
+		c.Locals("isLogin", false)
+		return c.Next()
 	}
 	chunks := strings.Split(h, " ")
 	if len(chunks) < 2 {
@@ -85,6 +87,10 @@ func AddToCartAuth(c *fiber.Ctx) error {
 
 func IsAuthenticated(c *fiber.Ctx) error {
 	userKey := c.Locals("userKey").(string)
+	if userKey == "" {
+		c.Locals("isAuthenticated", false)
+		return c.Next()
+	}
 	log.Println("in isAuthenticated")
 	u, err := GetUserByKey(userKey)
 	if err != nil {

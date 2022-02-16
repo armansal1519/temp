@@ -110,7 +110,7 @@ func getUserByJwt(c *fiber.Ctx) error {
 }
 
 func CreateHeadlessUser() (string, error) {
-	data := headlessUser{State: "headless"}
+	data := headlessUser{State: "headless", PhoneNumber: fmt.Sprintf("%v", time.Now().Nanosecond())}
 	userCol := database.GetCollection("users")
 	meta, err := userCol.CreateDocument(context.Background(), data)
 	if err != nil {

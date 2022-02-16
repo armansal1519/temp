@@ -80,7 +80,7 @@ func AddPriceToProduct(pg PriceIn, supplierId string) (*PriceOut, error) {
 	}
 
 	log.Println(variantArr)
-	log.Panicln("edge data:", pg.ProductId, supplierId)
+	log.Println("edge data:", pg.ProductId, supplierId)
 	pgc := PriceGroupCreate{
 		To:                pg.ProductId,
 		From:              fmt.Sprintf("supplier/%v", supplierId),

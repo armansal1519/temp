@@ -4,7 +4,6 @@ type cartIn struct {
 	PriceId     string `json:"priceId" validate:"required"`
 	Number      int    `json:"number" validate:"required"`
 	PricingType string `json:"pricingType" validate:"required"`
-	UserKey     string `json:"userKey"`
 }
 
 type cart struct {
@@ -18,8 +17,10 @@ type cart struct {
 	PricingType            string  `json:"PricingType"`
 	CreatedAt              int64   `json:"createdAt"`
 	UserKey                string  `json:"userKey"`
+	UserAuthType           string  `json:"userAuthType"`
 	CommissionPercent      float64 `json:"commissionPercent"`
 	CheckCommissionPercent float64 `json:"checkCommissionPercent"`
+	UniqueString           string
 }
 
 type CartOut struct {
@@ -39,4 +40,8 @@ type cErr struct {
 type GroupedCart struct {
 	Type string    `json:"type"`
 	Cart []CartOut `json:"cart"`
+}
+
+type updateCart struct {
+	Number int `json:"number"`
 }

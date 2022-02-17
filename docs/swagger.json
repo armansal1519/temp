@@ -3225,6 +3225,162 @@
                 }
             }
         },
+        "/order/by-user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get order by jwt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "get order by jwt",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/orders.Order"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/init": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Initialize order for first time , use when user enter the \"Checkout - Shipping info\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Initialize order for first time",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/orders.Order"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/sending-info": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update order by sending info , sending info must be created first ,returns order with transportation price",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "update order by sending info",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orders.sendingInfo"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/orders.Order"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/p-similarity": {
             "get": {
                 "description": "return all similarity nodes",
@@ -9139,6 +9295,96 @@
                 "title": {
                     "type": "string",
                     "minLength": 3
+                }
+            }
+        },
+        "orders.Order": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "_key": {
+                    "type": "string"
+                },
+                "_rev": {
+                    "type": "string"
+                },
+                "isTransportationPriceIsPayed": {
+                    "type": "boolean"
+                },
+                "orderItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/orders.OrderItem"
+                    }
+                },
+                "sendingInfoKey": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transportationPaymentId": {
+                    "type": "string"
+                },
+                "transportationPrice": {
+                    "type": "integer"
+                },
+                "transportationPriceWithPrice": {
+                    "type": "boolean"
+                },
+                "useWalletForTransportation": {
+                    "type": "boolean"
+                },
+                "userKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "orders.OrderItem": {
+            "type": "object",
+            "properties": {
+                "cart": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/cart.CartOut"
+                    }
+                },
+                "fromWallet": {
+                    "type": "integer"
+                },
+                "paymentKey": {
+                    "type": "string"
+                },
+                "remainingPrice": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "statusForEachItem": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "totalPrice": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "orders.sendingInfo": {
+            "type": "object",
+            "properties": {
+                "orderKey": {
+                    "type": "string"
+                },
+                "sendingInfoKey": {
+                    "type": "string"
                 }
             }
         },

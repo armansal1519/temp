@@ -996,6 +996,65 @@ definitions:
     - categoryKey
     - title
     type: object
+  orders.Order:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      isTransportationPriceIsPayed:
+        type: boolean
+      orderItems:
+        items:
+          $ref: '#/definitions/orders.OrderItem'
+        type: array
+      sendingInfoKey:
+        type: string
+      status:
+        type: string
+      transportationPaymentId:
+        type: string
+      transportationPrice:
+        type: integer
+      transportationPriceWithPrice:
+        type: boolean
+      useWalletForTransportation:
+        type: boolean
+      userKey:
+        type: string
+    type: object
+  orders.OrderItem:
+    properties:
+      cart:
+        items:
+          $ref: '#/definitions/cart.CartOut'
+        type: array
+      fromWallet:
+        type: integer
+      paymentKey:
+        type: string
+      remainingPrice:
+        type: integer
+      status:
+        type: string
+      statusForEachItem:
+        items:
+          type: string
+        type: array
+      totalPrice:
+        type: integer
+      type:
+        type: string
+    type: object
+  orders.sendingInfo:
+    properties:
+      orderKey:
+        type: string
+      sendingInfoKey:
+        type: string
+    type: object
   paymentAndWallet.PaymentByImage:
     properties:
       imageUrl:
@@ -4378,6 +4437,107 @@ paths:
       summary: return homepage data
       tags:
       - homepage
+  /order/by-user:
+    get:
+      consumes:
+      - application/json
+      description: get order by jwt
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/orders.Order'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get order by jwt
+      tags:
+      - order
+  /order/init:
+    post:
+      consumes:
+      - application/json
+      description: Initialize order for first time , use when user enter the "Checkout
+        - Shipping info"
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/orders.Order'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Initialize order for first time
+      tags:
+      - order
+  /order/sending-info:
+    patch:
+      consumes:
+      - application/json
+      description: update order by sending info , sending info must be created first
+        ,returns order with transportation price
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orders.sendingInfo'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/orders.Order'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update order by sending info
+      tags:
+      - order
   /p-similarity:
     get:
       consumes:

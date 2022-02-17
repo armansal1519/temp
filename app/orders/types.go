@@ -27,3 +27,13 @@ type Order struct {
 	UseWalletForTransportation   bool        `json:"useWalletForTransportation"`
 	TransportationPaymentId      string      `json:"transportationPaymentId"`
 }
+
+type sendingInfo struct {
+	OrderKey       string `json:"orderKey"`
+	SendingInfoKey string `json:"sendingInfoKey"`
+}
+
+type updateOrderBySendingInfo struct {
+	TransportationPrice int64  `json:"transportationPrice"`
+	SendingInfoKey      string `json:"sendingInfoKey"`
+}

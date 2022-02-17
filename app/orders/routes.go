@@ -17,4 +17,8 @@ func Routes(app fiber.Router) {
 		return c.JSON(resp)
 	})
 
+	r.Get("/by-user", middleware.Auth, getOrderByUserKey)
+
+	r.Patch("/sending-info", middleware.Auth, addSendingInfoToOrder)
+
 }

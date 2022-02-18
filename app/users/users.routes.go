@@ -1,10 +1,12 @@
 package users
 
 import (
+	"bamachoub-backend-go-v1/config/database"
 	"bamachoub-backend-go-v1/utils"
 	"bamachoub-backend-go-v1/utils/middleware"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"log"
 )
 
 func Routes(app fiber.Router) {
@@ -42,10 +44,27 @@ func AuthRoutes(app fiber.Router) {
 		if err := utils.ParseBodyAndValidate(c, ld); err != nil {
 			return c.JSON(err)
 		}
+
 		resp, err := loginWithValidationCode(ld.PhoneNumber, ld.Code)
 		if err != nil {
 			return c.Status(401).JSON(fmt.Sprintf("%v", err))
 		}
+
+		//handling temp user cart
+		tempUserKey := c.Get("temp-user-key", "")
+		if tempUserKey != "" {
+			a := ""
+			if resp.User.IsAuthenticated {
+				a = "authenticated"
+			} else {
+				a = "login"
+			}
+			q := fmt.Sprintf("for i in cart filter i.userKey==\"%v\"  and i.userAuthType==\"headless\" update i with {userKey:\"%v\",userAuthType:\"%v\"} in cart", tempUserKey, resp.User.Key, a)
+			log.Println(q)
+
+			database.ExecuteGetQuery(q)
+		}
+
 		return c.JSON(resp)
 	})
 	r.Post("/register", func(c *fiber.Ctx) error {
@@ -56,6 +75,18 @@ func AuthRoutes(app fiber.Router) {
 		resp, err := registerWithValidationCode(ld.PhoneNumber, ld.Code)
 		if err != nil {
 			return c.Status(401).JSON(fmt.Sprintf("%v", err))
+		}
+		//handling temp user cart
+		tempUserKey := c.Get("temp-user-key", "")
+		if tempUserKey != "" {
+			a := ""
+			if resp.User.IsAuthenticated {
+				a = "authenticated"
+			} else {
+				a = "login"
+			}
+			q := fmt.Sprintf("for i in cart filter i.userKey==\"%v\"  and i.userAuthType==\"headless\" update i with {userKey:\"%v\",userAuthType:\"%v\"} in cart", tempUserKey, resp.User.Key, a)
+			database.ExecuteGetQuery(q)
 		}
 		return c.JSON(resp)
 	})

@@ -62,9 +62,7 @@ type saveQuery struct {
 	Type  string `json:"type"`
 }
 
-
-
-type finalHomePageData struct{
-	Key            string           `json:"_key"`
-	Data           []saveQuery      `json:"data"`
+type finalHomePageData struct {
+	Key  string      `json:"_key"`
+	Data []saveQuery `json:"data"`
 }

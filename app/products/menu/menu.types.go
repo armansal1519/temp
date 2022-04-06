@@ -20,3 +20,8 @@ type ReturnMenu struct {
 	driver.DocumentMeta
 	CreateMenuDto
 }
+
+type orderType struct {
+	Name string
+	Rank float64
+}

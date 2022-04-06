@@ -1,9 +1,7 @@
 package sendingUnit
 
 import (
-	"bamachoub-backend-go-v1/app/paymentAndWallet"
 	"bamachoub-backend-go-v1/config/database"
-	"bamachoub-backend-go-v1/utils"
 	"context"
 	"fmt"
 	"github.com/arangodb/go-driver"
@@ -21,36 +19,36 @@ import (
 // @Failure 500 {object} string{}
 // @Failure 404 {object} string{}
 // @Router /sending-unit [post]
-func createSendUnit(c *fiber.Ctx) error {
-	su := new(sendUnit)
-	if err := utils.ParseBodyAndValidate(c, su); err != nil {
-		return c.JSON(err)
-	}
-	var ao paymentAndWallet.ApprovedOrderOut
-	aoCol := database.GetCollection("approvedOrder")
-	_, err := aoCol.ReadDocument(context.Background(), su.ApprovedOrderKey, &ao)
-	if err != nil {
-		return c.JSON(err)
-	}
-	if su.Number+ao.ConvertToSendUnit > ao.Number {
-		return c.Status(400).SendString("number of send unit is bigger than order number")
-	}
-
-	su.Status = "processing"
-
-	col := database.GetCollection("sendingUnit")
-	meta, err := col.CreateDocument(context.Background(), su)
-	if err != nil {
-		return c.JSON(err)
-	}
-
-	u := updateApprovedOrder{ConvertToSendUnit: ao.ConvertToSendUnit + su.Number}
-	meta, err = col.UpdateDocument(context.Background(), ao.Key, u)
-	if err != nil {
-		return c.JSON(err)
-	}
-	return c.JSON(meta)
-}
+//func createSendUnit(c *fiber.Ctx) error {
+//	su := new(sendUnit)
+//	if err := utils.ParseBodyAndValidate(c, su); err != nil {
+//		return c.JSON(err)
+//	}
+//	var ao graphOrder.GOrderItemOut
+//	aoCol := database.GetCollection("gOrderItem")
+//	_, err := aoCol.ReadDocument(context.Background(), su.ApprovedOrderKey, &ao)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//	if su.Number+ao.ConvertToSendUnit > ao.Number {
+//		return c.Status(400).SendString("number of send unit is bigger than order number")
+//	}
+//
+//	su.Status = "processing"
+//
+//	col := database.GetCollection("sendingUnit")
+//	meta, err := col.CreateDocument(context.Background(), su)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//
+//	u := updateApprovedOrder{ConvertToSendUnit: ao.ConvertToSendUnit + su.Number}
+//	meta, err = col.UpdateDocument(context.Background(), ao.Key, u)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//	return c.JSON(meta)
+//}
 
 // getSendUnits get all sending unit
 // @Summary return all sending unit
@@ -144,35 +142,35 @@ func addOrRemoveSendUnits(c *fiber.Ctx) error {
 // @Failure 500 {object} string{}
 // @Failure 404 {object} string{}
 // @Router /sending-unit/{key} [delete]
-func removeSendUnit(c *fiber.Ctx) error {
-	key := c.Params("key")
-
-	var su sendUnitOut
-	col := database.GetCollection("sendingUnit")
-	_, err := col.ReadDocument(context.Background(), key, &su)
-	if err != nil {
-		return c.JSON(err)
-	}
-	if su.TransportationUnitKey != "" {
-		return c.Status(409).SendString("send to user")
-	}
-	var ao paymentAndWallet.ApprovedOrderOut
-	aoCol := database.GetCollection("approvedOrder")
-	_, err = aoCol.ReadDocument(context.Background(), su.ApprovedOrderKey, &ao)
-	if err != nil {
-		return c.JSON(err)
-	}
-	u := updateApprovedOrder{ConvertToSendUnit: ao.ConvertToSendUnit - su.Number}
-	_, err = col.UpdateDocument(context.Background(), ao.Key, u)
-	if err != nil {
-		return c.JSON(err)
-	}
-	meta, err := col.RemoveDocument(context.Background(), key)
-	if err != nil {
-		return c.JSON(err)
-	}
-	return c.JSON(meta)
-}
+//func removeSendUnit(c *fiber.Ctx) error {
+//	key := c.Params("key")
+//
+//	var su sendUnitOut
+//	col := database.GetCollection("sendingUnit")
+//	_, err := col.ReadDocument(context.Background(), key, &su)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//	if su.TransportationUnitKey != "" {
+//		return c.Status(409).SendString("send to user")
+//	}
+//	var ao paymentAndWallet.ApprovedOrderOut
+//	aoCol := database.GetCollection("approvedOrder")
+//	_, err = aoCol.ReadDocument(context.Background(), su.ApprovedOrderKey, &ao)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//	u := updateApprovedOrder{ConvertToSendUnit: ao.ConvertToSendUnit - su.Number}
+//	_, err = col.UpdateDocument(context.Background(), ao.Key, u)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//	meta, err := col.RemoveDocument(context.Background(), key)
+//	if err != nil {
+//		return c.JSON(err)
+//	}
+//	return c.JSON(meta)
+//}
 
 // removeTr delete transportation unit from send unit
 // @Summary delete transportation unit from send unit

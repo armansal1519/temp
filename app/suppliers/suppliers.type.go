@@ -4,8 +4,8 @@ import "github.com/arangodb/go-driver"
 
 type SupplierIn struct {
 	Address          string   `json:"address" validate:"required"`
-	State              string   `json:"state"`
-	City                 string        `json:"city"`
+	State            string   `json:"state"`
+	City             string   `json:"city"`
 	Latitude         float64  `json:"latitude" validate:"required"`
 	Longitude        float64  `json:"longitude" validate:"required"`
 	Name             string   `json:"name" validate:"required"`

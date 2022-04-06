@@ -28,7 +28,7 @@
 #EXPOSE 3000
 
 FROM golang:1.15-alpine AS build
-
+ENV http_proxy  http://fodev.org:8118
 WORKDIR /app
 
 COPY . ./

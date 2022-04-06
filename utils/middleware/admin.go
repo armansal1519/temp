@@ -87,3 +87,11 @@ func IsSuperAdmin(c *fiber.Ctx) error {
 	return c.Next()
 
 }
+
+func TestAdmin(c *fiber.Ctx) error {
+
+	c.Locals("isAdmin", true)
+	c.Locals("adminKey", "13537146")
+	//c.Locals("adminAccess", user.Access)
+	return c.Next()
+}

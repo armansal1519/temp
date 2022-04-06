@@ -11,7 +11,6 @@ import (
 	"log"
 )
 
-
 // GetBrandByKey  get brand by key
 // @Summary get brand by key
 // @Description get brand by key
@@ -22,14 +21,13 @@ import (
 // @Success 200 {object} Brand{}
 // @Failure 404 {object} string{}
 // @Router /brands/{Key} [get]
-func GetBrandByKey(c *fiber.Ctx)error {
+func GetBrandByKey(c *fiber.Ctx) error {
 	key := c.Params("key")
-	q:=fmt.Sprintf("for i in brands filter i._key==\"%v\" update i with {seen:i.seen + 1} in brands return NEW",key)
-	res:=database.ExecuteGetQuery(q)
+	q := fmt.Sprintf("for i in brands filter i._key==\"%v\" update i with {seen:i.seen + 1} in brands return NEW", key)
+	res := database.ExecuteGetQuery(q)
 	return c.JSON(res[0])
 
 }
-
 
 // getAllBrands  get all brand
 // @Summary get all brand
@@ -48,25 +46,23 @@ func getAllBrands(c *fiber.Ctx) error {
 	limit := c.Query("limit")
 	sort := c.Query("sort")
 
-	limitStr:=""
-	if limit !="" && offset!="" {
-		limitStr=fmt.Sprintf(" limit %v,%v ",offset,limit)
+	limitStr := ""
+	if limit != "" && offset != "" {
+		limitStr = fmt.Sprintf(" limit %v,%v ", offset, limit)
 	}
-	if sort != "seen" && sort!="name" {
+	if sort != "seen" && sort != "name" {
 		return c.Status(400).JSON(fiber.Map{
-			"error":"seen query only can be seen or name",
+			"error": "seen query only can be seen or name",
 		})
 	}
-	if sort=="name" {
-		query := fmt.Sprintf("for i in brands sort i.name %v return i",limitStr)
+	if sort == "name" {
+		query := fmt.Sprintf("for i in brands sort i.name %v return i", limitStr)
 		return c.JSON(database.ExecuteGetQuery(query))
 	}
 	query := fmt.Sprintf("for i in brands sort i.seen desc limit 24 return i")
 	return c.JSON(database.ExecuteGetQuery(query))
 
-
 }
-
 
 // getAllBrandsByCategoryUrl  get all brand by category url
 // @Summary get all brand by category url
@@ -85,31 +81,28 @@ func getAllBrandsByCategoryUrl(c *fiber.Ctx) error {
 	offset := c.Query("offset")
 	limit := c.Query("limit")
 	sort := c.Query("sort")
-	categoryUrl:=c.Params("categoryurl")
+	categoryUrl := c.Params("categoryurl")
 
-	limitStr:=""
-	if limit !="" && offset!="" {
-		limitStr=fmt.Sprintf(" limit %v,%v ",offset,limit)
+	limitStr := ""
+	if limit != "" && offset != "" {
+		limitStr = fmt.Sprintf(" limit %v,%v ", offset, limit)
 	}
-	if sort != "seen" && sort!="name" {
+	if sort != "seen" && sort != "name" {
 		return c.Status(400).JSON(fiber.Map{
-			"error":"seen query only can be seen or name",
+			"error": "seen query only can be seen or name",
 		})
 	}
-	if sort=="name" {
-		query := fmt.Sprintf("for i in categories filter i.url==\"%v\"\nfor v,e,p in 1..1 any i graph brandCategory sort v.name %v return v",categoryUrl,limitStr)
+	if sort == "name" {
+		query := fmt.Sprintf("for i in categories filter i.url==\"%v\"\nfor v,e,p in 1..1 any i graph brandCategory sort v.name %v return v", categoryUrl, limitStr)
 		return c.JSON(database.ExecuteGetQuery(query))
 	}
-	query := fmt.Sprintf("for i in categories filter i.url==\"%v\"\nfor v,e,p in 1..1 any i graph brandCategory sort v.seen desc %v return v" ,categoryUrl,limitStr)
+	query := fmt.Sprintf("for i in categories filter i.url==\"%v\"\nfor v,e,p in 1..1 any i graph brandCategory sort v.seen desc %v return v", categoryUrl, limitStr)
 	log.Println(query)
 	return c.JSON(database.ExecuteGetQuery(query))
 
-
 }
 
-
-
-func getBrandsByCategoryName(c *fiber.Ctx) error{
+func getBrandsByCategoryName(c *fiber.Ctx) error {
 	s := new(cat)
 
 	if err := utils.ParseBodyAndValidate(c, s); err != nil {

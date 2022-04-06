@@ -14,8 +14,8 @@ func Routes(app fiber.Router) {
 	r.Get("",
 		middleware.CheckAdmin, middleware.AdminHasAccess([]string{"read-admin"}),
 		getAll)
-	r.Get("by-access",middleware.CheckAdmin,getAdminByAccessToken)
-	r.Get("/access" , getAccessArray)
+	r.Get("by-access", middleware.CheckAdmin, getAdminByAccessToken)
+	r.Get("/access", getAccessArray)
 	r.Get("/:key", getAdminByKey)
 	r.Put("/:key", updateAdmin)
 

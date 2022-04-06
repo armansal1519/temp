@@ -1,6 +1,7 @@
 package estelam
 
 import (
+	"bamachoub-backend-go-v1/app/cart"
 	"bamachoub-backend-go-v1/app/products"
 	"bamachoub-backend-go-v1/app/suppliers"
 	"bamachoub-backend-go-v1/app/users"
@@ -119,7 +120,7 @@ func createEstelamRequest(c *fiber.Ctx) error {
 	supplierEstelamArr := make([]estelamSupplier, 0)
 	supplierEstelamCol := database.GetCollection("supplierEstelam")
 	log.Print(supplierIds)
-	supplierkeys := make([]string, 0)
+	supplierKeys := make([]string, 0)
 	for _, si := range supplierIds {
 		temp := estelamSupplier{
 			SupplierKey:     strings.Split(si, "/")[1],
@@ -137,9 +138,9 @@ func createEstelamRequest(c *fiber.Ctx) error {
 			WillExpireAt:    time.Now().Add(2 * time.Hour).Unix(),
 		}
 		supplierEstelamArr = append(supplierEstelamArr, temp)
-		supplierkeys = append(supplierkeys, strings.Split(si, "/")[1])
+		supplierKeys = append(supplierKeys, strings.Split(si, "/")[1])
 	}
-	suppliers.NewEstelam(supplierkeys)
+	suppliers.NewEstelam(supplierKeys)
 
 	metaArr, errArr, err := supplierEstelamCol.CreateDocuments(context.Background(), supplierEstelamArr)
 	if err != nil {
@@ -188,7 +189,6 @@ func getEstelamForSupplier(supplierKey string) (*[]estelamSupplierOut, error) {
 	return &data, err
 }
 
-
 // getEstelamForUser  get estelam request for user
 // @Summary get estelam request for user
 // @Description get estelam request for user
@@ -197,11 +197,12 @@ func getEstelamForSupplier(supplierKey string) (*[]estelamSupplierOut, error) {
 // @Produce json
 // @Security ApiKeyAuth
 // @param Authorization header string true "Authorization"
-// @Success 200 {object} []estelamSupplierOut{}
+// @Success 200 {object} []getEstelamForUserResp{}
 // @Failure 404 {object} string{}
-// @Router /estelam/user [get] 
-func getEstelamCart(userKey string) (*[]estelamCartOut, error) {
-	query := fmt.Sprintf("for i in estelamCart\nfilter i.userKey==\"%v\"\nreturn i\n", userKey)
+// @Router /estelam/user [get]
+func getEstelamCart(userKey string) (*[]getEstelamForUserResp, error) {
+	query := fmt.Sprintf("for i in estelamCart filter i.userKey==\"%v\"\nlet resp=(for j in estelamResponse filter j.estelamCartKey==i._key return j )\nreturn {estelamItem:i,SupplierResponse:resp}", userKey)
+	log.Println(query)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, query, nil)
@@ -209,9 +210,9 @@ func getEstelamCart(userKey string) (*[]estelamCartOut, error) {
 		return nil, fmt.Errorf("error while running query:%v", query)
 	}
 	defer cursor.Close()
-	var data []estelamCartOut
+	var data []getEstelamForUserResp
 	for {
-		var doc estelamCartOut
+		var doc getEstelamForUserResp
 		_, err := cursor.ReadDocument(ctx, &doc)
 		if driver.IsNoMoreDocuments(err) {
 			break
@@ -240,9 +241,8 @@ func responseToEstelam(c *fiber.Ctx) error {
 	rte := new(responseToEstelamIn)
 
 	if err := utils.ParseBodyAndValidate(c, rte); err != nil {
-		return c.JSON(err)
+		return c.JSON("validation err : " + err.Error())
 	}
-	rte.CreatedAt = time.Now().Unix()
 
 	var ec estelamCartOut
 	query := fmt.Sprintf("for i in estelamCart filter i._key==\"%v\"\nupdate i with {numberOfResponse: i.numberOfResponse +1,timeOfResponse:%v} in estelamCart\nreturn NEW", rte.EstelamCartKey, time.Now().Unix())
@@ -260,30 +260,94 @@ func responseToEstelam(c *fiber.Ctx) error {
 	}
 
 	supplierId := c.Locals("supplierId").(string)
-	supplierKey := strings.Split(supplierId, "/")[1]
+	supplierKey := supplierId
 	flag, err := isSupplierValid(supplierKey, rte.EstelamCartKey)
+	fmt.Println("flag=", flag, err)
 	if !flag {
 		return c.Status(403).SendString(fmt.Sprintf("supplier is not allowed . supplierKey: %v", supplierKey))
 
 	}
 
-	if (ec.Price && rte.Price == 0) || (!ec.Price && rte.Price != 0) {
-		return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.Price, rte.Price))
+	//if (ec.Price && rte.Price == 0) || (!ec.Price && rte.Price != 0) {
+	//	return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.Price, rte.Price))
+	//}
+	//if (ec.OneMonthPrice && rte.OneMonthPrice == 0) || (!ec.OneMonthPrice && rte.OneMonthPrice != 0) {
+	//	return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.OneMonthPrice, rte.OneMonthPrice))
+	//}
+	//if (ec.TwoMonthPrice && rte.TwoMonthPrice == 0) || (!ec.TwoMonthPrice && rte.TwoMonthPrice != 0) {
+	//	return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.TwoMonthPrice, rte.TwoMonthPrice))
+	//}
+	//if (ec.ThreeMonthPrice && rte.ThreeMonthPrice == 0) || (!ec.ThreeMonthPrice && rte.ThreeMonthPrice != 0) {
+	//	return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.ThreeMonthPrice, rte.ThreeMonthPrice))
+	//}
+
+	seKey := c.Locals("supplierEmployeeKey").(string)
+
+	responseArr := make([]createResponseToEstelam, 0)
+	if ec.Price {
+		cr := createResponseToEstelam{
+			FromNumber:          rte.FromNumber,
+			ToNumber:            rte.ToNumber,
+			EstelamCartKey:      rte.EstelamCartKey,
+			SupplierKey:         supplierId,
+			SupplierEmployeeKey: seKey,
+			Price:               rte.Price,
+			PricingType:         "price",
+			CreatedAt:           time.Now().Unix(),
+			ExpireAt:            time.Now().Add(2 * time.Hour).Unix(),
+		}
+		responseArr = append(responseArr, cr)
 	}
-	if (ec.OneMonthPrice && rte.OneMonthPrice == 0) || (!ec.OneMonthPrice && rte.OneMonthPrice != 0) {
-		return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.OneMonthPrice, rte.OneMonthPrice))
+	if ec.OneMonthPrice {
+		cr := createResponseToEstelam{
+			FromNumber:          rte.FromNumber,
+			ToNumber:            rte.ToNumber,
+			EstelamCartKey:      rte.EstelamCartKey,
+			SupplierKey:         supplierId,
+			SupplierEmployeeKey: seKey,
+			Price:               rte.Price,
+			PricingType:         "one",
+			CreatedAt:           time.Now().Unix(),
+			ExpireAt:            time.Now().Add(2 * time.Hour).Unix(),
+		}
+		responseArr = append(responseArr, cr)
 	}
-	if (ec.TwoMonthPrice && rte.TwoMonthPrice == 0) || (!ec.TwoMonthPrice && rte.TwoMonthPrice != 0) {
-		return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.TwoMonthPrice, rte.TwoMonthPrice))
+	if ec.TwoMonthPrice {
+		cr := createResponseToEstelam{
+			FromNumber:          rte.FromNumber,
+			ToNumber:            rte.ToNumber,
+			EstelamCartKey:      rte.EstelamCartKey,
+			SupplierKey:         supplierId,
+			SupplierEmployeeKey: seKey,
+			Price:               rte.Price,
+			PricingType:         "two",
+			CreatedAt:           time.Now().Unix(),
+			ExpireAt:            time.Now().Add(2 * time.Hour).Unix(),
+		}
+		responseArr = append(responseArr, cr)
 	}
-	if (ec.ThreeMonthPrice && rte.ThreeMonthPrice == 0) || (!ec.ThreeMonthPrice && rte.ThreeMonthPrice != 0) {
-		return c.Status(409).SendString(fmt.Sprintf("price does not match %v != %v", ec.ThreeMonthPrice, rte.ThreeMonthPrice))
+	if ec.ThreeMonthPrice {
+		cr := createResponseToEstelam{
+			FromNumber:          rte.FromNumber,
+			ToNumber:            rte.ToNumber,
+			EstelamCartKey:      rte.EstelamCartKey,
+			SupplierKey:         supplierId,
+			SupplierEmployeeKey: seKey,
+			Price:               rte.Price,
+			PricingType:         "three",
+			CreatedAt:           time.Now().Unix(),
+			ExpireAt:            time.Now().Add(2 * time.Hour).Unix(),
+		}
+		responseArr = append(responseArr, cr)
 	}
 
 	estelamResponseCol := database.GetCollection("estelamResponse")
-	meta, err := estelamResponseCol.CreateDocument(context.Background(), rte)
+	meta, errArr, err := estelamResponseCol.CreateDocuments(context.Background(), responseArr)
 	if err != nil {
-		return c.JSON(err)
+		return c.JSON(fiber.Map{
+			"error":  err,
+			"errArr": errArr,
+		})
 	}
 	if ec.NumberOfResponse == 1 {
 		u, _ := users.GetUserByKey(ec.UserKey)
@@ -297,4 +361,79 @@ func responseToEstelam(c *fiber.Ctx) error {
 
 	return c.JSON(meta)
 
+}
+
+// createCartFromEstelam  create cart by estelam
+// @Summary create cart by estelam
+// @Description create cart by estelam
+// @Tags estelam
+// @Accept json
+// @Produce json
+// @Param data body cartFromEstelam true "data"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} cart.CartOut{}
+// @Failure 404 {object} string{}
+// @Router /estelam/to-cart [post]
+func createCartFromEstelam(c *fiber.Ctx) error {
+	cfs := new(cartFromEstelam)
+
+	if err := utils.ParseBodyAndValidate(c, cfs); err != nil {
+		return c.JSON("validation err : " + err.Error())
+	}
+	var sr responseToEstelamOut
+	estelamResponseCol := database.GetCollection("estelamResponse")
+	_, err := estelamResponseCol.ReadDocument(context.Background(), cfs.SupplierResponseKey, &sr)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+
+	var ec estelamCartOut
+	estelamCartCol := database.GetCollection("estelamCart")
+	_, err = estelamCartCol.ReadDocument(context.Background(), cfs.EstelamCartKey, &ec)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	//var p int64
+	//if cfs.PricingType == "price" {
+	//	p = sr.Price
+	//} else if cfs.PricingType == "one" {
+	//	p = sr.OneMonthPrice
+	//} else if cfs.PricingType == "two" {
+	//	p = sr.TwoMonthPrice
+	//} else if cfs.PricingType == "three" {
+	//	p = sr.ThreeMonthPrice
+	//} else {
+	//	return c.Status(400).SendString(fmt.Sprintf("pricing type canonly be price,one ,two,three but it was : %v", cfs.PricingType))
+	//}
+
+	if cfs.Number > sr.ToNumber || cfs.Number < sr.FromNumber {
+		return c.Status(400).SendString(fmt.Sprintf("number must be between %v and %v but it was : %v", sr.FromNumber, sr.ToNumber, cfs.Number))
+	}
+
+	newCart := cart.Cart{
+		PriceId:                ec.ID,
+		SupplierKey:            sr.SupplierKey,
+		ProductId:              ec.ProductId,
+		PricePerNumber:         sr.Price,
+		Number:                 cfs.Number,
+		Variant:                ec.Variant,
+		ProductTitle:           ec.ProductTitle,
+		ProductImageUrl:        ec.ImageUrl,
+		PricingType:            sr.PricingType,
+		CreatedAt:              time.Now().Unix(),
+		UserKey:                ec.UserKey,
+		UserAuthType:           "authenticated",
+		CommissionPercent:      1.5,
+		CheckCommissionPercent: 1.5,
+		UniqueString:           fmt.Sprintf("%v_%v_%v", ec.ID, sr.PricingType, ec.UserKey),
+	}
+	var co cart.CartOut
+	ctx := driver.WithReturnNew(context.Background(), &co)
+	cartCol := database.GetCollection("cart")
+	_, err = cartCol.CreateDocument(ctx, newCart)
+	if err != nil {
+		return c.JSON(err)
+	}
+	return c.JSON(co)
 }

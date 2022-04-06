@@ -10,6 +10,4 @@ func Routes(app fiber.Router) {
 	r.Post("/ms", SetMostSearch)
 	r.Post("/", Search)
 
-
 }
-

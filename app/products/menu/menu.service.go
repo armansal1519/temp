@@ -45,16 +45,15 @@ func getMenuByCategoryKey(c *fiber.Ctx) error {
 	key := c.Params("key")
 	var cat categories.CategoryOut
 	categoryCol := database.GetCollection("categories")
-	_,err:=categoryCol.ReadDocument(context.Background(),key,&cat)
+	_, err := categoryCol.ReadDocument(context.Background(), key, &cat)
 	if err != nil {
 		return c.JSON(err)
 	}
-	if cat.Status=="end" {
-		q:=fmt.Sprintf("for i in menu filter i.categoryKey==\"%v\" return i",key)
-		res:=database.ExecuteGetQuery(q)
+	if cat.Status == "end" {
+		q := fmt.Sprintf("for i in menu filter i.categoryKey==\"%v\" return i", key)
+		res := database.ExecuteGetQuery(q)
 		return c.JSON(res[0])
 	}
-
 
 	query := fmt.Sprintf("let ck=(for c in categories filter c._key==\"%v\"  for v in 0..10 outbound c graph \"categoryGraph\" filter v.status==\"end\" return v._key) \nfor i in menu filter i.categoryKey in ck\nreturn i", key)
 	db := database.GetDB()
@@ -75,10 +74,11 @@ func getMenuByCategoryKey(c *fiber.Ctx) error {
 		}
 		data = append(data, doc)
 	}
-	union:=getUnion(data)
+	union := getUnion(data)
+	final := order(data, union)
 	return c.JSON(fiber.Map{
-		"categoryKey":key,
-		"menuItems":union,
+		"categoryKey": key,
+		"menuItems":   final,
 	})
 }
 

@@ -137,6 +137,13 @@ func CreateSendingInfo(c *fiber.Ctx) error {
 	if err := utils.ParseBodyAndValidate(c, si); err != nil {
 		return c.JSON(err)
 	}
+
+	if si.TransportationType != "user-address" && si.TransportationType != "bamachoub" {
+		return c.Status(400).SendString("TransportationType must be bamachoub or user-address but is : " + si.TransportationType)
+	}
+	if si.SendingMethod != "fast" && si.SendingMethod != "normal" {
+		return c.Status(400).SendString("SendingMethod must be fast or normal but is : " + si.SendingMethod)
+	}
 	col := database.GetCollection("sendingInfo")
 	meta, err := col.CreateDocument(context.Background(), si)
 	if err != nil {

@@ -447,6 +447,8 @@ definitions:
         type: string
       userKey:
         type: string
+      variant:
+        type: string
     type: object
   cart.cErr:
     properties:
@@ -684,6 +686,21 @@ definitions:
       title:
         type: string
     type: object
+  discountCode.DiscountOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      amount:
+        type: integer
+      endAt:
+        type: integer
+      type:
+        type: string
+    type: object
   driversRegister.Description:
     properties:
       name:
@@ -853,6 +870,15 @@ definitions:
     - productId
     - variant
     type: object
+  estelam.cartFromEstelam:
+    properties:
+      estelamCartKey:
+        type: string
+      number:
+        type: integer
+      supplierResponseKey:
+        type: string
+    type: object
   estelam.estelamSupplierOut:
     properties:
       _id:
@@ -869,7 +895,7 @@ definitions:
         type: string
       number:
         type: integer
-      oneMoundPrice:
+      oneMonthPrice:
         type: boolean
       price:
         type: boolean
@@ -879,35 +905,101 @@ definitions:
         type: string
       supplierKey:
         type: string
-      threeMoundPrice:
+      threeMonthPrice:
         type: boolean
-      twoMoundPrice:
+      twoMonthPrice:
         type: boolean
       variant:
         type: string
       willExpireAt:
         type: integer
     type: object
+  estelam.getEstelamForUserResp:
+    properties:
+      SupplierResponse:
+        items:
+          properties:
+            _id:
+              type: string
+            _key:
+              type: string
+            _rev:
+              type: string
+            ToNumber:
+              type: integer
+            createdAt:
+              type: integer
+            estelamCartKey:
+              type: string
+            expireAt:
+              type: integer
+            fromNumber:
+              type: integer
+            price:
+              type: integer
+            pricingType:
+              type: string
+            supplierEmployeeKey:
+              type: string
+            supplierKey:
+              type: string
+          type: object
+        type: array
+      estelamItem:
+        properties:
+          _id:
+            type: string
+          _key:
+            type: string
+          _rev:
+            type: string
+          createdAt:
+            type: integer
+          imageUrl:
+            type: string
+          number:
+            type: integer
+          numberOfResponse:
+            type: integer
+          oneMoundPrice:
+            type: boolean
+          price:
+            type: boolean
+          productId:
+            type: string
+          productTitle:
+            type: string
+          threeMoundPrice:
+            type: boolean
+          timeOfResponse:
+            type: integer
+          twoMoundPrice:
+            type: boolean
+          userKey:
+            type: string
+          variant:
+            type: string
+          willExpireAt:
+            type: integer
+        type: object
+    type: object
   estelam.responseToEstelamIn:
     properties:
       ToNumber:
         type: integer
-      createdAt:
-        type: integer
       estelamCartKey:
         type: string
-      formNumber:
+      fromNumber:
         type: integer
-      oneMoundPrice:
+      oneMonthPrice:
         type: integer
       price:
         type: integer
-      threeMoundPrice:
+      threeMonthPrice:
         type: integer
-      twoMoundPrice:
+      twoMonthPrice:
         type: integer
     required:
-    - ToNumber
     - estelamCartKey
     type: object
   faq.category:
@@ -996,24 +1088,46 @@ definitions:
     - categoryKey
     - title
     type: object
-  orders.Order:
+  gOrderItem.OrderItemReferRequest:
     properties:
-      _id:
+      cancelAll:
+        type: boolean
+      imageArr:
+        items:
+          type: string
+        type: array
+      number:
+        type: integer
+      productId:
         type: string
-      _key:
+      referReason:
         type: string
-      _rev:
+      referReasonDetails:
         type: string
+    type: object
+  gOrderItem.orderItemCancelRequest:
+    properties:
+      cancelAll:
+        type: boolean
+      cancelReason:
+        type: string
+      number:
+        type: integer
+      productId:
+        type: string
+    type: object
+  graphOrder.GOrder:
+    properties:
+      createAt:
+        type: integer
       isTransportationPriceIsPayed:
         type: boolean
-      orderItems:
-        items:
-          $ref: '#/definitions/orders.OrderItem'
-        type: array
       sendingInfoKey:
         type: string
       status:
         type: string
+      totalAmount:
+        type: integer
       transportationPaymentId:
         type: string
       transportationPrice:
@@ -1025,34 +1139,65 @@ definitions:
       userKey:
         type: string
     type: object
-  orders.OrderItem:
+  graphOrder.sendingInfo:
     properties:
-      cart:
-        items:
-          $ref: '#/definitions/cart.CartOut'
-        type: array
+      orderKey:
+        type: string
+      sendingInfoKey:
+        type: string
+    type: object
+  graphPayment.GPaymentOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      discountAmount:
+        type: integer
+      discountKey:
+        type: string
       fromWallet:
         type: integer
+      isRejected:
+        type: boolean
       paymentKey:
         type: string
+      rejectionReason:
+        type: string
+      rejectionTime:
+        type: integer
       remainingPrice:
         type: integer
       status:
         type: string
-      statusForEachItem:
-        items:
-          type: string
-        type: array
       totalPrice:
         type: integer
       type:
         type: string
     type: object
-  orders.sendingInfo:
+  massage.sendMsgByPhoneNumberReq:
     properties:
-      orderKey:
+      adminDescription:
         type: string
-      sendingInfoKey:
+      createdAt:
+        type: integer
+      createdBy:
+        type: string
+      imageUrl:
+        type: string
+      importance:
+        type: string
+      link:
+        type: string
+      phoneNumberArray:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      title:
         type: string
     type: object
   paymentAndWallet.PaymentByImage:
@@ -1065,6 +1210,8 @@ definitions:
         type: string
       overwritePaymentKey:
         type: boolean
+      paymentKey:
+        type: string
       type:
         type: string
     type: object
@@ -1072,36 +1219,6 @@ definitions:
     properties:
       amount:
         type: integer
-    type: object
-  paymentAndWallet.checkByImage:
-    properties:
-      amount:
-        type: integer
-      checkNumber:
-        type: string
-      imageUrl:
-        type: string
-      orderKey:
-        type: string
-      status:
-        type: string
-      type:
-        type: string
-    type: object
-  paymentAndWallet.filter:
-    properties:
-      checkNumber:
-        type: string
-      orderKey:
-        type: string
-      payerKey:
-        type: string
-      shaparakRefId:
-        type: string
-      status:
-        type: string
-      txType:
-        type: string
     type: object
   paymentAndWallet.getSupplierConfirmationResponse:
     properties:
@@ -1756,19 +1873,6 @@ definitions:
       transportationType:
         type: string
     type: object
-  sendingUnit.sendUnit:
-    properties:
-      approvedOrderKey:
-        type: string
-      createdAt:
-        type: integer
-      number:
-        type: integer
-      status:
-        type: string
-      transportationUnitKey:
-        type: string
-    type: object
   sendingUnit.sendUnitOut:
     properties:
       _id:
@@ -2195,6 +2299,23 @@ definitions:
             type: string
         type: object
     type: object
+  transportation.sendingInfo:
+    properties:
+      addressKey:
+        type: string
+      sendIntervalString:
+        type: string
+      sendingMethod:
+        type: string
+      transportationPrice:
+        type: integer
+      transportationType:
+        type: string
+    required:
+    - addressKey
+    - sendIntervalString
+    - sendingMethod
+    type: object
   userAddress.AddressIn:
     properties:
       addressText:
@@ -2257,6 +2378,11 @@ definitions:
       state:
         type: string
       userKey:
+        type: string
+    type: object
+  userFav.uf:
+    properties:
+      productId:
         type: string
     type: object
   users.LoginDto:
@@ -3267,7 +3393,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get cart by user key , by jwt or by temp-user-key
+      description: get Cart by user key , by jwt or by temp-user-key
       parameters:
       - description: Authorization
         in: header
@@ -3292,13 +3418,13 @@ paths:
             $ref: '#/definitions/cart.cErr'
       security:
       - ApiKeyAuth: []
-      summary: get cart by user key
+      summary: get Cart by user key
       tags:
       - cart
     post:
       consumes:
       - application/json
-      description: adds to cart , if there is jwt or temp-user-key adds to cart of
+      description: adds to Cart , if there is jwt or temp-user-key adds to Cart of
         user else create new temp-user
       parameters:
       - description: data
@@ -3328,14 +3454,14 @@ paths:
             $ref: '#/definitions/cart.cErr'
       security:
       - ApiKeyAuth: []
-      summary: adds to cart
+      summary: adds to Cart
       tags:
       - cart
   /cart/{key}:
     delete:
       consumes:
       - application/json
-      description: delete cart by key , jwt or  temp-user-key must exist
+      description: delete Cart by key , jwt or  temp-user-key must exist
       parameters:
       - description: key
         in: path
@@ -3363,13 +3489,13 @@ paths:
             $ref: '#/definitions/cart.cErr'
       security:
       - ApiKeyAuth: []
-      summary: delete cart by key
+      summary: delete Cart by key
       tags:
       - cart
     patch:
       consumes:
       - application/json
-      description: edit cart by key , jwt or  temp-user-key must exist
+      description: edit Cart by key , jwt or  temp-user-key must exist
       parameters:
       - description: data
         in: body
@@ -3403,7 +3529,7 @@ paths:
             $ref: '#/definitions/cart.cErr'
       security:
       - ApiKeyAuth: []
-      summary: edit cart by key
+      summary: edit Cart by key
       tags:
       - cart
   /categories:
@@ -3720,6 +3846,42 @@ paths:
       summary: update contact us
       tags:
       - contact us
+  /discount/{key}:
+    get:
+      consumes:
+      - application/json
+      description: get discount for by key
+      parameters:
+      - description: discount key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/discountCode.DiscountOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get discount for by key
+      tags:
+      - discount
   /drivers:
     get:
       consumes:
@@ -4019,6 +4181,39 @@ paths:
       summary: get estelam request for supplier
       tags:
       - estelam
+  /estelam/to-cart:
+    post:
+      consumes:
+      - application/json
+      description: create cart by estelam
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/estelam.cartFromEstelam'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cart.CartOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create cart by estelam
+      tags:
+      - estelam
   /estelam/user:
     get:
       consumes:
@@ -4037,7 +4232,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/estelam.estelamSupplierOut'
+              $ref: '#/definitions/estelam.getEstelamForUserResp'
             type: array
         "404":
           description: Not Found
@@ -4407,6 +4602,53 @@ paths:
       summary: return questions similar with given input
       tags:
       - question
+  /gpayment/add-discount/{key}/{paymentkey}:
+    post:
+      consumes:
+      - application/json
+      description: add discount to payment
+      parameters:
+      - description: discount key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: ' paymentkey'
+        in: path
+        name: paymentkey
+        required: true
+        type: string
+      - description: ' if amount of discount is  more than payment amount this overwrites
+          error'
+        in: query
+        name: use-less-discount
+        required: true
+        type: boolean
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphPayment.GPaymentOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add discount to payment
+      tags:
+      - graph payment
   /homepage:
     get:
       consumes:
@@ -4437,12 +4679,153 @@ paths:
       summary: return homepage data
       tags:
       - homepage
-  /order/by-user:
+  /msg/by-phone:
+    post:
+      consumes:
+      - application/json
+      description: adds to massage
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/massage.sendMsgByPhoneNumberReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: adds to massage
+      tags:
+      - massage
+  /msg/user:
     get:
       consumes:
       - application/json
-      description: get order by jwt
+      description: get massages by jwt , set seen to true if to mark massage as seen
       parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: seen
+        in: query
+        name: seen
+        type: boolean
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get massages by jwt
+      tags:
+      - massage
+  /order-req/cancel:
+    post:
+      consumes:
+      - application/json
+      description: cancel order item
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/gOrderItem.orderItemCancelRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: cancel order item
+      tags:
+      - order item
+  /order-req/refer:
+    post:
+      consumes:
+      - application/json
+      description: refer order item
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/gOrderItem.OrderItemReferRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: refer order item
+      tags:
+      - order item
+  /order/{key}:
+    get:
+      consumes:
+      - application/json
+      description: get order by order key
+      parameters:
+      - description: order key
+        in: path
+        name: key
+        required: true
+        type: integer
       - description: Authorization
         in: header
         name: Authorization
@@ -4454,7 +4837,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/orders.Order'
+            $ref: '#/definitions/graphOrder.GOrder'
         "404":
           description: Not Found
           schema:
@@ -4465,7 +4848,7 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: get order by jwt
+      summary: get order by order key
       tags:
       - order
   /order/init:
@@ -4486,7 +4869,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/orders.Order'
+            $ref: '#/definitions/graphOrder.GOrder'
         "404":
           description: Not Found
           schema:
@@ -4512,7 +4895,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/orders.sendingInfo'
+          $ref: '#/definitions/graphOrder.sendingInfo'
       - description: Authorization
         in: header
         name: Authorization
@@ -4524,7 +4907,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/orders.Order'
+            $ref: '#/definitions/graphOrder.GOrder'
         "404":
           description: Not Found
           schema:
@@ -4536,6 +4919,51 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: update order by sending info
+      tags:
+      - order
+  /order/user:
+    get:
+      consumes:
+      - application/json
+      description: get order by jwt
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: all / wait-payment / processing / arrived / cancelled / referred
+        in: query
+        name: tab
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphOrder.GOrder'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get order by jwt
       tags:
       - order
   /p-similarity:
@@ -4866,38 +5294,18 @@ paths:
       summary: create similarity node by admin
       tags:
       - product similarity
-  /payment/by-check:
-    post:
-      consumes:
-      - application/json
-      description: create check by image
-      parameters:
-      - description: data
-        in: body
-        name: checkByImage
-        required: true
-        schema:
-          $ref: '#/definitions/paymentAndWallet.checkByImage'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/paymentAndWallet.paymentOut'
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      summary: create check by image
-      tags:
-      - payment
   /payment/by-image:
     post:
       consumes:
       - application/json
-      description: get payment by image
+      description: get payment by image , only santa-or-paya or card-to-card or pay-in-place
+        is allowed as type
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: data
         in: body
         name: PaymentByImage
@@ -4915,97 +5323,9 @@ paths:
           description: Not Found
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: get payment by image
-      tags:
-      - payment
-  /payment/by-url:
-    post:
-      consumes:
-      - application/json
-      description: get payment by url
-      parameters:
-      - description: key
-        in: path
-        name: key
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              type: string
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      summary: get payment by url
-      tags:
-      - payment
-  /payment/filter:
-    post:
-      consumes:
-      - application/json
-      description: fet filtered payment if filter is empty return all
-      parameters:
-      - description: Offset
-        in: query
-        name: offset
-        required: true
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        required: true
-        type: integer
-      - description: data
-        in: body
-        name: filter
-        required: true
-        schema:
-          $ref: '#/definitions/paymentAndWallet.filter'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      summary: fet filtered payment
-      tags:
-      - payment
-  /payment/verify-check/{key}:
-    post:
-      consumes:
-      - application/json
-      description: verity check
-      parameters:
-      - description: key
-        in: path
-        name: key
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              type: string
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      summary: verity check
       tags:
       - payment
   /payment/verify-image/{key}:
@@ -5033,33 +5353,6 @@ paths:
           schema:
             type: string
       summary: verity payment
-      tags:
-      - payment
-  /payment/verify-url/{key}:
-    post:
-      consumes:
-      - application/json
-      description: verity payment by url
-      parameters:
-      - description: key
-        in: path
-        name: key
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              type: string
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      summary: verity payment by url
       tags:
       - payment
   /product-comment:
@@ -6333,68 +6626,6 @@ paths:
       summary: return all sending unit
       tags:
       - sending unit
-    post:
-      consumes:
-      - application/json
-      description: create sending send unit
-      parameters:
-      - description: sendUnit
-        in: body
-        name: sendUnit
-        required: true
-        schema:
-          $ref: '#/definitions/sendingUnit.sendUnit'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              type: string
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: create sending send unit
-      tags:
-      - sending unit
-  /sending-unit/{key}:
-    delete:
-      consumes:
-      - application/json
-      description: delete send unit
-      parameters:
-      - description: key
-        in: path
-        name: key
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              type: string
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: delete send unit
-      tags:
-      - sending unit
   /sending-unit/{op}/{unitKey}/{trKey}:
     put:
       consumes:
@@ -7030,6 +7261,45 @@ paths:
       summary: remove Favorite product to supplier
       tags:
       - supplier
+  /transportation:
+    post:
+      consumes:
+      - application/json
+      description: TransportationType must be bamachoub or user-address and SendingMethod
+        must be fast or normal
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/transportation.sendingInfo'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get transportation price
+      tags:
+      - transportation
   /user-address:
     post:
       consumes:
@@ -7316,6 +7586,111 @@ paths:
       summary: user registration with validation code
       tags:
       - user Auth
+  /user-fav:
+    get:
+      consumes:
+      - application/json
+      description: get user fav by jwt
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.Product'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get user fav
+      tags:
+      - user-fav
+  /user-fav/add:
+    post:
+      consumes:
+      - application/json
+      description: add productId from fav field in user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/userFav.uf'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserOut'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add productId from fav field in user
+      tags:
+      - user-fav
+  /user-fav/remove:
+    post:
+      consumes:
+      - application/json
+      description: remove productId from fav field in user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/userFav.uf'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserOut'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: remove productId from fav field in user
+      tags:
+      - user-fav
   /user/one:
     get:
       consumes:

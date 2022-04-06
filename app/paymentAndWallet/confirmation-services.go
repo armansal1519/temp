@@ -1,23 +1,24 @@
 package paymentAndWallet
 
 import (
-	"bamachoub-backend-go-v1/app/cart"
-	"bamachoub-backend-go-v1/app/orders"
+	"bamachoub-backend-go-v1/app/graphOrder"
 	"bamachoub-backend-go-v1/config/database"
 	"context"
+	"errors"
 	"fmt"
 	"github.com/arangodb/go-driver"
+	"github.com/gofiber/fiber/v2"
 	"time"
 )
 
-func supplierConfirmation(oi orders.OrderItem, orderKey string) error {
+func supplierConfirmation(oi []graphOrder.GOrderItemOut, orderKey string) error {
 
 	infoArr := make([]supplierInfoForConfirmation, 0)
-	for _, cart := range oi.Cart {
+	for _, cart := range oi {
 		temp := supplierInfoForConfirmation{
-			SupplierKey: cart.SupplierKey,
-			OrderKey:    orderKey,
-			CartKey:     cart.Key,
+			SupplierKey:  cart.SupplierKey,
+			OrderKey:     orderKey,
+			OrderItemKey: cart.Key,
 		}
 		infoArr = append(infoArr, temp)
 	}
@@ -83,7 +84,7 @@ func GetOrderConfirmationBySupplierKey(supplierKey string) (*[]getSupplierConfir
 // @Success 200 {object} string{}
 // @Failure 404 {object} string{}
 // @Router /suppliers-confirmation/approve/{infoKey} [post]
-func approveOrder(infoKey string, supplierKey string) error {
+func approveOrder(infoKey string, supplierKey string, supplierEmployeeId string) error {
 	var sc supplierInfoForConfirmationOut
 	col := database.GetCollection("supplierConfirmation")
 	_, err := col.ReadDocument(context.Background(), infoKey, &sc)
@@ -91,57 +92,85 @@ func approveOrder(infoKey string, supplierKey string) error {
 		return err
 	}
 
-	var c cart.CartOut
+	var o graphOrder.GOrderItem
+	gOrderItemCol := database.GetCollection("gOrderItem")
+	_, err = gOrderItemCol.ReadDocument(context.Background(), sc.OrderItemKey, &o)
 
-	cartCol := database.GetCollection("cart")
-	_, err = cartCol.ReadDocument(context.Background(), sc.CartKey, &c)
-	if err != nil {
-		return err
+	if o.SupplierKey != supplierKey {
+		return errors.New("different suppliers")
 	}
 
-	if sc.SupplierKey != supplierKey {
-		return fmt.Errorf("not your data")
+	u := updateOrder{
+		IsApprovedBySupplier: true,
+		SupplierEmployeeId:   supplierEmployeeId,
 	}
-
-	var o orders.Order
-	orderCol := database.GetCollection("order")
-	_, err = orderCol.ReadDocument(context.Background(), sc.OrderKey, &o)
-
-	var oi orders.OrderItem
-	for _, item := range o.OrderItems {
-		for _, out := range item.Cart {
-			if out.Key == sc.CartKey {
-				oi = item
-			}
-		}
-	}
-	ao := ApprovedOrder{
-		UserKey:           o.UserKey,
-		ProductId:         c.ProductId,
-		ProductTitle:      c.ProductTitle,
-		ProductImageUrl:   c.ProductImageUrl,
-		SupplierKey:       c.SupplierKey,
-		PaymentKey:        oi.PaymentKey,
-		CommissionPercent: c.CommissionPercent,
-		TxType:            oi.Type,
-		Price:             c.PricePerNumber * int64(c.Number),
-		Number:            c.Number,
-		CreatedAt:         time.Now().Unix(),
-		SendInfoKey:       o.SendingInfoKey,
-		Status:            "wait-send",
-	}
-
-	aoCol := database.GetCollection("ApprovedOrder")
-	_, err = aoCol.CreateDocument(context.Background(), ao)
-	if err != nil {
-		return err
-	}
-	_, err = col.RemoveDocument(context.Background(), sc.Key)
+	_, err = gOrderItemCol.UpdateDocument(context.Background(), sc.OrderItemKey, u)
 	if err != nil {
 		return err
 	}
 	return nil
+
 }
+
+//func approveOrder(infoKey string, supplierKey string) error {
+//	var sc supplierInfoForConfirmationOut
+//	col := database.GetCollection("supplierConfirmation")
+//	_, err := col.ReadDocument(context.Background(), infoKey, &sc)
+//	if err != nil {
+//		return err
+//	}
+//
+//	var c cart.CartOut
+//
+//	cartCol := database.GetCollection("cart")
+//	_, err = cartCol.ReadDocument(context.Background(), sc.OrderItemKey, &c)
+//	if err != nil {
+//		return err
+//	}
+//
+//	if sc.SupplierKey != supplierKey {
+//		return fmt.Errorf("not your data")
+//	}
+//
+//	var o graphOrder.GOrder
+//	orderCol := database.GetCollection("gOrder")
+//	_, err = orderCol.ReadDocument(context.Background(), sc.OrderKey, &o)
+//
+//	var oi orders.OrderItem
+//	for _, item := range o.OrderItems {
+//		for _, out := range item.Cart {
+//			if out.Key == sc.CartKey {
+//				oi = item
+//			}
+//		}
+//	}
+//	ao := ApprovedOrder{
+//		UserKey:           o.UserKey,
+//		ProductId:         c.ProductId,
+//		ProductTitle:      c.ProductTitle,
+//		ProductImageUrl:   c.ProductImageUrl,
+//		SupplierKey:       c.SupplierKey,
+//		PaymentKey:        oi.PaymentKey,
+//		CommissionPercent: c.CommissionPercent,
+//		TxType:            oi.Type,
+//		Price:             c.PricePerNumber * int64(c.Number),
+//		Number:            c.Number,
+//		CreatedAt:         time.Now().Unix(),
+//		SendInfoKey:       o.SendingInfoKey,
+//		Status:            "wait-send",
+//	}
+//
+//	aoCol := database.GetCollection("approvedOrder")
+//	_, err = aoCol.CreateDocument(context.Background(), ao)
+//	if err != nil {
+//		return err
+//	}
+//	_, err = col.RemoveDocument(context.Background(), sc.Key)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
 // rejectOrder reject order
 // @Summary reject order
@@ -174,13 +203,13 @@ func rejectOrder(infoKey string, supplierKey string, callBy string) error {
 		return err
 	}
 
-	var c cart.CartOut
-
-	cartCol := database.GetCollection("cart")
-	_, err = cartCol.ReadDocument(context.Background(), sc.CartKey, &c)
-	if err != nil {
-		return err
-	}
+	//var c cart.CartOut
+	//
+	//cartCol := database.GetCollection("cart")
+	//_, err = cartCol.ReadDocument(context.Background(), sc.OrderItemKey, &c)
+	//if err != nil {
+	//	return err
+	//}
 
 	if callBy != "system" {
 		if sc.SupplierKey != supplierKey {
@@ -188,31 +217,33 @@ func rejectOrder(infoKey string, supplierKey string, callBy string) error {
 		}
 	}
 
-	var o orders.Order
-	orderCol := database.GetCollection("order")
-	_, err = orderCol.ReadDocument(context.Background(), sc.OrderKey, &o)
+	//var o orders.Order
+	//orderCol := database.GetCollection("order")
+	//_, err = orderCol.ReadDocument(context.Background(), sc.OrderKey, &o)
+	//
+	//var oi orders.OrderItem
+	//for _, item := range o.OrderItems {
+	//	for _, out := range item.Cart {
+	//		if out.Key == sc.CartKey {
+	//			oi = item
+	//		}
+	//	}
+	//}
 
-	var oi orders.OrderItem
-	for _, item := range o.OrderItems {
-		for _, out := range item.Cart {
-			if out.Key == sc.CartKey {
-				oi = item
-			}
-		}
-	}
+	data, err := graphOrder.GetOrderPaymentAndOrderItem(sc.OrderKey, sc.OrderItemKey)
 
 	ro := rejectionPoolItem{
-		UserKey:         o.UserKey,
-		ProductId:       c.ProductId,
-		ProductTitle:    c.ProductTitle,
-		ProductImageUrl: c.ProductImageUrl,
-		RejectBy:        c.SupplierKey,
-		PaymentKey:      oi.PaymentKey,
-		TxType:          oi.Type,
-		Price:           c.PricePerNumber * int64(c.Number),
-		Number:          c.Number,
+		UserKey:         data.Order.UserKey,
+		ProductId:       data.OrderItem.ProductId,
+		ProductTitle:    data.OrderItem.ProductTitle,
+		ProductImageUrl: data.OrderItem.ProductImageUrl,
+		RejectBy:        data.OrderItem.SupplierKey,
+		PaymentKey:      data.Payment.Key,
+		TxType:          data.Payment.Type,
+		Price:           data.OrderItem.PricePerNumber * int64(data.OrderItem.Number),
+		Number:          data.OrderItem.Number,
 		CreatedAt:       time.Now().Unix(),
-		SendInfoKey:     o.SendingInfoKey,
+		SendInfoKey:     data.Order.SendingInfoKey,
 		Status:          "wait-accept",
 	}
 
@@ -227,4 +258,10 @@ func rejectOrder(infoKey string, supplierKey string, callBy string) error {
 	}
 	return nil
 
+}
+
+func getApprovedOrderForUser(c *fiber.Ctx) error {
+	userKey := c.Locals("userKey").(string)
+	q := fmt.Sprintf("for i in approvedOrder filter i.userKey==\"%v\" sort i.createdAt return i", userKey)
+	return c.JSON(database.ExecuteGetQuery(q))
 }

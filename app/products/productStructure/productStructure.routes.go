@@ -7,6 +7,6 @@ func Routes(app fiber.Router) {
 	r.Get("/", getAll)
 	r.Get("/:key", getProductStructureByCategoryKey)
 	r.Post("", createProductStructure)
-	r.Put("",updateProductStructAndMenu)
+	r.Put("", updateProductStructAndMenu)
 
 }

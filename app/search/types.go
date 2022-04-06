@@ -4,14 +4,12 @@ type search struct {
 	SearchString string `json:"searchString" validate:"required"`
 }
 
-
-
 type mostSearch struct {
-	Id string `json:"id" validate:"required"`
-	Url string `json:"url"`
+	Id          string `json:"id" validate:"required"`
+	Url         string `json:"url"`
 	NameOrTitle string `json:"nameOrTitle" validate:"required"`
-	SearchCount int `json:"searchCount"`
-	UserKey          string   `json:"userKey"`
+	SearchCount int    `json:"searchCount"`
+	UserKey     string `json:"userKey"`
 }
 
 type mostSearchOut struct {

@@ -4,17 +4,20 @@ import (
 	faq "bamachoub-backend-go-v1/app/FAQ"
 	"bamachoub-backend-go-v1/app/addBuyMethod"
 	"bamachoub-backend-go-v1/app/admin"
+	"bamachoub-backend-go-v1/app/approvedOrders"
 	"bamachoub-backend-go-v1/app/brands"
 	"bamachoub-backend-go-v1/app/cart"
 	"bamachoub-backend-go-v1/app/categories"
 	"bamachoub-backend-go-v1/app/commentOnProduct"
 	"bamachoub-backend-go-v1/app/contactUs"
+	"bamachoub-backend-go-v1/app/discountCode"
 	"bamachoub-backend-go-v1/app/driversRegister"
 	"bamachoub-backend-go-v1/app/estelam"
+	"bamachoub-backend-go-v1/app/graphOrder"
+	"bamachoub-backend-go-v1/app/graphPayment"
 	homepage "bamachoub-backend-go-v1/app/homePage"
 	"bamachoub-backend-go-v1/app/imageUpload"
 	"bamachoub-backend-go-v1/app/massage"
-	"bamachoub-backend-go-v1/app/orders"
 	"bamachoub-backend-go-v1/app/paymentAndWallet"
 	"bamachoub-backend-go-v1/app/productQA"
 	"bamachoub-backend-go-v1/app/products"
@@ -27,7 +30,9 @@ import (
 	"bamachoub-backend-go-v1/app/similarityGraph"
 	"bamachoub-backend-go-v1/app/supplierEmployees"
 	"bamachoub-backend-go-v1/app/suppliers"
+	"bamachoub-backend-go-v1/app/transportation"
 	"bamachoub-backend-go-v1/app/userAddress"
+	"bamachoub-backend-go-v1/app/userFav"
 	"bamachoub-backend-go-v1/app/users"
 
 	"github.com/gofiber/fiber/v2"
@@ -62,7 +67,7 @@ func InitRoutes(v1 fiber.Router) {
 	paymentAndWallet.PaymentRoutes(v1)
 	paymentAndWallet.SupplierConfirmationRoute(v1)
 	paymentAndWallet.RejectionRoutes(v1)
-	orders.Routes(v1)
+	//orders.Routes(v1)
 	sendingInfo.Routes(v1)
 	sendingUnit.Routes(v1)
 	commentOnProduct.Routes(v1)
@@ -72,5 +77,13 @@ func InitRoutes(v1 fiber.Router) {
 	massage.Routes(v1)
 	search.Routes(v1)
 	homepage.Routes(v1)
+
+	transportation.Routes(v1)
+	userFav.Routes(v1)
+	approvedOrders.Routes(v1)
+
+	graphOrder.Routes(v1)
+	discountCode.Routes(v1)
+	graphPayment.Routes(v1)
 
 }

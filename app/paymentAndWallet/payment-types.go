@@ -37,8 +37,8 @@ type UpdateOrderWithPaymentKey struct {
 }
 
 type createPaymentByPortal struct {
-	OrderKey              string `json:"orderKey"`
-	Amount                int64  `json:"amount"`
+	OrderKey string `json:"orderKey"`
+	//Amount                int64  `json:"amount"`
 	Status                string `json:"status"`
 	IncludeTransportation bool   `json:"includeTransportation"`
 }
@@ -46,9 +46,13 @@ type createPaymentByPortal struct {
 type PaymentByImage struct {
 	OrderKey              string `json:"orderKey"`
 	Type                  string `json:"type"`
+	PaymentKey            string `json:"paymentKey"`
 	IncludeTransportation bool   `json:"includeTransportation"`
 	ImageUrl              string `json:"imageUrl"`
 	OverwritePaymentKey   bool   `json:"overwritePaymentKey"`
+}
+type updateTransportationInOrder struct {
+	TransportationPaymentId string `json:"transportationPaymentId"`
 }
 
 type checkByImage struct {
@@ -67,4 +71,14 @@ type filter struct {
 	Status        string `json:"status"`
 	ShaparakRefId string `json:"shaparakRefId"`
 	CheckNumber   string `json:"checkNumber"`
+}
+
+type updatePayment struct {
+	RemainingPrice int64  `json:"remainingPrice"`
+	Status         string `json:"status"`
+}
+
+type updateTransportationStatusInOrder struct {
+	IsTransportationPriceIsPayed bool
+	TransportationPriceWithPrice bool
 }

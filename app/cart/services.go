@@ -15,9 +15,9 @@ import (
 	"time"
 )
 
-// addToCart  add to cart
-// @Summary adds to cart
-// @Description adds to cart , if there is jwt or temp-user-key adds to cart of user else create new temp-user
+// addToCart  add to Cart
+// @Summary adds to Cart
+// @Description adds to Cart , if there is jwt or temp-user-key adds to Cart of user else create new temp-user
 // @Tags cart
 // @Accept json
 // @Produce json
@@ -29,8 +29,10 @@ import (
 // @Failure 404 {object} cErr{}
 // @Router /cart [post]
 func addToCart(cartIn cartIn, isLogin bool, userKey string, tempUserKey string, isAuthenticated bool) (*CartOut, cErr) {
+	fmt.Println(cartIn.PriceId)
 	edgeName := strings.Split(cartIn.PriceId, "/")[0]
 	edgeKey := strings.Split(cartIn.PriceId, "/")[1]
+	log.Println(edgeKey)
 
 	var price addBuyMethod.PriceOut
 	edgeCol := database.GetCollection(edgeName)
@@ -181,7 +183,7 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, tempUserKey string, 
 		uat = "headless"
 	}
 
-	c := cart{
+	c := Cart{
 		PriceId:           cartIn.PriceId,
 		Number:            cartIn.Number,
 		PricingType:       cartIn.PricingType,
@@ -192,6 +194,7 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, tempUserKey string, 
 		CommissionPercent: cp,
 		UserAuthType:      uat,
 		UserKey:           userKey,
+		Variant:           price.Variant,
 		SupplierKey:       supplierKey,
 		ProductId:         price.To,
 		UniqueString:      fmt.Sprintf("%v_%v_%v", cartIn.PriceId, cartIn.PricingType, userKey),
@@ -211,9 +214,9 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, tempUserKey string, 
 	return &co, cErr{Status: -1}
 }
 
-// getCartByUserKey  get cart by user key
-// @Summary get cart by user key
-// @Description get cart by user key , by jwt or by temp-user-key
+// getCartByUserKey  get Cart by user key
+// @Summary get Cart by user key
+// @Description get Cart by user key , by jwt or by temp-user-key
 // @Tags cart
 // @Accept json
 // @Produce json
@@ -261,9 +264,9 @@ func getCartByUserKey(isLogin bool, userKey string) (*[]CartOut, cErr) {
 	return &data, cErr{Status: -1}
 }
 
-// update edit cart by key
-// @Summary edit cart by key
-// @Description edit cart by key , jwt or  temp-user-key must exist
+// update edit Cart by key
+// @Summary edit Cart by key
+// @Description edit Cart by key , jwt or  temp-user-key must exist
 // @Tags cart
 // @Accept json
 // @Produce json
@@ -320,15 +323,15 @@ func update(c *fiber.Ctx) error {
 
 	data := database.ExecuteGetQuery(q)
 	if data == nil {
-		return c.Status(404).SendString("cart not found")
+		return c.Status(404).SendString("Cart not found")
 	}
 	return c.JSON(data[0])
 
 }
 
-// remove delete cart by key
-// @Summary delete cart by key
-// @Description delete cart by key , jwt or  temp-user-key must exist
+// remove delete Cart by key
+// @Summary delete Cart by key
+// @Description delete Cart by key , jwt or  temp-user-key must exist
 // @Tags cart
 // @Accept json
 // @Produce json
@@ -354,3 +357,8 @@ func remove(c *fiber.Ctx) error {
 	database.ExecuteGetQuery(q)
 	return c.Status(204).JSON("ok")
 }
+
+//
+//func removeOne(c *fiber.Ctx) error {
+//
+//}

@@ -29,7 +29,7 @@ func Routes(app fiber.Router) {
 
 	r.Get("/all/:dbName", func(c *fiber.Ctx) error {
 		dbName := c.Params("dbName")
-		s:=strings.Split(dbName,",")
+		s := strings.Split(dbName, ",")
 		data, err := getProducts(s)
 		if err != nil {
 			return c.JSON(err)

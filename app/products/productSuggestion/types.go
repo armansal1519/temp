@@ -8,10 +8,10 @@ type productSuggestion struct {
 }
 
 type sampleSuggestion struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
 	ImageUrls   []string `json:"imageUrls"`
-	UserKey          string   `json:"userKey"`
+	UserKey     string   `json:"userKey"`
 }
 
 type productSuggestionOut struct {
@@ -29,15 +29,15 @@ type sampleSuggestionOut struct {
 }
 
 type betterPrice struct {
-	Price string `json:"price"`
-	ProductId       string  `json:"productId"`
-	ShopName string `json:"shopName"`
-	ShopType string `json:"shopType"`
+	Price       string `json:"price"`
+	ProductId   string `json:"productId"`
+	ShopName    string `json:"shopName"`
+	ShopType    string `json:"shopType"`
 	ShopAddress string `json:"shopAddress"`
-	ShopPhone string `json:"shopPhone"`
-	State              string   `json:"state"`
-	UserKey          string   `json:"userKey"`
-	CreatedAt string `json:"createdAt"`
+	ShopPhone   string `json:"shopPhone"`
+	State       string `json:"state"`
+	UserKey     string `json:"userKey"`
+	CreatedAt   string `json:"createdAt"`
 }
 
 type betterPriceOut struct {

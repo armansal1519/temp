@@ -11,6 +11,7 @@ import (
 func GetDB() driver.Database {
 	conn, err := http.NewConnection(http.ConnectionConfig{
 		Endpoints: []string{config.DB_HOST},
+		ConnLimit: 32,
 	})
 	if err != nil {
 		panic("error connecting arangodb")

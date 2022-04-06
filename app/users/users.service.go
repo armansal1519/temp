@@ -89,7 +89,7 @@ func getUserByJwt(c *fiber.Ctx) error {
 	}
 	accessToken := jwt.GenerateAccessToken(&p)
 	refreshToken := jwt.GenerateRefreshToken(&p)
-	hashRefreshToken := password.Generate(refreshToken)
+	hashRefreshToken, _ := password.HashPassword(refreshToken)
 	urt := UpdateRefreshTokenServices{
 		HashRefreshTokenServices: hashRefreshToken,
 		LastLogin:                time.Now().Unix(),

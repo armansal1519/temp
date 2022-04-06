@@ -83,11 +83,11 @@ func getProducts(dbName []string) ([]productOut, error) {
 	//if !flag {
 	//	return []productOut{}, fmt.Errorf("collection with name : %v dose not exit", dbName)
 	//}
-	s:=""
+	s := ""
 	for i, s2 := range dbName {
-		s+=" "+s2+ " "
-		if i<len(dbName)-1 {
-			s +=" , "
+		s += " " + s2 + " "
+		if i < len(dbName)-1 {
+			s += " , "
 		}
 	}
 	query := fmt.Sprintf("for i in [%v] for j in i return j", s)
@@ -122,9 +122,9 @@ func getProducts(dbName []string) ([]productOut, error) {
 // @Failure 404 {object} string{}
 // @Router /products/color/{spId}/{productKey} [post]
 func getProductWithColorCode(c *fiber.Ctx) error {
-	spId:=c.Params("spId")
-	productKey:=c.Params("productKey")
-	query := fmt.Sprintf("let productList=(for i in sheet filter i.spId==\"%v\" return i)\nlet s=(for j in productList filter j._key==\"%v\" return j)\nreturn {main:s,sub:REMOVE_VALUE(productList,s[0])}\n",spId,productKey)
+	spId := c.Params("spId")
+	productKey := c.Params("productKey")
+	query := fmt.Sprintf("let productList=(for i in sheet filter i.spId==\"%v\" return i)\nlet s=(for j in productList filter j._key==\"%v\" return j)\nreturn {main:s[0],sub:REMOVE_VALUE(productList,s[0])}\n", spId, productKey)
 	return c.JSON(database.ExecuteGetQuery(query))
 }
 
@@ -325,7 +325,7 @@ func AdvanceFilter(c *fiber.Ctx) error {
 	categoryKey := c.Params("categoryKey")
 	offset := c.Query("offset")
 	limit := c.Query("limit")
-	sample :=c.Query("sample")
+	sample := c.Query("sample")
 	f := new(advanceFilter)
 	if err := utils.ParseBodyAndValidate(c, f); err != nil {
 		return c.JSON(err)
@@ -346,15 +346,15 @@ func AdvanceFilter(c *fiber.Ctx) error {
 		if len(s.Values) > 1 {
 			for i2, s2 := range s.Values {
 				if i2 == len(s.Values)-1 {
-					filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\"  in i.filterArr ",s.Name,s2 )
+					filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\"  in i.filterArr ", s.Name, s2)
 				} else {
-					filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\"  in i.filterArr  or ",s.Name,s2 )
+					filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\"  in i.filterArr  or ", s.Name, s2)
 				}
 			}
 		}
 
 		if len(s.Values) == 1 {
-			filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\" in i.filterArr",s.Name,s.Values[0] )
+			filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\" in i.filterArr", s.Name, s.Values[0])
 		}
 
 		if len(s.Values) == 0 {
@@ -362,10 +362,7 @@ func AdvanceFilter(c *fiber.Ctx) error {
 		}
 	}
 
-
-
-
-	if len(f.Brand)>0 {
+	if len(f.Brand) > 0 {
 		brandString := "["
 		for i, b := range f.Brand {
 			brandString += fmt.Sprintf("\"%v\"", b)
@@ -374,7 +371,6 @@ func AdvanceFilter(c *fiber.Ctx) error {
 			}
 		}
 		brandString += "] "
-
 
 		filterQuery = filterQuery + fmt.Sprintf(" filter i.brand in %v  ", brandString)
 	}
@@ -407,29 +403,29 @@ func AdvanceFilter(c *fiber.Ctx) error {
 		}
 	}
 
-	r:=" return i"
-	r2:=""
-	if sample =="true" {
-		r= "  return  groups[0] "
-		r2=" COLLECT sp = i.spId INTO groups "
+	r := " return i"
+	r2 := ""
+	if sample == "true" {
+		r = "  return  groups[0] "
+		r2 = " COLLECT sp = i.spId INTO groups "
 	}
 
-	query := fmt.Sprintf(" let ck=(for c in categories filter c._key==\"%v\" for v in 0..10 outbound c graph \"categoryGraph\" filter v.status==\"end\" return v._key) for i in %v filter i.categoryKey in ck  sort i.%v  %v %v limit %v,%v %v", categoryKey,dbName, s, filterQuery,r2, offset, limit,r)
+	query := fmt.Sprintf(" let ck=(for c in categories filter c._key==\"%v\" for v in 0..10 outbound c graph \"categoryGraph\" filter v.status==\"end\" return v._key) for i in %v filter i.categoryKey in ck  sort i.%v  %v %v limit %v,%v %v", categoryKey, dbName, s, filterQuery, r2, offset, limit, r)
 	log.Println(11111, query)
 	return c.JSON(database.ExecuteGetQuery(query))
 
 }
 
 type advanceFilter struct {
-	FilterStringArr []fItem `json:"FilterStringArr"`
-	Brand           []string     `json:"brand"`
-	PriceFrom       int        `json:"priceFrom"`
-	PriceTo         int        `json:"priceTo"`
-	InStock         bool       `json:"inStock"`
-	Sort            string     `json:"sort"`
+	FilterStringArr []fItem  `json:"FilterStringArr"`
+	Brand           []string `json:"brand"`
+	PriceFrom       int      `json:"priceFrom"`
+	PriceTo         int      `json:"priceTo"`
+	InStock         bool     `json:"inStock"`
+	Sort            string   `json:"sort"`
 }
 
 type fItem struct {
-	Name string `json:"name"`
+	Name   string   `json:"name"`
 	Values []string `json:"value"`
 }

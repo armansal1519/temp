@@ -10,10 +10,11 @@ func Routes(app fiber.Router) {
 	r := app.Group("/estelam")
 
 	r.Post("/create", middleware.Auth, createEstelamRequest)
-	r.Post("/resp", middleware.GetSupplierByEmployee, createEstelamRequest)
+	r.Post("/to-cart", middleware.Auth, createCartFromEstelam)
+	r.Post("supplier/response", middleware.GetSupplierByEmployee, responseToEstelam)
 
 	r.Get("/user", middleware.Auth, func(c *fiber.Ctx) error {
-		userKey := c.Locals("key").(string)
+		userKey := c.Locals("userKey").(string)
 		resp, err := getEstelamCart(userKey)
 		if err != nil {
 			return c.JSON(err)

@@ -12,7 +12,6 @@ import (
 	"time"
 )
 
-
 // createAdmin  create admin
 // @Summary create admin
 // @Description create admin
@@ -32,7 +31,7 @@ func createAdmin(c *fiber.Ctx) error {
 	}
 	adminCol := database.GetCollection("admin")
 	rn := utils.GenRandomNUmber(100001, 999999)
-	hashPassword := password.Generate(fmt.Sprintf("%v", rn))
+	hashPassword, _ := password.HashPassword(fmt.Sprintf("%v", rn))
 	ai.HashPassword = hashPassword
 	ai.CreateAt = time.Now().Unix()
 	ai.Status = "ok"
@@ -48,7 +47,6 @@ func createAdmin(c *fiber.Ctx) error {
 	//sms.SendSms(ai.PhoneNumber, fmt.Sprintf("password: %v", rn))
 	return c.JSON(meta)
 }
-
 
 // getAdminByKey  get admin by key
 // @Summary get admin by key
@@ -75,7 +73,7 @@ func getAdminByKey(c *fiber.Ctx) error {
 }
 
 func getAdminByAccessToken(c *fiber.Ctx) error {
-	key:=c.Locals("adminKey").(string)
+	key := c.Locals("adminKey").(string)
 	adminCol := database.GetCollection("admin")
 	var a AdminOut
 	_, err := adminCol.ReadDocument(context.Background(), key, &a)
@@ -84,7 +82,6 @@ func getAdminByAccessToken(c *fiber.Ctx) error {
 	}
 	return c.JSON(a)
 }
-
 
 // getAll  get all admin
 // @Summary get all admin
@@ -101,7 +98,6 @@ func getAll(c *fiber.Ctx) error {
 	query := fmt.Sprintf("for i in admin return i")
 	return c.JSON(database.ExecuteGetQuery(query))
 }
-
 
 // updateAdmin  update admin
 // @Summary update admin
@@ -149,7 +145,6 @@ func GetAdminByPhoneNumber(phoneNumber string) (*AdminOut, error) {
 	return sw, nil
 }
 
-
 // getAccessArray  get all accesses
 // @Summary get all accesses
 // @Description get all accesses
@@ -161,6 +156,6 @@ func GetAdminByPhoneNumber(phoneNumber string) (*AdminOut, error) {
 // @Success 200 {object} []string{}
 // @Failure 404 {object} string{}
 // @Router /admin/access [get]
-func getAccessArray(c *fiber.Ctx)error{
+func getAccessArray(c *fiber.Ctx) error {
 	return c.JSON(getAllAdminAccess())
 }

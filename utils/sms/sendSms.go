@@ -49,5 +49,6 @@ func SendSms(phoneNumber string, templateId string, arr []ParameterArray) error 
 		return fmt.Errorf("an Error Occured %v", err)
 
 	}
+	println(string(body))
 	return nil
 }

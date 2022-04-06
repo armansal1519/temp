@@ -45,7 +45,59 @@ func handleFileupload(c *fiber.Ctx) error {
 
 	// generate image url to serve to client using CDN
 
-	imageUrl := fmt.Sprintf("https://bmch.liara.run/api/v1/images/%s", image)
+	imageUrl := fmt.Sprintf("https://data.bamachoub.com/api/v1/images/%s", image)
+
+	// create meta data and send to client
+
+	//data := map[string]interface{}{
+	//
+	//	"imageName": image,
+	//	"imageUrl":  imageUrl,
+	//	"header":    file.Header,
+	//	"size":      file.Size,
+	//}
+
+	return c.JSON(fiber.Map{"status": 201, "message": "Image uploaded successfully", "urls": []string{imageUrl}})
+}
+
+func handleFileuploadWithName(c *fiber.Ctx) error {
+
+	// parse incomming image file
+
+	file, err := c.FormFile("image")
+
+	if err != nil {
+		log.Println("image upload error --> ", err)
+		return c.JSON(fiber.Map{"status": 500, "message": "Server error", "data": nil})
+
+	}
+	f := file.Filename
+
+	// generate new uuid for image name
+	//uniqueId := uuid.New()
+	//
+	//// remove "- from imageName"
+	//
+	//filename := strings.Replace(uniqueId.String(), "-", "", -1)
+	//
+	//// extract image extension from original file filename
+	//
+	//fileExt := strings.Split(file.Filename, ".")[1]
+	//
+	//// generate image from filename and extension
+	//image := fmt.Sprintf("%s.%s", filename, fileExt)
+
+	// save image to ./images dir
+	err = c.SaveFile(file, fmt.Sprintf("./images/%s", f))
+
+	if err != nil {
+		log.Println("image save error --> ", err)
+		return c.JSON(fiber.Map{"status": 500, "message": "Server error", "data": nil})
+	}
+
+	// generate image url to serve to client using CDN
+
+	imageUrl := fmt.Sprintf("https://data.bamachoub.com/api/v1/images/%s", f)
 
 	// create meta data and send to client
 
@@ -89,7 +141,7 @@ func multiple(c *fiber.Ctx) error {
 
 			// generate image from filename and extension
 			image := fmt.Sprintf("%s.%s", filename, fileExt)
-			imageUrl := fmt.Sprintf("https://bmch.liara.run/api/v1/images/%s", image)
+			imageUrl := fmt.Sprintf("https://data.bamachoub.com/api/v1/images/%s", image)
 
 			imageUrls = append(imageUrls, imageUrl)
 			// save image to ./images dir
@@ -102,8 +154,6 @@ func multiple(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"status": 201, "message": "Image uploaded successfully", "urls": imageUrls})
 }
-
-
 
 func handleDeleteImage(c *fiber.Ctx) error {
 	// extract image name from params

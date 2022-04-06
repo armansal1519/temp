@@ -83,7 +83,7 @@ type productInfo struct {
 	ImageArr    []string `json:"imageArr"`
 	Description string   `json:"description"`
 	Brand       string   `json:"brand"`
-	SpId					string `json:"spId"`
+	SpId        string   `json:"spId"`
 	Tags        []string `json:"tags"`
 }
 
@@ -95,7 +95,7 @@ type Product struct {
 	MainSpecs              []f      `json:"mainSpecs"`
 	VariationObj           v        `json:"variationsObj"`
 	ImageArr               []string `json:"imageArr"`
-	SpId					string `json:"spId"`
+	SpId                   string   `json:"spId"`
 	Status                 string   `json:"status" `
 	Description            string   `json:"description"`
 	Brand                  string   `json:"brand"`
@@ -106,7 +106,7 @@ type Product struct {
 	CommissionPercent      float64  `json:"commissionPercent"`
 	CheckCommissionPercent float64  `json:"checkCommissionPercent"`
 	LowestPrice            int64    `json:"lowestPrice"`
-	FilterArr           []string   `json:"filterArr"`
+	FilterArr              []string `json:"filterArr"`
 }
 
 type productOut struct {
@@ -128,6 +128,6 @@ type titleMaker struct {
 }
 
 type colorOut struct {
-	Main productOut `json:"main"`
-	Sub []productOut `json:"sub"`
+	Main productOut   `json:"main"`
+	Sub  []productOut `json:"sub"`
 }

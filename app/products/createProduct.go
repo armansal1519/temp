@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-
 // createTheFuckingProduct  create products
 // @Summary create products
 // @Description create products
@@ -60,12 +59,12 @@ func createTheFuckingProduct(productInfo productInfo) (driver.DocumentMeta, erro
 		Description:            productInfo.Description,
 		Brand:                  productInfo.Brand,
 		Tags:                   productInfo.Tags,
-		SpId: productInfo.SpId,
+		SpId:                   productInfo.SpId,
 		CreatedAt:              time.Now().Unix(),
 		CommissionPercent:      c.CommissionPercent,
 		CheckCommissionPercent: c.CheckCommissionPercent,
 		LowestPrice:            -1,
-		FilterArr:           filterString,
+		FilterArr:              filterString,
 	}
 
 	if len(productInfo.ImageArr) <= 0 {
@@ -75,11 +74,11 @@ func createTheFuckingProduct(productInfo productInfo) (driver.DocumentMeta, erro
 	productMeta, err := productCol.CreateDocument(context.Background(), pi)
 
 	if err != nil {
-		log.Println(222222222,err)
+		log.Println(222222222, err)
 
 		return driver.DocumentMeta{}, err
 	}
-	log.Println(1111111,productMeta)
+	log.Println(1111111, productMeta)
 	fmt.Println(111111111)
 	edgeCol := database.GetCollection(fmt.Sprintf("categories-%v", baseCat.Url))
 	e := database.MyEdgeObject{
@@ -137,9 +136,9 @@ func fieldsToSpecs(fields []f, mainSpecs []f, completeSpec []csType) ([]f, []csT
 }
 
 func createFilterString(fields []f) []string {
-	strArray := make([]string,0)
+	strArray := make([]string, 0)
 	for _, ff := range fields {
-		strArray=append(strArray,fmt.Sprintf("%v=%v",ff.Name,ff.Value))
+		strArray = append(strArray, fmt.Sprintf("%v=%v", ff.Name, ff.Value))
 
 	}
 	return strArray

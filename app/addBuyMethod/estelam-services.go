@@ -61,7 +61,7 @@ func getEstelamWithProductBySupplierKey(categoryUrl string, supplierKey string, 
 // @Failure 404 {object} string{}
 // @Router /add-buy-method/estelam [post]
 func AddEstelamToProduct(est estelamIn, supplierId string) (*EstelamOut, error) {
-	supplierKey := strings.Split(supplierId, "/")[1]
+	supplierKey := supplierId
 	productKey := strings.Split(est.ProductId, "/")[1]
 	productCol := strings.Split(est.ProductId, "/")[0]
 
@@ -94,7 +94,7 @@ func AddEstelamToProduct(est estelamIn, supplierId string) (*EstelamOut, error) 
 	//}
 
 	ce := CreateEstelam{
-		From:            supplierId,
+		From:            fmt.Sprintf("supplier/%v", supplierId),
 		To:              est.ProductId,
 		Key:             fmt.Sprintf("%v%v%v", supplierKey, productKey, index),
 		CodeForSupplier: est.CodeForSupplier,

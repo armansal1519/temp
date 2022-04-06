@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"log"
 )
@@ -29,6 +30,7 @@ func main() {
 	})
 	app.Use(cors.New())
 	//app.Use(etag.New())
+	app.Use(pprof.New())
 	app.Use(logger.New())
 	app.Use(recover.New())
 

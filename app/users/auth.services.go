@@ -140,7 +140,7 @@ func loginWithValidationCode(phoneNumber string, validationCode string) (loginAn
 	}
 	accessToken := jwt.GenerateAccessToken(&p)
 	refreshToken := jwt.GenerateRefreshToken(&p)
-	hashRefreshToken := password.Generate(refreshToken)
+	hashRefreshToken, _ := password.HashPassword(refreshToken)
 	urt := UpdateRefreshToken{
 		HashRefreshToken: hashRefreshToken,
 		LastLogin:        time.Now().Unix(),
@@ -209,7 +209,7 @@ func registerWithValidationCode(phoneNumber string, validationCode string) (logi
 	}
 	accessToken := jwt.GenerateAccessToken(&p)
 	refreshToken := jwt.GenerateRefreshToken(&p)
-	hashRefreshToken := password.Generate(refreshToken)
+	hashRefreshToken, _ := password.HashPassword(refreshToken)
 	urt := UpdateRefreshToken{
 		HashRefreshToken: hashRefreshToken,
 		LastLogin:        time.Now().Unix(),
@@ -243,7 +243,7 @@ func registerWithValidationCode(phoneNumber string, validationCode string) (logi
 func getRefreshToken(c *fiber.Ctx) error {
 	t := c.Params("token")
 	log.Println(11111, t)
-	// Verify the token which is in the chunks
+	// CheckPasswordHash the token which is in the chunks
 	payload, err := jwt.VerifyRefreshToken(t)
 	if err != nil {
 		log.Println(1, err)
@@ -255,7 +255,7 @@ func getRefreshToken(c *fiber.Ctx) error {
 		log.Println(2)
 		return fiber.ErrUnauthorized
 	}
-	match := password.Verify(se.HashRefreshToken, t)
+	match := password.CheckPasswordHash(t, se.HashRefreshToken)
 	p := jwt.TokenPayload{
 		Key: payload.Key,
 	}

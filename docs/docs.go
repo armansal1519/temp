@@ -4,7 +4,7 @@ package docs
 
 import "github.com/swaggo/swag"
 
-const docTemplate_swagger = `{
+const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
     "swagger": "2.0",
     "info": {
@@ -1458,7 +1458,7 @@ const docTemplate_swagger = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "get cart by user key , by jwt or by temp-user-key",
+                "description": "get Cart by user key , by jwt or by temp-user-key",
                 "consumes": [
                     "application/json"
                 ],
@@ -1468,7 +1468,7 @@ const docTemplate_swagger = `{
                 "tags": [
                     "cart"
                 ],
-                "summary": "get cart by user key",
+                "summary": "get Cart by user key",
                 "parameters": [
                     {
                         "type": "string",
@@ -1507,7 +1507,7 @@ const docTemplate_swagger = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "adds to cart , if there is jwt or temp-user-key adds to cart of user else create new temp-user",
+                "description": "adds to Cart , if there is jwt or temp-user-key adds to Cart of user else create new temp-user",
                 "consumes": [
                     "application/json"
                 ],
@@ -1517,7 +1517,7 @@ const docTemplate_swagger = `{
                 "tags": [
                     "cart"
                 ],
-                "summary": "adds to cart",
+                "summary": "adds to Cart",
                 "parameters": [
                     {
                         "description": "data",
@@ -1564,7 +1564,7 @@ const docTemplate_swagger = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "delete cart by key , jwt or  temp-user-key must exist",
+                "description": "delete Cart by key , jwt or  temp-user-key must exist",
                 "consumes": [
                     "application/json"
                 ],
@@ -1574,7 +1574,7 @@ const docTemplate_swagger = `{
                 "tags": [
                     "cart"
                 ],
-                "summary": "delete cart by key",
+                "summary": "delete Cart by key",
                 "parameters": [
                     {
                         "type": "string",
@@ -1617,7 +1617,7 @@ const docTemplate_swagger = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "edit cart by key , jwt or  temp-user-key must exist",
+                "description": "edit Cart by key , jwt or  temp-user-key must exist",
                 "consumes": [
                     "application/json"
                 ],
@@ -1627,7 +1627,7 @@ const docTemplate_swagger = `{
                 "tags": [
                     "cart"
                 ],
-                "summary": "edit cart by key",
+                "summary": "edit Cart by key",
                 "parameters": [
                     {
                         "description": "data",
@@ -2145,6 +2145,62 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/discount/{key}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get discount for by key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discount"
+                ],
+                "summary": "get discount for by key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "discount key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/discountCode.DiscountOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/drivers": {
             "get": {
                 "description": "return all drivers information",
@@ -2602,6 +2658,58 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/estelam/to-cart": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create cart by estelam",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "estelam"
+                ],
+                "summary": "create cart by estelam",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/estelam.cartFromEstelam"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cart.CartOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/estelam/user": {
             "get": {
                 "security": [
@@ -2635,7 +2743,7 @@ const docTemplate_swagger = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/estelam.estelamSupplierOut"
+                                "$ref": "#/definitions/estelam.getEstelamForUserResp"
                             }
                         }
                     },
@@ -3188,6 +3296,76 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/gpayment/add-discount/{key}/{paymentkey}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "add discount to payment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "graph payment"
+                ],
+                "summary": "add discount to payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "discount key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": " paymentkey",
+                        "name": "paymentkey",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": " if amount of discount is  more than payment amount this overwrites error",
+                        "name": "use-less-discount",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphPayment.GPaymentOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/homepage": {
             "get": {
                 "description": "return homepage data",
@@ -3233,14 +3411,14 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "/order/by-user": {
-            "get": {
+        "/msg/by-phone": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "get order by jwt",
+                "description": "adds to massage",
                 "consumes": [
                     "application/json"
                 ],
@@ -3248,23 +3426,31 @@ const docTemplate_swagger = `{
                     "application/json"
                 ],
                 "tags": [
-                    "order"
+                    "massage"
                 ],
-                "summary": "get order by jwt",
+                "summary": "adds to massage",
                 "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/massage.sendMsgByPhoneNumberReq"
+                        }
+                    },
                     {
                         "type": "string",
                         "description": "Authorization",
                         "name": "Authorization",
-                        "in": "header",
-                        "required": true
+                        "in": "header"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/orders.Order"
+                            "type": "string"
                         }
                     },
                     "404": {
@@ -3272,9 +3458,167 @@ const docTemplate_swagger = `{
                         "schema": {
                             "type": "string"
                         }
+                    }
+                }
+            }
+        },
+        "/msg/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get massages by jwt , set seen to true if to mark massage as seen",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "massage"
+                ],
+                "summary": "get massages by jwt",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "seen",
+                        "name": "seen",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order-req/cancel": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "cancel order item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order item"
+                ],
+                "summary": "cancel order item",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/gOrderItem.orderItemCancelRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order-req/refer": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "refer order item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order item"
+                ],
+                "summary": "refer order item",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/gOrderItem.OrderItemReferRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -3313,7 +3657,7 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/orders.Order"
+                            "$ref": "#/definitions/graphOrder.GOrder"
                         }
                     },
                     "404": {
@@ -3356,7 +3700,7 @@ const docTemplate_swagger = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/orders.sendingInfo"
+                            "$ref": "#/definitions/graphOrder.sendingInfo"
                         }
                     },
                     {
@@ -3371,7 +3715,132 @@ const docTemplate_swagger = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/orders.Order"
+                            "$ref": "#/definitions/graphOrder.GOrder"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get order by jwt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "get order by jwt",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "all / wait-payment / processing / arrived / cancelled / referred",
+                        "name": "tab",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphOrder.GOrder"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{key}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get order by order key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "get order by order key",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "order key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphOrder.GOrder"
                         }
                     },
                     "404": {
@@ -3891,49 +4360,14 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "/payment/by-check": {
-            "post": {
-                "description": "create check by image",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "create check by image",
-                "parameters": [
-                    {
-                        "description": "data",
-                        "name": "checkByImage",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/paymentAndWallet.checkByImage"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/paymentAndWallet.paymentOut"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/payment/by-image": {
             "post": {
-                "description": "get payment by image",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get payment by image , only santa-or-paya or card-to-card or pay-in-place is allowed as type",
                 "consumes": [
                     "application/json"
                 ],
@@ -3945,6 +4379,13 @@ const docTemplate_swagger = `{
                 ],
                 "summary": "get payment by image",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "data",
                         "name": "PaymentByImage",
@@ -3971,142 +4412,6 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "/payment/by-url": {
-            "post": {
-                "description": "get payment by url",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "get payment by url",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "key",
-                        "name": "key",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/payment/filter": {
-            "post": {
-                "description": "fet filtered payment if filter is empty return all",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "fet filtered payment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "data",
-                        "name": "filter",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/paymentAndWallet.filter"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/payment/verify-check/{key}": {
-            "post": {
-                "description": "verity check",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "verity check",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "key",
-                        "name": "key",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/payment/verify-image/{key}": {
             "post": {
                 "description": "verity payment",
@@ -4120,47 +4425,6 @@ const docTemplate_swagger = `{
                     "payment"
                 ],
                 "summary": "verity payment",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "key",
-                        "name": "key",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/payment/verify-url/{key}": {
-            "post": {
-                "description": "verity payment by url",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "verity payment by url",
                 "parameters": [
                     {
                         "type": "string",
@@ -6111,53 +6375,6 @@ const docTemplate_swagger = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "create sending send unit",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "sending unit"
-                ],
-                "summary": "create sending send unit",
-                "parameters": [
-                    {
-                        "description": "sendUnit",
-                        "name": "sendUnit",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/sendingUnit.sendUnit"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
             }
         },
         "/sending-unit/tr/{key}": {
@@ -6173,53 +6390,6 @@ const docTemplate_swagger = `{
                     "sending unit"
                 ],
                 "summary": "delete transportation unit from send unit",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "key",
-                        "name": "key",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/sending-unit/{key}": {
-            "delete": {
-                "description": "delete send unit",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "sending unit"
-                ],
-                "summary": "delete send unit",
                 "parameters": [
                     {
                         "type": "string",
@@ -7188,6 +7358,66 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/transportation": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "TransportationType must be bamachoub or user-address and SendingMethod must be fast or normal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transportation"
+                ],
+                "summary": "get transportation price",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/transportation.sendingInfo"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user-address": {
             "post": {
                 "security": [
@@ -7622,6 +7852,170 @@ const docTemplate_swagger = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-fav": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get user fav by jwt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-fav"
+                ],
+                "summary": "get user fav",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/products.Product"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-fav/add": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "add productId from fav field in user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-fav"
+                ],
+                "summary": "add productId from fav field in user",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userFav.uf"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/users.UserOut"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-fav/remove": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "remove productId from fav field in user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-fav"
+                ],
+                "summary": "remove productId from fav field in user",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/userFav.uf"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/users.UserOut"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "string"
                         }
@@ -8503,6 +8897,9 @@ const docTemplate_swagger = `{
                 },
                 "userKey": {
                     "type": "string"
+                },
+                "variant": {
+                    "type": "string"
                 }
             }
         },
@@ -8857,6 +9254,29 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "discountCode.DiscountOut": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "_key": {
+                    "type": "string"
+                },
+                "_rev": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "endAt": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "driversRegister.Description": {
             "type": "object",
             "properties": {
@@ -9092,6 +9512,20 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "estelam.cartFromEstelam": {
+            "type": "object",
+            "properties": {
+                "estelamCartKey": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "supplierResponseKey": {
+                    "type": "string"
+                }
+            }
+        },
         "estelam.estelamSupplierOut": {
             "type": "object",
             "properties": {
@@ -9116,7 +9550,7 @@ const docTemplate_swagger = `{
                 "number": {
                     "type": "integer"
                 },
-                "oneMoundPrice": {
+                "oneMonthPrice": {
                     "type": "boolean"
                 },
                 "price": {
@@ -9131,10 +9565,10 @@ const docTemplate_swagger = `{
                 "supplierKey": {
                     "type": "string"
                 },
-                "threeMoundPrice": {
+                "threeMonthPrice": {
                     "type": "boolean"
                 },
-                "twoMoundPrice": {
+                "twoMonthPrice": {
                     "type": "boolean"
                 },
                 "variant": {
@@ -9145,35 +9579,136 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "estelam.getEstelamForUserResp": {
+            "type": "object",
+            "properties": {
+                "SupplierResponse": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ToNumber": {
+                                "type": "integer"
+                            },
+                            "_id": {
+                                "type": "string"
+                            },
+                            "_key": {
+                                "type": "string"
+                            },
+                            "_rev": {
+                                "type": "string"
+                            },
+                            "createdAt": {
+                                "type": "integer"
+                            },
+                            "estelamCartKey": {
+                                "type": "string"
+                            },
+                            "expireAt": {
+                                "type": "integer"
+                            },
+                            "fromNumber": {
+                                "type": "integer"
+                            },
+                            "price": {
+                                "type": "integer"
+                            },
+                            "pricingType": {
+                                "type": "string"
+                            },
+                            "supplierEmployeeKey": {
+                                "type": "string"
+                            },
+                            "supplierKey": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "estelamItem": {
+                    "type": "object",
+                    "properties": {
+                        "_id": {
+                            "type": "string"
+                        },
+                        "_key": {
+                            "type": "string"
+                        },
+                        "_rev": {
+                            "type": "string"
+                        },
+                        "createdAt": {
+                            "type": "integer"
+                        },
+                        "imageUrl": {
+                            "type": "string"
+                        },
+                        "number": {
+                            "type": "integer"
+                        },
+                        "numberOfResponse": {
+                            "type": "integer"
+                        },
+                        "oneMoundPrice": {
+                            "type": "boolean"
+                        },
+                        "price": {
+                            "type": "boolean"
+                        },
+                        "productId": {
+                            "type": "string"
+                        },
+                        "productTitle": {
+                            "type": "string"
+                        },
+                        "threeMoundPrice": {
+                            "type": "boolean"
+                        },
+                        "timeOfResponse": {
+                            "type": "integer"
+                        },
+                        "twoMoundPrice": {
+                            "type": "boolean"
+                        },
+                        "userKey": {
+                            "type": "string"
+                        },
+                        "variant": {
+                            "type": "string"
+                        },
+                        "willExpireAt": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
         "estelam.responseToEstelamIn": {
             "type": "object",
             "required": [
-                "ToNumber",
                 "estelamCartKey"
             ],
             "properties": {
                 "ToNumber": {
                     "type": "integer"
                 },
-                "createdAt": {
-                    "type": "integer"
-                },
                 "estelamCartKey": {
                     "type": "string"
                 },
-                "formNumber": {
+                "fromNumber": {
                     "type": "integer"
                 },
-                "oneMoundPrice": {
+                "oneMonthPrice": {
                     "type": "integer"
                 },
                 "price": {
                     "type": "integer"
                 },
-                "threeMoundPrice": {
+                "threeMonthPrice": {
                     "type": "integer"
                 },
-                "twoMoundPrice": {
+                "twoMonthPrice": {
                     "type": "integer"
                 }
             }
@@ -9306,32 +9841,66 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "orders.Order": {
+        "gOrderItem.OrderItemReferRequest": {
             "type": "object",
             "properties": {
-                "_id": {
+                "cancelAll": {
+                    "type": "boolean"
+                },
+                "imageArr": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "productId": {
                     "type": "string"
                 },
-                "_key": {
+                "referReason": {
                     "type": "string"
                 },
-                "_rev": {
+                "referReasonDetails": {
                     "type": "string"
+                }
+            }
+        },
+        "gOrderItem.orderItemCancelRequest": {
+            "type": "object",
+            "properties": {
+                "cancelAll": {
+                    "type": "boolean"
+                },
+                "cancelReason": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "productId": {
+                    "type": "string"
+                }
+            }
+        },
+        "graphOrder.GOrder": {
+            "type": "object",
+            "properties": {
+                "createAt": {
+                    "type": "integer"
                 },
                 "isTransportationPriceIsPayed": {
                     "type": "boolean"
-                },
-                "orderItems": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/orders.OrderItem"
-                    }
                 },
                 "sendingInfoKey": {
                     "type": "string"
                 },
                 "status": {
                     "type": "string"
+                },
+                "totalAmount": {
+                    "type": "integer"
                 },
                 "transportationPaymentId": {
                     "type": "string"
@@ -9350,32 +9919,55 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "orders.OrderItem": {
+        "graphOrder.sendingInfo": {
             "type": "object",
             "properties": {
-                "cart": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/cart.CartOut"
-                    }
+                "orderKey": {
+                    "type": "string"
+                },
+                "sendingInfoKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "graphPayment.GPaymentOut": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "_key": {
+                    "type": "string"
+                },
+                "_rev": {
+                    "type": "string"
+                },
+                "discountAmount": {
+                    "type": "integer"
+                },
+                "discountKey": {
+                    "type": "string"
                 },
                 "fromWallet": {
                     "type": "integer"
                 },
+                "isRejected": {
+                    "type": "boolean"
+                },
                 "paymentKey": {
                     "type": "string"
+                },
+                "rejectionReason": {
+                    "type": "string"
+                },
+                "rejectionTime": {
+                    "type": "integer"
                 },
                 "remainingPrice": {
                     "type": "integer"
                 },
                 "status": {
                     "type": "string"
-                },
-                "statusForEachItem": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "totalPrice": {
                     "type": "integer"
@@ -9385,13 +9977,37 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "orders.sendingInfo": {
+        "massage.sendMsgByPhoneNumberReq": {
             "type": "object",
             "properties": {
-                "orderKey": {
+                "adminDescription": {
                     "type": "string"
                 },
-                "sendingInfoKey": {
+                "createdAt": {
+                    "type": "integer"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "importance": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "phoneNumberArray": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "text": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -9411,6 +10027,9 @@ const docTemplate_swagger = `{
                 "overwritePaymentKey": {
                     "type": "boolean"
                 },
+                "paymentKey": {
+                    "type": "string"
+                },
                 "type": {
                     "type": "string"
                 }
@@ -9421,52 +10040,6 @@ const docTemplate_swagger = `{
             "properties": {
                 "amount": {
                     "type": "integer"
-                }
-            }
-        },
-        "paymentAndWallet.checkByImage": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "checkNumber": {
-                    "type": "string"
-                },
-                "imageUrl": {
-                    "type": "string"
-                },
-                "orderKey": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "paymentAndWallet.filter": {
-            "type": "object",
-            "properties": {
-                "checkNumber": {
-                    "type": "string"
-                },
-                "orderKey": {
-                    "type": "string"
-                },
-                "payerKey": {
-                    "type": "string"
-                },
-                "shaparakRefId": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "txType": {
-                    "type": "string"
                 }
             }
         },
@@ -10467,26 +11040,6 @@ const docTemplate_swagger = `{
                 }
             }
         },
-        "sendingUnit.sendUnit": {
-            "type": "object",
-            "properties": {
-                "approvedOrderKey": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "integer"
-                },
-                "number": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "transportationUnitKey": {
-                    "type": "string"
-                }
-            }
-        },
         "sendingUnit.sendUnitOut": {
             "type": "object",
             "properties": {
@@ -11125,6 +11678,31 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "transportation.sendingInfo": {
+            "type": "object",
+            "required": [
+                "addressKey",
+                "sendIntervalString",
+                "sendingMethod"
+            ],
+            "properties": {
+                "addressKey": {
+                    "type": "string"
+                },
+                "sendIntervalString": {
+                    "type": "string"
+                },
+                "sendingMethod": {
+                    "type": "string"
+                },
+                "transportationPrice": {
+                    "type": "integer"
+                },
+                "transportationType": {
+                    "type": "string"
+                }
+            }
+        },
         "userAddress.AddressIn": {
             "type": "object",
             "properties": {
@@ -11218,6 +11796,14 @@ const docTemplate_swagger = `{
                     "type": "string"
                 },
                 "userKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "userFav.uf": {
+            "type": "object",
+            "properties": {
+                "productId": {
                     "type": "string"
                 }
             }
@@ -11330,8 +11916,8 @@ const docTemplate_swagger = `{
     }
 }`
 
-// SwaggerInfo_swagger holds exported Swagger Info so clients can modify it
-var SwaggerInfo_swagger = &swag.Spec{
+// SwaggerInfo holds exported Swagger Info so clients can modify it
+var SwaggerInfo = &swag.Spec{
 	Version:          "2.0",
 	Host:             "",
 	BasePath:         "/api/v1",
@@ -11339,9 +11925,9 @@ var SwaggerInfo_swagger = &swag.Spec{
 	Title:            "Bamachoub Application",
 	Description:      "This is an API for Bamachoub Application",
 	InfoInstanceName: "swagger",
-	SwaggerTemplate:  docTemplate_swagger,
+	SwaggerTemplate:  docTemplate,
 }
 
 func init() {
-	swag.Register(SwaggerInfo_swagger.InstanceName(), SwaggerInfo_swagger)
+	swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
 }

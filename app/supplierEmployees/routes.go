@@ -61,14 +61,21 @@ func AuthRoutes(app fiber.Router) {
 	r.Post("/get-validation-code", GetValidationCode)
 	r.Post("/check-validation-code", CheckValidationCode)
 	r.Post("/login", func(c *fiber.Ctx) error {
+		//fmt.Println(c.IP(), "-- ", countRequst)
+		//countRequst++
 		lr := new(loginRequest)
+		fmt.Println(1)
 		if err := utils.ParseBodyAndValidate(c, lr); err != nil {
 			return c.JSON(err)
 		}
+		fmt.Println(2)
+		fmt.Println(lr.PhoneNumber, lr.Password)
 		resp, err := supplierEmployeeLogin(lr.PhoneNumber, lr.Password)
+		fmt.Println(15)
 		if err != nil {
 			return c.Status(401).JSON(fmt.Sprintf("%v", err))
 		}
+		fmt.Println(16)
 		return c.JSON(resp)
 	})
 	r.Post("/get-changePassword-code", GetChangePasswordCode)

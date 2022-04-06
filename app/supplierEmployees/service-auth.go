@@ -200,28 +200,41 @@ func getSupplierPreviewByKey(key string) (*supplierPreview, error) {
 // @Router /supplier-employee-auth/login [post]
 func supplierEmployeeLogin(phoneNumber string, pass string) (*loginResponse, error) {
 	employee, err := GetSupplyEmployeeByPhoneNumber(phoneNumber)
+	fmt.Println(3)
 	if err != nil {
 
 		return nil, fmt.Errorf("phoneNumber or password is wrong  \n error: %v", err)
 	}
-	match := password.Verify(employee.HashPassword, pass)
+	fmt.Println(4)
+	fmt.Println(employee.HashPassword, pass)
+
+	match := password.CheckPasswordHash(pass, employee.HashPassword)
+	fmt.Println(5)
 	if !match {
 		return nil, fmt.Errorf("wrong password or phoneNumber")
 	}
+	fmt.Println(6)
 	p := jwt.SETokenPayload{
 		Key:         employee.Key,
 		SupplierKey: employee.SupplierKey,
 		Access:      strings.Join(employee.Access[:], ","),
 	}
+	fmt.Println(7)
 	accessToken := jwt.GenerateSupplierEmployeeToken(&p, false)
+	fmt.Println(8)
 	refreshToken := jwt.GenerateSupplierEmployeeToken(&p, true)
-	hashRefreshToken := password.Generate(refreshToken)
+	fmt.Println(9)
+	hashRefreshToken, _ := password.HashPassword(refreshToken)
+	fmt.Println(10)
 	urt := UpdateRefreshToken{
 		HashRefreshToken: hashRefreshToken,
 		LastLogin:        time.Now().Unix(),
 	}
+	fmt.Println(11)
 	seCol := database.GetCollection("supplierEmployee")
+	fmt.Println(12)
 	_, err = seCol.UpdateDocument(context.Background(), employee.Key, urt)
+	fmt.Println(13)
 	if err != nil {
 		return nil, err
 	}
@@ -229,8 +242,9 @@ func supplierEmployeeLogin(phoneNumber string, pass string) (*loginResponse, err
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		IsFirstLogin: employee.LastLogin == 0,
-		Employee:     *employee,
+		Employee:     employee,
 	}
+	fmt.Println(14)
 	return &lr, nil
 
 }
@@ -248,7 +262,7 @@ func supplierEmployeeLogin(phoneNumber string, pass string) (*loginResponse, err
 // @Failure 400 {object} ResponseHTTP{}
 // @Router /supplier-employee-auth/change-password-with-login [post]
 func changePasswordWithLogin(key string, pass string) error {
-	hp := password.Generate(pass)
+	hp, _ := password.HashPassword(pass)
 	cp := changePassword{HashPassword: hp}
 	seCol := database.GetCollection("supplierEmployee")
 	_, err := seCol.UpdateDocument(context.Background(), key, cp)
@@ -386,7 +400,7 @@ func GetChangePasswordCode(c *fiber.Ctx) error {
 func getRefreshToken(c *fiber.Ctx) error {
 	t := c.Params("token")
 	log.Println(11111, t)
-	// Verify the token which is in the chunks
+	// CheckPasswordHash the token which is in the chunks
 	payload, err := jwt.VerifySupplierEmployee(t, true)
 	if err != nil {
 		log.Println(1, err)
@@ -398,7 +412,7 @@ func getRefreshToken(c *fiber.Ctx) error {
 		log.Println(2)
 		return fiber.ErrUnauthorized
 	}
-	match := password.Verify(se.HashRefreshToken, t)
+	match := password.CheckPasswordHash(t, se.HashRefreshToken)
 	//log.Println(se.HashPassword)
 	//log.Println(t)
 	if match {

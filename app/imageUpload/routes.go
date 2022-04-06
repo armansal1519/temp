@@ -12,6 +12,7 @@ func Routes(app fiber.Router) {
 	// handle image uploading using post request
 
 	r.Post("", handleFileupload)
+	r.Post("/name", handleFileuploadWithName)
 	r.Post("/m", multiple)
 
 	// delete uploaded image by providing unique image name

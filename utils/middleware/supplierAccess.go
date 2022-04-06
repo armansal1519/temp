@@ -48,7 +48,7 @@ func GetSupplierByEmployee(c *fiber.Ctx) error {
 	//
 	//}
 	c.Locals("supplierId", payload.SupplierKey)
-	c.Locals("supplierEmployeeKey",payload.Key)
+	c.Locals("supplierEmployeeKey", payload.Key)
 
 	return c.Next()
 

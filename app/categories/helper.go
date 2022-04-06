@@ -33,7 +33,7 @@ func createGraphAndEdge(name string) error {
 
 }
 
-func  createSupplierToProductEdgeAndAddToGraph(name string) error {
+func createSupplierToProductEdgeAndAddToGraph(name string) error {
 	db := database.GetDB()
 	// define the edgeCollection to store the edges
 

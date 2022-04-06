@@ -54,7 +54,7 @@ func createProductStructure(c *fiber.Ctx) error {
 	return c.JSON(meta)
 }
 
-func updateProductStructAndMenu(c *fiber.Ctx)error  {
+func updateProductStructAndMenu(c *fiber.Ctx) error {
 	b := new(updateIn)
 	if err := utils.ParseBodyAndValidate(c, b); err != nil {
 		return c.JSON(fmt.Sprintf("error parsing dto:%v", err))
@@ -68,7 +68,7 @@ func updateProductStructAndMenu(c *fiber.Ctx)error  {
 	if !flag {
 		return c.Status(404).JSON("productStructures not found")
 	}
-	query := fmt.Sprintf("for i in productStructures filter i._key==\"%v\" update i with {productFieldList:PUSH(i.productFieldList,{name:\"%v\",isList:%v}, true)} in productStructures return NEW \n",b.ProductStructureKey,b.Name,b.IsList)
+	query := fmt.Sprintf("for i in productStructures filter i._key==\"%v\" update i with {productFieldList:PUSH(i.productFieldList,{name:\"%v\",isList:%v}, true)} in productStructures return NEW \n", b.ProductStructureKey, b.Name, b.IsList)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, query, nil)
@@ -76,12 +76,12 @@ func updateProductStructAndMenu(c *fiber.Ctx)error  {
 		panic(fmt.Sprintf("error while running query:%v", query))
 	}
 	defer cursor.Close()
-	
+
 	var doc CreateProductStructureDto
 	_, err = cursor.ReadDocument(ctx, &doc)
 
 	if b.IsList {
-		q:=fmt.Sprintf("for m in menu filter m.categoryKey==\"%v\" update m with {menuItems:PUSH(m.menuItems,{name:\"%v\",items:[]}, true)} in menu\n",doc.CategoryKey,b.Name)
+		q := fmt.Sprintf("for m in menu filter m.categoryKey==\"%v\" update m with {menuItems:PUSH(m.menuItems,{name:\"%v\",items:[]}, true)} in menu\n", doc.CategoryKey, b.Name)
 		database.ExecuteGetQuery(q)
 	}
 	return c.JSON("ok")
@@ -89,29 +89,9 @@ func updateProductStructAndMenu(c *fiber.Ctx)error  {
 }
 
 func getAll(c *fiber.Ctx) error {
-	q:=fmt.Sprintf("for i in productStructures \nfor j in categories \nfilter j._key==i.categoryKey return {ps:i,cat:j}")
+	q := fmt.Sprintf("for i in productStructures \nfor j in categories \nfilter j._key==i.categoryKey return {ps:i,cat:j}")
 	return c.JSON(database.ExecuteGetQuery(q))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 func getCategoryStatusByKey(key string) string {
 	col := database.GetCollection("categories")

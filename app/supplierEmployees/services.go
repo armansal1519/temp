@@ -13,10 +13,9 @@ import (
 	"time"
 )
 
-func GetSupplyEmployeeByPhoneNumber(phoneNumber string) (*employee, error) {
+func GetSupplyEmployeeByPhoneNumber(phoneNumber string) (employee, error) {
 	db := database.GetDB()
-	sw := &employee{}
-	//var sw getSupplyWorkerByKeyType
+	var sw employee
 	query := fmt.Sprintf("for i in supplierEmployee\nfilter i.phoneNumber==\"%v\"\nlimit 1\nreturn i", phoneNumber)
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, query, nil)
@@ -25,10 +24,10 @@ func GetSupplyEmployeeByPhoneNumber(phoneNumber string) (*employee, error) {
 		panic(fmt.Sprintf("error while running query:%v", query))
 	}
 	defer cursor.Close()
-	_, err = cursor.ReadDocument(ctx, sw)
+	_, err = cursor.ReadDocument(ctx, &sw)
 	if err != nil {
 		log.Print(1234, err)
-		return nil, err
+		return employee{}, err
 	}
 	return sw, nil
 }
@@ -63,8 +62,8 @@ func createSupplierEmployeeFromSupplierPreview(spKey string) error {
 
 	supplier := suppliers.SupplierIn{
 		Address:          sp.Address,
-		State: sp.State,
-		City: sp.City,
+		State:            sp.State,
+		City:             sp.City,
 		Latitude:         sp.Latitude,
 		Longitude:        sp.Longitude,
 		Name:             sp.ShopName,
@@ -83,7 +82,7 @@ func createSupplierEmployeeFromSupplierPreview(spKey string) error {
 	}
 
 	tempPass := utils.GenRandomNUmber(1000001, 100000000)
-	tempHashPass := password.Generate(fmt.Sprintf("%v", tempPass))
+	tempHashPass, _ := password.HashPassword(fmt.Sprintf("%v", tempPass))
 	e := employeeIn{
 		FirstName:          sp.FirstName,
 		LastName:           sp.LastName,

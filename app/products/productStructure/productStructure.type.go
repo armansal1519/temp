@@ -23,6 +23,6 @@ type Category struct {
 type updateIn struct {
 	ProductStructureKey string `json:"productStructureKey"`
 	//Operation    string `json:"operation"`
-	Name string `json:"name"`
-	IsList    bool `json:"isList"`
+	Name   string `json:"name"`
+	IsList bool   `json:"isList"`
 }

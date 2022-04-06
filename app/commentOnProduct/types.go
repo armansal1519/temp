@@ -10,7 +10,7 @@ type comment struct {
 	IsAnonymous  bool     `json:"isAnonymous"`
 	IsBuyer      bool     `json:"isBuyer"`
 	ScoreArr     []score  `json:"scoreArr"`
-	Likes         []string `json:"likes"`
+	Likes        []string `json:"likes"`
 	CreatedAt    int64    `json:"createdAt"`
 	Status       string   `json:"status"`
 }
@@ -27,7 +27,7 @@ type updateCommentType struct {
 	Text        string   `json:"text"`
 	ImageUrls   []string `json:"imageUrls"`
 	IsAnonymous bool     `json:"isAnonymous"`
-	Likes         []string `json:"likes"`
+	Likes       []string `json:"likes"`
 	ScoreArr    []score  `json:"scoreArr"`
 }
 
@@ -37,7 +37,7 @@ type adminUpdateCommentType struct {
 	ImageUrls   []string `json:"imageUrls"`
 	IsAnonymous bool     `json:"isAnonymous"`
 	ScoreArr    []score  `json:"scoreArr"`
-	Likes         []string `json:"likes"`
+	Likes       []string `json:"likes"`
 	Status      string   `json:"status"`
 }
 

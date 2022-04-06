@@ -49,14 +49,11 @@ func createCarousel(c []Carousel) string {
 	return query
 }
 
-
-
-
 func insert(a []saveQuery, index int, value saveQuery) []saveQuery {
-    if len(a) == index { // nil or empty slice or after last element
-        return append(a, value)
-    }
-    a = append(a[:index+1], a[index:]...) // index < len(a)
-    a[index] = value
-    return a
+	if len(a) == index { // nil or empty slice or after last element
+		return append(a, value)
+	}
+	a = append(a[:index+1], a[index:]...) // index < len(a)
+	a[index] = value
+	return a
 }

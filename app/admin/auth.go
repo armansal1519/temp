@@ -30,7 +30,7 @@ func Login(phoneNumber string, pass string) (*loginResponse, error) {
 
 		return nil, fmt.Errorf("phoneNumber or password is wrong  \n error: %v", err)
 	}
-	match := password.Verify(admin.HashPassword, pass)
+	match := password.CheckPasswordHash(pass, admin.HashPassword)
 	if !match {
 		return nil, fmt.Errorf("wrong password or phoneNumber")
 	}
@@ -41,7 +41,7 @@ func Login(phoneNumber string, pass string) (*loginResponse, error) {
 	accessToken := jwt.GenerateAdminToken(&p, false)
 	log.Println(accessToken)
 	refreshToken := jwt.GenerateAdminToken(&p, true)
-	hashRefreshToken := password.Generate(refreshToken)
+	hashRefreshToken, _ := password.HashPassword(refreshToken)
 	urt := UpdateRefreshToken{
 		HashRefreshToken: hashRefreshToken,
 		LastLogin:        time.Now().Unix(),
@@ -87,11 +87,11 @@ func changePassword(c *fiber.Ctx) error {
 		return c.JSON(err)
 	}
 	if !isSuperAdmin {
-		if !password.Verify(a.HashPassword, p.OldPassword) {
+		if !password.CheckPasswordHash(p.OldPassword, a.HashPassword) {
 			return c.Status(403).SendString("wrong password")
 		}
 	}
-	newHashPassword := password.Generate(p.NewPassword)
+	newHashPassword, _ := password.HashPassword(p.NewPassword)
 	u := updatePassword{HashPassword: newHashPassword}
 	meta, err := adminCol.UpdateDocument(context.Background(), adminKey, u)
 	if err != nil {
@@ -100,7 +100,6 @@ func changePassword(c *fiber.Ctx) error {
 	return c.JSON(meta)
 
 }
-
 
 // getRefreshToken  get access token by sending refresh token
 // @Summary get access token by sending refresh token
@@ -114,7 +113,7 @@ func changePassword(c *fiber.Ctx) error {
 func getRefreshToken(c *fiber.Ctx) error {
 	t := c.Params("token")
 	//log.Println(11111, t)
-	// Verify the token which is in the chunks
+	// CheckPasswordHash the token which is in the chunks
 	payload, err := jwt.VerifyAdmin(t, true)
 	if err != nil {
 		log.Println(1, err)
@@ -129,7 +128,7 @@ func getRefreshToken(c *fiber.Ctx) error {
 		log.Println(2)
 		return fiber.ErrUnauthorized
 	}
-	match := password.Verify(a.HashRefreshToken, t)
+	match := password.CheckPasswordHash(t, a.HashRefreshToken)
 
 	accessToken := jwt.GenerateAdminToken(payload, false)
 	if match {

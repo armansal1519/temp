@@ -2385,6 +2385,22 @@ definitions:
       productId:
         type: string
     type: object
+  users.AuthenticationDto:
+    properties:
+      birthDate:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+    required:
+    - birthDate
+    - firstName
+    - lastName
+    - nationalCode
+    type: object
   users.LoginDto:
     properties:
       code:
@@ -2422,6 +2438,17 @@ definitions:
         type: string
       phoneNumber:
         type: string
+      userCards:
+        $ref: '#/definitions/users.cardInfo'
+    type: object
+  users.cardInfo:
+    properties:
+      bankName:
+        type: string
+      cardUserName:
+        type: string
+      number:
+        type: string
     type: object
   users.checkForLoginReq:
     properties:
@@ -2448,6 +2475,28 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/users.UserOut'
+    type: object
+  users.updateUserDTO:
+    properties:
+      birthDate:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      homeNumber:
+        type: string
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+    required:
+    - birthDate
+    - email
+    - firstName
+    - homeNumber
+    - lastName
+    - nationalCode
     type: object
 info:
   contact:
@@ -5193,6 +5242,41 @@ paths:
       summary: return all similar nodes
       tags:
       - product similarity
+  /p-similarity/near-nodes/{key}:
+    get:
+      consumes:
+      - application/json
+      description: return near nodes with product key
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/similarityGraph.similarityNode'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return near nodes with product key
+      tags:
+      - product similarity
   /p-similarity/node:
     post:
       consumes:
@@ -6278,6 +6362,36 @@ paths:
       summary: return products with same color code
       tags:
       - products
+  /products/length/{categoryurl}/{categorykey}:
+    get:
+      consumes:
+      - application/json
+      description: return length of products attached to that category
+      parameters:
+      - description: category url
+        in: path
+        name: categoryurl
+        required: true
+        type: string
+      - description: category key
+        in: path
+        name: categorykey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return length of products attached to that category
+      tags:
+      - products
   /products/one/{categoryurl}/{key}:
     get:
       consumes:
@@ -7300,6 +7414,39 @@ paths:
       summary: get transportation price
       tags:
       - transportation
+  /user:
+    patch:
+      consumes:
+      - application/json
+      description: update user , phone number is always locked if isAuthenticated
+        firstName lastName and nationalCode become locked as well
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.updateUserDTO'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: update user
+      tags:
+      - user
   /user-address:
     post:
       consumes:
@@ -7691,6 +7838,70 @@ paths:
       summary: remove productId from fav field in user
       tags:
       - user-fav
+  /user/auth:
+    post:
+      consumes:
+      - application/json
+      description: Authentication user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.AuthenticationDto'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Authentication user
+      tags:
+      - user
+  /user/card:
+    patch:
+      consumes:
+      - application/json
+      description: add card to user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.cardInfo'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: add card to user
+      tags:
+      - user
   /user/one:
     get:
       consumes:

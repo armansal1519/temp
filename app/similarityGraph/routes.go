@@ -16,6 +16,7 @@ func Routes(app fiber.Router) {
 	r.Get("/", getAllSimilarityNodes)
 	r.Get("/node/:nodeKey", getOneNodeByKey)
 	r.Get("/graph-sim/:key", getSimilarNodeToOneNodeByNodeKey)
+	r.Get("/near-nodes/:key", getNearNodesWithProductKey)
 
 	r.Get("/:key", func(c *fiber.Ctx) error {
 		offset := c.Query("offset")

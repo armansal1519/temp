@@ -51,6 +51,7 @@ func Routes(app fiber.Router) {
 		}
 		return c.JSON(data)
 	})
+	r.Get("/length/:dbName/:key", getLengthByCategory)
 
 	r.Get("/one/:dbName/:key", func(c *fiber.Ctx) error {
 		dbName := c.Params("dbName")

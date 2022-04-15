@@ -21,19 +21,25 @@ type UserOut struct {
 }
 
 type user struct {
-	PhoneNumber      string `json:"phoneNumber"`
-	FirstName        string `json:"firstName"`
-	LastName         string `json:"lastName"`
-	Email            string `json:"email"`
-	BirthDate        string `json:"birthDate"`
-	NationalCode     string `json:"nationalCode"`
-	Level            string `json:"level"`
-	CreatedAt        int64  `json:"createdAt"`
-	LastLogin        int64  `json:"lastLogin"`
-	IsAuthenticated  bool   `json:"isAuthenticated"`
-	HashRefreshToken string `json:"hashRefreshToken"`
+	PhoneNumber      string   `json:"phoneNumber"`
+	FirstName        string   `json:"firstName"`
+	LastName         string   `json:"lastName"`
+	Email            string   `json:"email"`
+	BirthDate        string   `json:"birthDate"`
+	NationalCode     string   `json:"nationalCode"`
+	Level            string   `json:"level"`
+	CreatedAt        int64    `json:"createdAt"`
+	LastLogin        int64    `json:"lastLogin"`
+	IsAuthenticated  bool     `json:"isAuthenticated"`
+	HashRefreshToken string   `json:"hashRefreshToken"`
+	UserCards        cardInfo `json:"userCards"`
 }
 
+type cardInfo struct {
+	Number       string `json:"number"`
+	BankName     string `json:"bankName"`
+	CardUserName string `json:"cardUserName"`
+}
 type SaveValidationCode struct {
 	Key       string `json:"_key"`
 	Code      string `json:"code"`
@@ -67,4 +73,34 @@ type headlessUser struct {
 
 type updateLastLogin struct {
 	LastLogin int64 `json:"lastLogin"`
+}
+
+type updateUserDTO struct {
+	FirstName    string `json:"firstName" validate:"required"`
+	LastName     string `json:"lastName" validate:"required"`
+	Email        string `json:"email" validate:"required"`
+	BirthDate    string `json:"birthDate" validate:"required"`
+	NationalCode string `json:"nationalCode" validate:"required"`
+	HomeNumber   string `json:"homeNumber" validate:"required"`
+}
+
+type AuthenticationDto struct {
+	FirstName    string `json:"firstName" validate:"required"`
+	LastName     string `json:"lastName" validate:"required"`
+	BirthDate    string `json:"birthDate" validate:"required"`
+	NationalCode string `json:"nationalCode" validate:"required"`
+}
+
+type authResponse struct {
+	Information struct {
+		Type      string `json:"Type"`
+		Applicant string `json:"Applicant"`
+		Token     string `json:"Token"`
+		Credit    string `json:"Credit"`
+		Access    string `json:"Access"`
+	} `json:"Information"`
+	Result struct {
+		ID     string `json:"ID"`
+		Detail string `json:"Detail"`
+	} `json:"Result"`
 }

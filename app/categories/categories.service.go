@@ -175,7 +175,9 @@ func getCategoryByKey(c *fiber.Ctx) error {
 		query = fmt.Sprintf("for i in categories  filter i._key==\"%v\" return i", key)
 	}
 
+	fmt.Println(query)
 	data := database.ExecuteGetQuery(query)
+	fmt.Println(data)
 	return c.JSON(data[0])
 }
 

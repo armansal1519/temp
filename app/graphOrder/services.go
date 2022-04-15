@@ -84,7 +84,7 @@ func InitOrder(userKey string) ([]edgeData, error) {
 
 	gOrderCol := database.GetCollection("gOrder")
 	gOrderItemCol := database.GetCollection("gOrderItem")
-	gPaymentCol := database.GetCollection("GPayment")
+	gPaymentCol := database.GetCollection("gPayment")
 
 	edgeIds := make([]edgeIdData, 0)
 	for _, data := range edArr {

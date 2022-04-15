@@ -26,7 +26,7 @@ func GetDB() driver.Database {
 	}
 	db, err := c.Database(nil, config.DB_NAME)
 	if db == nil {
-		panic("check your internet")
+		panic("cant connect to database")
 	}
 
 	return db

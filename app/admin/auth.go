@@ -26,6 +26,9 @@ import (
 // @Router /admin-auth/login [post]
 func Login(phoneNumber string, pass string) (*loginResponse, error) {
 	admin, err := GetAdminByPhoneNumber(phoneNumber)
+
+	log.Println(1111)
+
 	if err != nil {
 
 		return nil, fmt.Errorf("phoneNumber or password is wrong  \n error: %v", err)
@@ -38,6 +41,8 @@ func Login(phoneNumber string, pass string) (*loginResponse, error) {
 		Key:    admin.Key,
 		Access: strings.Join(admin.Access[:], ","),
 	}
+	log.Println(1111)
+
 	accessToken := jwt.GenerateAdminToken(&p, false)
 	log.Println(accessToken)
 	refreshToken := jwt.GenerateAdminToken(&p, true)

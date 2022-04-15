@@ -21,6 +21,9 @@ func Routes(app fiber.Router) {
 		return c.JSON(resp)
 	})
 	r.Post("", CreateUser)
+	r.Patch("", middleware.Auth, updateUser)
+	r.Patch("/card", middleware.Auth, addCardInfo)
+	r.Post("/auth", middleware.Auth, userAuthentication)
 
 }
 

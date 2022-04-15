@@ -258,7 +258,7 @@ func getAllSimilarityNodes(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Offset and Limit must have a value")
 	}
 
-	query := fmt.Sprintf("for i in productSimilarityNode limit %v,%v return i", offset, limit)
+	query := fmt.Sprintf("for i in productSimilarityNode filter i.public==true limit %v,%v return i", offset, limit)
 	return c.JSON(database.ExecuteGetQuery(query))
 }
 
@@ -364,10 +364,33 @@ func getOneNodeByKey(c *fiber.Ctx) error {
 	offset := c.Query("offset")
 	limit := c.Query("limit")
 	if offset == "" || limit == "" {
-		return c.Status(4040).JSON("offset or limit is empty")
+		return c.Status(400).JSON("offset or limit is empty")
 	}
 	query := fmt.Sprintf("let data=(for i in productSimilarityNode  filter i._key==\"%v\" return i)\nlet products =(for j in sheet filter j._key in data[0].productsKeyArray limit %v,%v return j)\nreturn {node:data,products:products}\n\n", nodeKey, offset, limit)
 	return c.JSON(database.ExecuteGetQuery(query))
+}
+
+// getNearNodesWithProductKey get near nodes with product key
+// @Summary return near nodes with product key
+// @Description return near nodes with product key
+// @Tags product similarity
+// @Accept json
+// @Produce json
+// @Param offset query int    false  "Offset"
+// @Param limit  query int    false  "limit"
+// @Param key path string true "key"
+// @Success 200 {object} []similarityNode{}
+// @Failure 404 {object} string{}
+// @Router /p-similarity/near-nodes/{key} [get]
+func getNearNodesWithProductKey(c *fiber.Ctx) error {
+	productKey := c.Params("key")
+	offset := c.Query("offset")
+	limit := c.Query("limit")
+	if offset == "" || limit == "" {
+		return c.Status(400).JSON("offset or limit is empty")
+	}
+	q := fmt.Sprintf("for s in sheet filter s._key==\"%v\"\nfor v,e,p in 1..2 any s graph \"sheetSimilarityGraph\" filter IS_SAME_COLLECTION(productSimilarityNode,v) limit %v,%v return v", productKey, offset, limit)
+	return c.JSON(database.ExecuteGetQuery(q))
 }
 
 // updateSimilarityNode update similarity node

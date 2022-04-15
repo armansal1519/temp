@@ -17,14 +17,14 @@ func Translate(initial string) (string, string) {
 	t["9"] = "۹"
 	t["0"] = "۰"
 
-	farsiStr := strings.Clone(initial)
-	englishStr := strings.Clone(initial)
+	farsiStr := ""
+	englishStr := ""
 
 	for s, s2 := range t {
-		farsiStr = strings.ReplaceAll(farsiStr, s, s2)
+		farsiStr = strings.ReplaceAll(initial, s, s2)
 	}
 	for s, s2 := range t {
-		englishStr = strings.ReplaceAll(englishStr, s2, s)
+		englishStr = strings.ReplaceAll(initial, s2, s)
 	}
 
 	return farsiStr, englishStr

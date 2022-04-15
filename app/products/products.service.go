@@ -125,6 +125,7 @@ func getProductWithColorCode(c *fiber.Ctx) error {
 	spId := c.Params("spId")
 	productKey := c.Params("productKey")
 	query := fmt.Sprintf("let productList=(for i in sheet filter i.spId==\"%v\" return i)\nlet s=(for j in productList filter j._key==\"%v\" return j)\nreturn {main:s[0],sub:REMOVE_VALUE(productList,s[0])}\n", spId, productKey)
+	//log.Println(query)
 	return c.JSON(database.ExecuteGetQuery(query))
 }
 
@@ -151,7 +152,9 @@ func getProductFromCategory(dbName string, key string, offset string, limit stri
 		return []productOut{}, fmt.Errorf("collection with name : %v dose not exit", dbName)
 	}
 	graphPathString := "\"%\",i.graphPath,\"%\""
+
 	query := fmt.Sprintf("for i in categories filter i._key==\"%v\"\nfor s in %v filter like(s.categoryName,concat(%v)) limit %v,%v return s\n", key, dbName, graphPathString, offset, limit)
+	log.Println(query)
 	cursor, err := db.Query(context.Background(), query, nil)
 	if err != nil {
 		panic(fmt.Sprintf("error while running query:%v", query))
@@ -169,6 +172,28 @@ func getProductFromCategory(dbName string, key string, offset string, limit stri
 		data = append(data, doc)
 	}
 	return data, nil
+}
+
+// getProductFromCategory  return length of products attached to that category
+// @Summary return length of products attached to that category
+// @Description return length of products attached to that category
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param   categoryurl      path   string     true  "category url"
+// @Param   categorykey      path   string     true  "category key"
+// @Success 200 {object} int{}
+// @Failure 404 {object} string{}
+// @Router /products/length/{categoryurl}/{categorykey} [get]
+func getLengthByCategory(c *fiber.Ctx) error {
+	dbName := c.Params("dbName")
+	key := c.Params("key")
+	graphPathString := "\"%\",i.graphPath,\"%\""
+	q := fmt.Sprintf("for i in categories filter i._key==\"%v\"\nlet p=(for s in %v filter like(s.categoryName,concat(%v)) return  s)\nreturn length(p)\n", key, dbName, graphPathString)
+	resp := database.ExecuteGetQuery(q)
+	return c.JSON(fiber.Map{
+		"length": resp[0],
+	})
 }
 
 // getProductByKey  return Product by key
@@ -217,6 +242,7 @@ func updateProduct(c *fiber.Ctx) error {
 	categoryUrl := c.Params("categoryUrl")
 	key := c.Params("key")
 	p := new(Product)
+	fmt.Println(p)
 	if err := c.BodyParser(p); err != nil {
 		return err
 	}
@@ -263,12 +289,14 @@ func deleteProduct(c *fiber.Ctx) error {
 // @Router /products/basic-search/{categoryurl} [post]
 func basicSearchProducts(c *fiber.Ctx) error {
 	dbName := c.Params("dbName")
+	offset := c.Query("offset")
+	limit := c.Query("limit")
 	ss := new(search)
 	if err := utils.ParseBodyAndValidate(c, ss); err != nil {
 		return c.JSON(err)
 	}
 	searchString := "%" + ss.SearchString + "%"
-	query := fmt.Sprintf("for i in %v filter like(i.title,\"%v\") limit 10 return i", dbName, searchString)
+	query := fmt.Sprintf("for i in %v filter like(i.title,\"%v\") limit %v,%v return i", dbName, searchString, offset, limit)
 	return c.JSON(database.ExecuteGetQuery(query))
 }
 
@@ -398,8 +426,12 @@ func AdvanceFilter(c *fiber.Ctx) error {
 			s = "lowestPrice "
 		} else if f.Sort == "discount" {
 			s = "discount desc "
+		} else if f.Sort == "spId-desc" {
+			s = "spId desc "
+		} else if f.Sort == "spId" {
+			s = "spId "
 		} else {
-			return c.Status(400).SendString("sort in not acceptable only : discount / less / new / buy and default : seen number")
+			return c.Status(400).SendString("sort in not acceptable only : discount / less / new / buy / spId desc / spId  and default : seen number")
 		}
 	}
 

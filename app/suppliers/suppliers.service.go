@@ -35,33 +35,33 @@ func CreateSupplier(c *fiber.Ctx) error {
 
 	_, err := suppliersCollection.CreateDocument(ctx, s)
 	if err != nil {
-		panic(fmt.Sprintf("error creating supplier :%v", err))
+		panic(fmt.Sprintf("error creating Supplier :%v", err))
 	}
 	return c.JSON(newSupplier)
 
 }
 
-func GetSupplierByEmployeeKey(key string) (supplier, error) {
+func GetSupplierByEmployeeKey(key string) (Supplier, error) {
 	q := fmt.Sprintf("for se in supplierEmployee filter se._key==\"%v\" for s in suppliers filter s._key==se.supplierKey return s", key)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, q, nil)
 	if err != nil {
-		return supplier{}, fmt.Errorf("error while excuting query: %v \n error:%v", q, err)
+		return Supplier{}, fmt.Errorf("error while excuting query: %v \n error:%v", q, err)
 	}
 	defer cursor.Close()
 
-	var doc supplier
+	var doc Supplier
 	_, err = cursor.ReadDocument(ctx, &doc)
 	if err != nil {
-		return supplier{}, err
+		return Supplier{}, err
 	}
 
 	return doc, nil
 }
 
-func getSupplierByKey(key string) (*supplier, error) {
-	var s supplier
+func GetSupplierByKey(key string) (*Supplier, error) {
+	var s Supplier
 	sCol := database.GetCollection("suppliers")
 	_, err := sCol.ReadDocument(context.Background(), key, &s)
 	if err != nil {
@@ -70,10 +70,10 @@ func getSupplierByKey(key string) (*supplier, error) {
 	return &s, nil
 }
 
-// getFavBySupplierKey get Favorite product to supplier
-// @Summary get Favorite product to supplier
-// @Description get Favorite product to supplier
-// @Tags  supplier
+// getFavBySupplierKey get Favorite product to Supplier
+// @Summary get Favorite product to Supplier
+// @Description get Favorite product to Supplier
+// @Tags  Supplier
 // @Accept json
 // @Produce json
 // @Param   categoryUrl      path   string     true  "categoryUrl"
@@ -99,10 +99,10 @@ func getFavBySupplierKey(c *fiber.Ctx) error {
 	return c.JSON(database.ExecuteGetQuery(q))
 }
 
-// getAllFavBySupplierKey get Favorite product to supplier
-// @Summary get Favorite product to supplier
-// @Description get Favorite product to supplier
-// @Tags  supplier
+// getAllFavBySupplierKey get Favorite product to Supplier
+// @Summary get Favorite product to Supplier
+// @Description get Favorite product to Supplier
+// @Tags  Supplier
 // @Accept json
 // @Produce json
 // @Param   offset     query    int     true        "Offset"
@@ -130,10 +130,18 @@ func getAllFavBySupplierKey(c *fiber.Ctx) error {
 	return c.JSON(database.ExecuteGetQuery(q))
 }
 
-// addFavorite add Favorite product to supplier
-// @Summary add Favorite product to supplier
-// @Description add Favorite product to supplier
-// @Tags  supplier
+func getAllFavProductIdBysupplierKey(c *fiber.Ctx) error {
+	key := c.Locals("supplierId").(string)
+	q := fmt.Sprintf("for i in fav filter i.supplierKey==\"%v\"  return concat(i.categoryUrl,\"/\",i.productKey)", key)
+	fmt.Println(q)
+	res := database.ExecuteGetQuery(q)
+	return c.JSON(res)
+}
+
+// addFavorite add Favorite product to Supplier
+// @Summary add Favorite product to Supplier
+// @Description add Favorite product to Supplier
+// @Tags  Supplier
 // @Accept json
 // @Produce json
 // @Param   key      path   string     true  "key of product you want to add"
@@ -148,7 +156,7 @@ func addFavorite(c *fiber.Ctx) error {
 	key := c.Params("key")
 	cu := c.Params("categoryUrl")
 	favCol := database.GetCollection("fav")
-	s, err := getSupplierByKey(supplierId)
+	s, err := GetSupplierByKey(supplierId)
 	if err != nil {
 		return c.JSON(err)
 	}
@@ -176,10 +184,10 @@ func addFavorite(c *fiber.Ctx) error {
 
 }
 
-// addSupplierToUpdatePool add supplier to update pool
-// @Summary add supplier to update pool
-// @Description add supplier to update pool
-// @Tags  supplier
+// addSupplierToUpdatePool add Supplier to update pool
+// @Summary add Supplier to update pool
+// @Description add Supplier to update pool
+// @Tags  Supplier
 // @Accept json
 // @Produce json
 // @Param data body updateSupplier true "data"
@@ -203,10 +211,10 @@ func addSupplierToUpdatePool(c *fiber.Ctx) error {
 	return c.JSON(meta)
 }
 
-// deleteFavorite remove Favorite product to supplier
-// @Summary remove Favorite product to supplier
-// @Description remove Favorite product to supplier
-// @Tags  supplier
+// deleteFavorite remove Favorite product to Supplier
+// @Summary remove Favorite product to Supplier
+// @Description remove Favorite product to Supplier
+// @Tags  Supplier
 // @Accept json
 // @Produce json
 // @Param   key      path   string     true  "fav key"

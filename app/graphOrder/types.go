@@ -1,6 +1,9 @@
 package graphOrder
 
-import "bamachoub-backend-go-v1/app/graphPayment"
+import (
+	"bamachoub-backend-go-v1/app/graphPayment"
+	"bamachoub-backend-go-v1/app/users"
+)
 
 type GOrderItem struct {
 	PriceId                string  `json:"priceId"`
@@ -108,4 +111,21 @@ type OrderItemsAndPayment struct {
 type reservedInfo struct {
 	IsReserved bool  `json:"isReserved"`
 	TimeToEnd  int64 `json:"timeToEnd"`
+}
+
+type getOrderForAdminDto struct {
+	OrderStatus  []string `json:"orderStatus"`
+	PaymentTypes []string `json:"paymentTypes"`
+	States       []string `json:"states"`
+	Time         int64    `json:"time"`
+}
+
+type GOrderResponseForAdminOut struct {
+	User  users.UserOut `json:"user"`
+	Order GOrderOut     `json:"order"`
+	Items []struct {
+		Payment    graphPayment.GPaymentOut `json:"payment"`
+		OrderItems []GOrderItemOut          `json:"orderItems"`
+	} `json:"items"`
+	Reserved reservedInfo `json:"reserved"`
 }

@@ -4,6 +4,7 @@ import (
 	"bamachoub-backend-go-v1/config/database"
 	"context"
 	"fmt"
+	"github.com/gofiber/fiber/v2"
 	"log"
 	"strings"
 	"time"
@@ -26,7 +27,8 @@ import (
 // @Failure 404 {object} string{}
 // @Router /add-buy-method/price/{categoryurl} [get]
 func getPriceWithProductBySupplierKey(categoryUrl string, supplierKey string, offset string, limit string) (*[]priceAndProduct, error) {
-	query := fmt.Sprintf("for j in supplier_%v_price filter j._from==\"suppliers/%v\" for s in %v filter s._id==j._to  limit %v,%v return {product:s,price:j}", categoryUrl, supplierKey, categoryUrl, offset, limit)
+	query := fmt.Sprintf("for j in supplier_%v_price filter j._from==\"supplier/%v\" for s in %v filter s._id==j._to  limit %v,%v return {product:s,price:j}", categoryUrl, supplierKey, categoryUrl, offset, limit)
+	fmt.Println(query)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, query, nil)
@@ -47,6 +49,56 @@ func getPriceWithProductBySupplierKey(categoryUrl string, supplierKey string, of
 		data = append(data, doc)
 	}
 	return &data, nil
+}
+
+func getAllPricesWithProductsBySupplierKey(supplierKey string, brand string, search string, offset string, limit string) (*[]priceAndProduct, error) {
+	catNameArr, err := getCategoriesName(true)
+	if err != nil {
+		return nil, err
+	}
+	var s string
+	if search != "" {
+		s = fmt.Sprintf("and like(s.title,\"%v\")", "%"+search+"%")
+	}
+	var b string
+	if brand != "" {
+		b = fmt.Sprintf("and s.brand==\"%v\"", brand)
+	}
+
+	q := fmt.Sprintf("for cat in [%v]\nfor j in cat filter j._from==\"supplier/%v\" for s in sheet filter s._id==j._to %v  %v limit %v,%v return {product:s,price:j}", strings.Join(catNameArr, ","), supplierKey, b, s, offset, limit)
+	fmt.Println(q)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close()
+	var data []priceAndProduct
+	for {
+		var doc priceAndProduct
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			return nil, err
+
+		}
+		data = append(data, doc)
+	}
+	return &data, nil
+}
+
+func getPriceBrandsBySupplierKey(c *fiber.Ctx) error {
+
+	catNameArr, err := getCategoriesName(true)
+	supplierId := c.Locals("supplierId").(string)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	q := fmt.Sprintf("for cat in [%v]\nfor j in cat filter j._from==\"supplier/%v\" for s in sheet filter s._id==j._to collect b=s.brand return b", strings.Join(catNameArr, ","), supplierId)
+	fmt.Println(q)
+	return c.JSON(database.ExecuteGetQuery(q))
 }
 
 // AddPriceToProduct    add price from supplier to product

@@ -33,7 +33,7 @@ func main() {
 	app.Use(pprof.New())
 	app.Use(logger.New())
 	app.Use(recover.New())
-
+	app.Static("/", "./public")
 	//app.Use(cache.New(cache.Config{
 	//	Next: func(c *fiber.Ctx) bool {
 	//		return c.Query("refresh") == "true"

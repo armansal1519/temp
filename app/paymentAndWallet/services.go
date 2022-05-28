@@ -5,10 +5,12 @@ import (
 	"bamachoub-backend-go-v1/app/graphPayment"
 	"bamachoub-backend-go-v1/config/database"
 	"bamachoub-backend-go-v1/utils"
+	"bamachoub-backend-go-v1/utils/payment"
 	"context"
 	"fmt"
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
+	"log"
 	"time"
 )
 
@@ -44,123 +46,160 @@ func createPayment(userKey string, gPaymentKey, orderKey string, amount int64, t
 	return &pOut, nil
 }
 
-//// getPaymentUrl get payment by url
-//// @Summary get payment by url
-//// @Description get payment by url
-//// @Tags payment
-//// @Accept json
-//// @Produce json
-//// @Param createPaymentByPortal body createPaymentByPortal true "data"
-////@Success 200 {object} []string{}
-//// @Failure 404 {object} string{}
-//// @Router /payment/by-url [post]
-//func getPaymentUrl(c *fiber.Ctx) error {
-//	cpp := new(createPaymentByPortal)
-//	if err := utils.ParseBodyAndValidate(c, cpp); err != nil {
-//		return c.JSON(err)
-//	}
-//	var o orders.Order
-//	orderCol := database.GetCollection("order")
-//	_, err := orderCol.ReadDocument(context.Background(), cpp.OrderKey, &o)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//
-//	var amount int64
-//	for _, item := range o.OrderItems {
-//		if item.Type == "price" {
-//			amount = item.TotalPrice
-//		}
-//	}
-//	if cpp.IncludeTransportation {
-//		amount += o.TransportationPrice
-//	}
-//	userKey := c.Locals("userKey").(string)
-//	p, err := createPayment(userKey, cpp.OrderKey, amount, "price-portal", "", cpp.IncludeTransportation)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	transId, err := payment.GetPaymentUrl(fmt.Sprintf("%v", amount), p.Key, fmt.Sprintf("https://localhost:3000/payment-varification/%v", p.Key))
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	ut := updateTransId{TransId: transId}
-//	paymentCol := database.GetCollection("payment")
-//	_, err = paymentCol.UpdateDocument(context.Background(), p.Key, ut)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	err = updateOrderWithPaymentKey(o, p.Key, "price", cpp.IncludeTransportation)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	return c.JSON(fiber.Map{
-//		"paymentUrl": fmt.Sprintf("https://nextpay.org/nx/gateway/payment/%v", transId),
-//	})
-//
-//}
-//
-//// verifyPaymentUrl verity payment by url
-//// @Summary verity payment by url
-//// @Description verity payment by url
-//// @Tags payment
-//// @Accept json
-//// @Produce json
-//// @Param key path string true "key"
-//// @Success 200 {object} []string{}
-//// @Failure 404 {object} string{}
-//// @Router /payment/verify-url/{key} [post]
-//func verifyPaymentUrl(c *fiber.Ctx) error {
-//	PaymentKey := c.Params("key")
-//	userKey := c.Locals("userKey").(string)
-//	var p paymentOut
-//	paymentCol := database.GetCollection("payment")
-//	_, err := paymentCol.ReadDocument(context.Background(), PaymentKey, &p)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	if userKey != p.PayerKey {
-//		return c.Status(403).JSON("this is not your order")
-//	}
-//	v, err := payment.Verify(p.Amount, p.TransId)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	up := updatePaymentHistory{
-//		CardHolder:    v.CardHolder,
-//		ShaparakRefId: v.ShaparakRefId,
-//		Status:        "valid",
-//	}
-//
-//	_, err = paymentCol.UpdateDocument(context.Background(), PaymentKey, up)
-//
-//	orderCol := database.GetCollection("gOrder")
-//	var o graphOrder.GOrder
-//	_, err = orderCol.ReadDocument(context.Background(), p.OrderKey, &o)
-//	var oi graphOrder.GOrderItem
-//	for i, item := range o. {
-//		if item.Type == "price" {
-//			o.OrderItems[i].Status = "valid"
-//			o.OrderItems[i].RemainingPrice = 0
-//			oi = item
-//			break
-//		}
-//	}
-//	if p.IncludeTransportation {
-//		o.IsTransportationPriceIsPayed = true
-//		o.TransportationPriceWithPrice = true
-//	}
-//
-//	meta, err := orderCol.UpdateDocument(context.Background(), o.Key, o)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	err = supplierConfirmation(oi, o.Key)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	return c.JSON(meta)
-//}
+// getPaymentUrl get payment by url
+// @Summary get payment by url
+// @Description get payment by url
+// @Tags payment
+// @Accept json
+// @Produce json
+// @Param createPaymentByPortal body createPaymentByPortal true "data"
+//@Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /payment/by-url [post]
+func getPaymentUrl(c *fiber.Ctx) error {
+	log.Println(5)
+
+	cpp := new(createPaymentByPortal)
+	if err := utils.ParseBodyAndValidate(c, cpp); err != nil {
+		return c.JSON(err)
+	}
+	log.Println(3)
+
+	gpArr, err := graphOrder.GetOrderAndPayments(cpp.OrderKey)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	var gp graphPayment.GPaymentOut
+	for _, out := range gpArr.Payment {
+		if out.Type == "price" {
+			gp = out
+		}
+	}
+	log.Println(2)
+
+	amount := gp.RemainingPrice
+
+	if cpp.IncludeTransportation {
+		amount += gpArr.Order.TransportationPrice
+	}
+	userKey := c.Locals("userKey").(string)
+	p, err := createPayment(userKey, gp.Key, cpp.OrderKey, amount, "price-portal", "", cpp.IncludeTransportation)
+	if err != nil {
+		return c.JSON(err)
+	}
+	transId, err := payment.GetPaymentUrl(fmt.Sprintf("%v", amount), p.Key, fmt.Sprintf("https://localhost:3000/payment-varification/%v", p.Key))
+	if err != nil {
+		return c.JSON(err)
+	}
+	ut := updateTransId{TransId: transId}
+	paymentCol := database.GetCollection("paymentHistory")
+	_, err = paymentCol.UpdateDocument(context.Background(), p.Key, ut)
+	if err != nil {
+		return c.JSON(err)
+	}
+
+	log.Println(1)
+	if cpp.IncludeTransportation {
+		u := updateTransportationInOrder{TransportationPaymentId: fmt.Sprintf("paymentHistory/%v", p.Key)}
+		orderCol := database.GetCollection("gOrder")
+		_, err = orderCol.UpdateDocument(context.Background(), cpp.OrderKey, u)
+		if err != nil {
+			return c.JSON(err)
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"paymentUrl": fmt.Sprintf("https://nextpay.org/nx/gateway/payment/%v", transId),
+	})
+
+}
+
+// verifyPaymentUrl verity payment by url
+// @Summary verity payment by url
+// @Description verity payment by url
+// @Tags payment
+// @Accept json
+// @Produce json
+// @Param key path string true "key"
+// @Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /payment/verify-url/{key} [post]
+func verifyPaymentUrl(c *fiber.Ctx) error {
+	PaymentKey := c.Params("key")
+	userKey := c.Locals("userKey").(string)
+	var p paymentOut
+	paymentCol := database.GetCollection("paymentHistory")
+	_, err := paymentCol.ReadDocument(context.Background(), PaymentKey, &p)
+	if err != nil {
+		return c.JSON(err)
+	}
+	if userKey != p.PayerKey {
+		return c.Status(403).JSON("this is not your order")
+	}
+	v, err := payment.Verify(p.Amount, p.TransId)
+	if err != nil {
+		return c.JSON(err)
+	}
+	up := updatePaymentHistory{
+		CardHolder:    v.CardHolder,
+		ShaparakRefId: v.ShaparakRefId,
+		Status:        "valid",
+	}
+
+	_, err = paymentCol.UpdateDocument(context.Background(), PaymentKey, up)
+
+	//orderCol := database.GetCollection("gOrder")
+	//var o graphOrder.GOrder
+	//_, err = orderCol.ReadDocument(context.Background(), p.OrderKey, &o)
+	//var oi graphOrder.GOrderItem
+	//for i, item := range o. {
+	//	if item.Type == "price" {
+	//		o.OrderItems[i].Status = "valid"
+	//		o.OrderItems[i].RemainingPrice = 0
+	//		oi = item
+	//		break
+	//	}
+	//}
+
+	data, err := graphOrder.GetOrderAndPayments(p.OrderKey)
+	var gp graphPayment.GPaymentOut
+	for _, out := range data.Payment {
+		if out.Type == "price" {
+			gp = out
+		}
+	}
+	u := updatePayment{
+		RemainingPrice: 0,
+		Status:         "valid",
+	}
+	gPaymentCol := database.GetCollection("gPayment")
+	_, err = gPaymentCol.UpdateDocument(context.Background(), gp.Key, u)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+
+	if p.IncludeTransportation {
+		uso := updateTransportationStatusInOrder{
+			IsTransportationPriceIsPayed: true,
+			TransportationPriceWithPrice: true,
+		}
+		orderCol := database.GetCollection("gOrder")
+		_, err = orderCol.UpdateDocument(context.Background(), p.OrderKey, uso)
+		if err != nil {
+			return c.Status(500).JSON(err)
+		}
+	}
+
+	oi, err := graphOrder.GetOrderItemsAndPaymentByPaymentKey(gp.Key, "")
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	err = supplierConfirmation(oi.OrderItems, p.OrderKey)
+	if err != nil {
+		return c.JSON(err)
+	}
+	return c.JSON("ok")
+}
 
 // createPaymentByImage get payment by image
 // @Summary get payment by image
@@ -289,102 +328,110 @@ func verifyPaymentImage(c *fiber.Ctx) error {
 	return c.JSON("ok")
 }
 
-//// createPaymentByImage create check by image
-//// @Summary create check by image
-//// @Description create check by image
-//// @Tags payment
-//// @Accept json
-//// @Produce json
-//// @Param checkByImage body checkByImage true "data"
-//// @Success 200 {object} paymentOut{}
-//// @Failure 404 {object} string{}
-//// @Router /payment/by-check [post]
-//func createCheckPayment(c *fiber.Ctx) error {
-//	pbi := new(checkByImage)
-//	if err := utils.ParseBodyAndValidate(c, pbi); err != nil {
-//		return c.JSON(err)
-//	}
-//	var o orders.Order
-//	orderCol := database.GetCollection("order")
-//	_, err := orderCol.ReadDocument(context.Background(), pbi.OrderKey, &o)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	if pbi.Type != "one" && pbi.Type != "two" && pbi.Type != "three" {
-//		return c.Status(409).SendString("type can be only one or two or three")
-//	}
-//
-//	var amount int64
-//	for _, item := range o.OrderItems {
-//		if item.Type == pbi.Type {
-//			amount = item.TotalPrice
-//		}
-//	}
-//	userKey := c.Locals("userKey").(string)
-//	p, err := createPayment(userKey, pbi.OrderKey, amount, fmt.Sprintf("check-%v", pbi.Type), pbi.ImageUrl, false)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	return c.JSON(p)
-//}
-//
-//// verifyCheckImage verity check
-//// @Summary verity check
-//// @Description verity check
-//// @Tags payment
-//// @Accept json
-//// @Produce json
-//// @Param key path string true "key"
-//// @Success 200 {object} []string{}
-//// @Failure 404 {object} string{}
-//// @Router /payment/verify-check/{key} [post]
-//func verifyCheckImage(c *fiber.Ctx) error {
-//	PaymentKey := c.Params("key")
-//	var p paymentOut
-//	paymentCol := database.GetCollection("payment")
-//	_, err := paymentCol.ReadDocument(context.Background(), PaymentKey, &p)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//
-//	orderCol := database.GetCollection("order")
-//	var o orders.Order
-//	_, err = orderCol.ReadDocument(context.Background(), p.OrderKey, &o)
-//
-//	var oi orders.OrderItem
-//
-//	for i, item := range o.OrderItems {
-//		if item.Type == "price" {
-//			o.OrderItems[i].Status = "valid"
-//			o.OrderItems[i].RemainingPrice = 0
-//
-//			oi = item
-//			break
-//		}
-//	}
-//
-//	meta, err := orderCol.UpdateDocument(context.Background(), o.Key, o)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	err = supplierConfirmation(oi, o.Key)
-//	if err != nil {
-//		return c.JSON(err)
-//	}
-//	return c.JSON(meta)
-//}
-//
-//func getPaymentByKey(paymentKey string) (*paymentOut, error) {
-//	var p paymentOut
-//	paymentCol := database.GetCollection("payment")
-//	_, err := paymentCol.ReadDocument(context.Background(), paymentKey, &p)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &p, nil
-//
-//}
-//
+// createPaymentByImage create check by image
+// @Summary create check by image
+// @Description create check by image
+// @Tags payment
+// @Accept json
+// @Produce json
+// @Param checkByImage body checkByImage true "data"
+// @Success 200 {object} paymentOut{}
+// @Failure 404 {object} string{}
+// @Router /payment/by-check [post]
+func createCheckPayment(c *fiber.Ctx) error {
+	pbi := new(checkByImage)
+	if err := utils.ParseBodyAndValidate(c, pbi); err != nil {
+		return c.JSON(err)
+	}
+	var o graphOrder.GOrderOut
+	orderCol := database.GetCollection("gOrder")
+	_, err := orderCol.ReadDocument(context.Background(), pbi.OrderKey, &o)
+	if err != nil {
+		return c.JSON(err)
+	}
+	if pbi.Type != "one" && pbi.Type != "two" && pbi.Type != "three" {
+		return c.Status(409).SendString("type can be only one or two or three")
+	}
+
+	gpArr, err := graphOrder.GetOrderAndPayments(pbi.OrderKey)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	var gp graphPayment.GPaymentOut
+	for _, out := range gpArr.Payment {
+		if out.Type == "price" {
+			gp = out
+		}
+	}
+	amount := gp.RemainingPrice
+	userKey := c.Locals("userKey").(string)
+	p, err := createPayment(userKey, gp.Key, pbi.OrderKey, amount, fmt.Sprintf("check-%v", pbi.Type), pbi.ImageUrl, false)
+	if err != nil {
+		return c.JSON(err)
+	}
+	return c.JSON(p)
+}
+
+// verifyCheckImage verity check
+// @Summary verity check
+// @Description verity check
+// @Tags payment
+// @Accept json
+// @Produce json
+// @Param key path string true "key"
+// @Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /payment/verify-check/{key} [post]
+func verifyCheckImage(c *fiber.Ctx) error {
+	PaymentKey := c.Params("key")
+	data, err := graphOrder.GetOrderItemsAndPaymentByPaymentKey(PaymentKey, "")
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	p := data.Payment
+	oi := data.OrderItems
+	paymentCol := database.GetCollection("gPayment")
+
+	uph := updatePaymentHistory{
+		CardHolder:    "",
+		ShaparakRefId: "",
+		Status:        "valid",
+	}
+
+	paymentHistoryCol := database.GetCollection("paymentHistory")
+	var ph paymentHistory
+	ctx := driver.WithReturnNew(context.Background(), &ph)
+	_, err = paymentHistoryCol.UpdateDocument(ctx, p.PaymentKey, uph)
+	if err != nil {
+		return c.JSON(err)
+	}
+
+	up := updatePayment{
+		RemainingPrice: 0,
+		Status:         "valid",
+	}
+
+	_, err = paymentCol.UpdateDocument(context.Background(), PaymentKey, up)
+
+	err = supplierConfirmation(oi, ph.OrderKey)
+	if err != nil {
+		return c.JSON(err)
+	}
+	return c.JSON("ok")
+}
+
+func getPaymentByKey(paymentKey string) (*paymentOut, error) {
+
+	var p paymentOut
+	paymentCol := database.GetCollection("paymentHistory")
+	_, err := paymentCol.ReadDocument(context.Background(), paymentKey, &p)
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
+
+}
+
 //// filterPayment fet filtered payment
 //// @Summary fet filtered payment
 //// @Description fet filtered payment if filter is empty return all
@@ -433,33 +480,34 @@ func verifyPaymentImage(c *fiber.Ctx) error {
 //	return c.JSON(database.ExecuteGetQuery(query))
 //}
 //
-//// getPaymentByUserKey get payment key by user and optionally by order key
-//// @Summary get payment key by user and optionally by order key
-//// @Description get payment key by user and optionally by order key (orderkey in route is optional)
-//// @Tags payment
-//// @Accept json
-//// @Produce json
-//// @Param orderKey path string false "key"
-//// @Security ApiKeyAuth
-//// @param Authorization header string true "Authorization"
-//// @Success 200 {object} []string{}
-//// @Failure 404 {object} string{}
-//// @Router /payment/user/{key} [get]
-//func getPaymentByUserKey(c *fiber.Ctx) error {
-//	userKey := c.Locals("userKey").(string)
-//	orderKey := c.Params("orderKey")
-//	userQ := fmt.Sprintf("\n filter i.payerKey==\"%v\" ", userKey)
-//	orderQ := ""
-//	if orderKey != "" {
-//		orderQ = fmt.Sprintf("\n filter i.orderKey==\"%v\"\n")
-//	}
+// getPaymentByUserKey get payment key by user and optionally by order key
+// @Summary get payment key by user and optionally by order key
+// @Description get payment key by user and optionally by order key (orderkey in route is optional)
+// @Tags payment
+// @Accept json
+// @Produce json
+// @Param orderKey path string false "key"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /payment/user/{key} [get]
+func getPaymentByUserKey(c *fiber.Ctx) error {
+	userKey := c.Locals("userKey").(string)
+	orderKey := c.Params("orderKey")
+	userQ := fmt.Sprintf("\n filter i.payerKey==\"%v\" ", userKey)
+	orderQ := ""
+	if orderKey != "" {
+		orderQ = fmt.Sprintf("\n filter i.orderKey==\"%v\"\n")
+	}
+
+	return c.JSON(database.ExecuteGetQuery(fmt.Sprintf("for i in payment \n %v \n %v\nreturn i", userQ, orderQ)))
+
+}
+
 //
-//	return c.JSON(database.ExecuteGetQuery(fmt.Sprintf("for i in payment \n %v \n %v\nreturn i", userQ, orderQ)))
-//
-//}
-//
-//func paymentConst(c *fiber.Ctx) error {
-//	q := "for i in const filter i._key==\"2\" return i"
-//	resp := database.ExecuteGetQuery(q)
-//	return c.JSON(resp[0])
-//}
+func paymentConst(c *fiber.Ctx) error {
+	q := "for i in const filter i._key==\"2\" return i"
+	resp := database.ExecuteGetQuery(q)
+	return c.JSON(resp[0])
+}

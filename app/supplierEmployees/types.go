@@ -24,6 +24,7 @@ type createSupplierPreviewIn struct {
 	IdBookPageOneImage string   `json:"idBookPageOneImage"`
 	IdBookPageTwoImage string   `json:"idBookPageTwoImage"`
 	SalesPermitImage   string   `json:"salesPermitImage"`
+	ShenasNameCode     string   `json:"shenasNameCode" validate:"required"`
 	//Access             []string `json:"access"`
 	//Role               string   `json:"role"`
 	//HashPassword       string   `json:"hashPassword"`

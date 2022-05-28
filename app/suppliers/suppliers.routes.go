@@ -14,6 +14,7 @@ func Routes(app fiber.Router) {
 		GetSuppliers)
 	r.Post("", CreateSupplier)
 
+	r.Get("/fav", middleware.GetSupplierByEmployee, getAllFavProductIdBysupplierKey)
 	r.Get("/fav/:categoryUrl", middleware.GetSupplierByEmployee, getFavBySupplierKey)
 	r.Get("/fav-product/:categoryUrl", middleware.GetSupplierByEmployee, getAllFavBySupplierKey)
 	r.Put("/add-update-pool", middleware.SupplierEmployeeAuth([]string{}), addSupplierToUpdatePool)

@@ -8,6 +8,7 @@ import (
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"strings"
 )
 
 func GetProductByUrl(c *fiber.Ctx) error {
@@ -345,6 +346,7 @@ type filter struct {
 // @Param   offset     query    int     true        "Offset"
 // @Param   limit      query    int     true        "limit"
 // @Param   sample      query    bool     true        "sample"
+// @Param   length      query    bool     true        "length"
 // @Success 200 {object} []productOut{}
 // @Failure 404 {object} string{}
 // @Router /products/advance-filter/{categoryurl}/{categorykey} [post]
@@ -354,6 +356,7 @@ func AdvanceFilter(c *fiber.Ctx) error {
 	offset := c.Query("offset")
 	limit := c.Query("limit")
 	sample := c.Query("sample")
+	length := c.Query("length")
 	f := new(advanceFilter)
 	if err := utils.ParseBodyAndValidate(c, f); err != nil {
 		return c.JSON(err)
@@ -431,7 +434,7 @@ func AdvanceFilter(c *fiber.Ctx) error {
 		} else if f.Sort == "spId" {
 			s = "spId "
 		} else {
-			return c.Status(400).SendString("sort in not acceptable only : discount / less / new / buy / spId desc / spId  and default : seen number")
+			return c.Status(400).SendString("sort in not acceptable only : discount / less / high  / new / buy / spId desc / spId  and default : seen number")
 		}
 	}
 
@@ -443,7 +446,110 @@ func AdvanceFilter(c *fiber.Ctx) error {
 	}
 
 	query := fmt.Sprintf(" let ck=(for c in categories filter c._key==\"%v\" for v in 0..10 outbound c graph \"categoryGraph\" filter v.status==\"end\" return v._key) for i in %v filter i.categoryKey in ck  sort i.%v  %v %v limit %v,%v %v", categoryKey, dbName, s, filterQuery, r2, offset, limit, r)
-	log.Println(11111, query)
+
+	log.Println(length)
+	if length == "true" {
+		query = fmt.Sprintf("let data=(let ck=(for c in categories filter c._key==\"%v\" for v in 0..10 outbound c graph \"categoryGraph\" filter v.status==\"end\" return v._key) for i in %v filter i.categoryKey in ck sort i.%v %v   return i)\n let resp=(for d in data limit %v,%v return d )     return {data:resp,length:length(data)}\n", categoryKey, dbName, s, filterQuery, offset, limit)
+	}
+	fmt.Println(11111, query)
+	return c.JSON(database.ExecuteGetQuery(query))
+
+}
+
+// AdvanceFilterWithBrand AdvanceFilter  advance filter in products for brand page
+// @Summary advance filter in products for brand page
+// @Description advance filter in products for brand page
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param data body advanceFilter true "data"
+// @Param   offset     query    int     true        "Offset"
+// @Param   limit      query    int     true        "limit"
+// @Success 200 {object} []productOut{}
+// @Failure 404 {object} string{}
+// @Router /products/advance-filter-brand [post]
+func AdvanceFilterWithBrand(c *fiber.Ctx) error {
+
+	offset := c.Query("offset")
+	limit := c.Query("limit")
+	f := new(advanceFilter)
+	if err := utils.ParseBodyAndValidate(c, f); err != nil {
+		return c.JSON(err)
+	}
+	filterQuery := ""
+	if len(f.FilterStringArr) > 0 {
+		filterQuery += " filter "
+	}
+	log.Println(f.FilterStringArr)
+
+	for i, s := range f.FilterStringArr {
+
+		if i < len(f.FilterStringArr) && i > 0 {
+			filterQuery += " and "
+
+		}
+
+		if len(s.Values) > 1 {
+			for i2, s2 := range s.Values {
+				if i2 == len(s.Values)-1 {
+					filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\"  in i.filterArr ", s.Name, s2)
+				} else {
+					filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\"  in i.filterArr  or ", s.Name, s2)
+				}
+			}
+		}
+
+		if len(s.Values) == 1 {
+			filterQuery = filterQuery + fmt.Sprintf("\"%v=%v\" in i.filterArr", s.Name, s.Values[0])
+		}
+
+		if len(s.Values) == 0 {
+			continue
+		}
+	}
+
+	if f.PriceFrom > 0 {
+		filterQuery = filterQuery + fmt.Sprintf(" filter i.lowestPrice>=%v  ", f.PriceFrom)
+	}
+	if f.PriceTo > 0 {
+		filterQuery = filterQuery + fmt.Sprintf(" filter i.lowestPrice<=%v  ", f.PriceTo)
+
+	}
+	if f.InStock {
+		filterQuery = filterQuery + fmt.Sprintf(" filter i.lowestPrice != -1  ")
+
+	}
+
+	s := "seenNumber desc"
+	if f.Sort != "" {
+		if f.Sort == "buy" {
+			s = "buyNumber"
+		} else if f.Sort == "high" {
+			s = "lowestPrice desc"
+		} else if f.Sort == "new" {
+			s = "createdAt desc"
+		} else if f.Sort == "less" {
+			s = "lowestPrice "
+		} else if f.Sort == "discount" {
+			s = "discount desc "
+		} else if f.Sort == "spId-desc" {
+			s = "spId desc "
+		} else if f.Sort == "spId" {
+			s = "spId "
+		} else {
+			return c.Status(400).SendString("sort in not acceptable only : discount / less / high  / new / buy / spId desc / spId  and default : seen number")
+		}
+	}
+
+	//r := " return i"
+	//r2 := ""
+	//if sample == "true" {
+	//	r = "  return  groups[0] "
+	//	r2 = " COLLECT sp = i.spId INTO groups "
+	//}
+
+	query := fmt.Sprintf(" let data=(for i in productSearch search i.brand in [\"%v\"]   %v sort i.%v return i)\nlet resp=(for i in data limit %v,%v return i )\nreturn {data:resp,length:length(data)}", strings.Join(f.Brand, "\",\""), filterQuery, s, offset, limit)
+
 	return c.JSON(database.ExecuteGetQuery(query))
 
 }

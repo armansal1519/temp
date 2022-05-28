@@ -10,6 +10,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// setBaseData  create homepage data
+// @Summary create homepage data
+// @Description create homepage data
+// @Tags homepage
+// @Accept json
+// @Produce json
+// @Param data body homepageBase true "data"
+// @Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /homepage/base [post]
 func setBaseData(c *fiber.Ctx) error {
 	m := new(homepageBase)
 	if err := utils.ParseBodyAndValidate(c, m); err != nil {

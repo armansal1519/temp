@@ -54,6 +54,28 @@ func getSupplierEmployeeByKey(key string) (*employee, error) {
 
 }
 
+func getSupplierAndEmployeeByKey(c *fiber.Ctx) error {
+	key := c.Locals("key").(string)
+	supplierKey := c.Locals("supplierKey").(string)
+	var se employee
+	seCol := database.GetCollection("supplierEmployee")
+	sCol := database.GetCollection("suppliers")
+	_, err := seCol.ReadDocument(context.Background(), key, &se)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	var s suppliers.Supplier
+	_, err = sCol.ReadDocument(context.Background(), supplierKey, &s)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+
+	return c.JSON(fiber.Map{
+		"supplier": s,
+		"employee": se,
+	})
+}
+
 func createSupplierEmployeeFromSupplierPreview(spKey string) error {
 	sp, err := getSupplierPreviewByKey(spKey)
 	if err != nil {
@@ -87,6 +109,7 @@ func createSupplierEmployeeFromSupplierPreview(spKey string) error {
 		FirstName:          sp.FirstName,
 		LastName:           sp.LastName,
 		PhoneNumber:        sp.PhoneNumber,
+		ShenasNameCode:     sp.ShenasNameCode,
 		Email:              sp.Email,
 		NationalCode:       sp.NationalCode,
 		BirthDate:          sp.BirthDate,

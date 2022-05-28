@@ -19,25 +19,25 @@ func WalletRoutes(app fiber.Router) {
 func PaymentRoutes(app fiber.Router) {
 	r := app.Group("/payment")
 
-	//r.Post("/by-url", middleware.Auth, getPaymentUrl)
+	r.Post("/by-url", middleware.Auth, getPaymentUrl)
 	r.Post("/by-image", middleware.Auth, createPaymentByImage)
-	//r.Post("/verify-url/:key", middleware.Auth, verifyPaymentUrl)
+	r.Post("/verify-url/:key", middleware.Auth, verifyPaymentUrl)
 	//
-	//r.Post("/by-check", middleware.Auth, createCheckPayment)
-	////TODO admin
+	r.Post("/by-check", middleware.Auth, createCheckPayment)
+	//TODO admin
 	r.Post("/verify-image/:key", verifyPaymentImage)
-	//r.Post("/verify-check/:key", verifyCheckImage)
+	r.Post("/verify-check/:key", verifyCheckImage)
 	//
-	//r.Get("/user/:orderKey?", middleware.Auth, getPaymentByUserKey)
-	//r.Get("/info", paymentConst)
-	//r.Get("/:key", func(c *fiber.Ctx) error {
-	//	key := c.Params("key")
-	//	resp, err := getPaymentByKey(key)
-	//	if err != nil {
-	//		return c.JSON(err)
-	//	}
-	//	return c.JSON(resp)
-	//})
+	r.Get("/user/:orderKey?", middleware.Auth, getPaymentByUserKey)
+	r.Get("/info", paymentConst)
+	r.Get("/:key", func(c *fiber.Ctx) error {
+		key := c.Params("key")
+		resp, err := getPaymentByKey(key)
+		if err != nil {
+			return c.JSON(err)
+		}
+		return c.JSON(resp)
+	})
 	//
 	//r.Post("/filter", filterPayment)
 

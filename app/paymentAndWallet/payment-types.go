@@ -39,8 +39,8 @@ type UpdateOrderWithPaymentKey struct {
 type createPaymentByPortal struct {
 	OrderKey string `json:"orderKey"`
 	//Amount                int64  `json:"amount"`
-	Status                string `json:"status"`
-	IncludeTransportation bool   `json:"includeTransportation"`
+	//Status                string `json:"status"`
+	IncludeTransportation bool `json:"includeTransportation"`
 }
 
 type PaymentByImage struct {

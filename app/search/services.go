@@ -10,7 +10,6 @@ import (
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
 	"log"
-	"strings"
 )
 
 // Search search products
@@ -30,16 +29,16 @@ func Search(c *fiber.Ctx) error {
 	if err := utils.ParseBodyAndValidate(c, s); err != nil {
 		return c.JSON(err)
 	}
-
+	log.Println(s)
 	f, e := farsi.Translate(s.SearchString)
-	f = strings.ToUpper(f)
-	e = strings.ToUpper(e)
+	//f = strings.ToUpper(f)
+	//e = strings.ToUpper(e)
 	fmt.Println(e, f)
 	//query := "let a=(for i in productSearch Search LIKE(i.title, \"%" + s.SearchString + "%\") sort i.seen desc limit 5 return {id:i._id,title:i.title})" +
 	//	"let b = (for j in categories filter LIKE(j.name, \"%" + s.SearchString + "%\") limit 5 return {id:j._id,name:j.name,url:j.url})" +
 	//	"let ms=(for k in mostSearch sort k.searchCount limit 16 return k)\nreturn {products:a,categories:b,mostSearch:ms}"
 
-	query := "let a=(for i in productSearch Search LIKE(i.title, \"%" + f + "%\") or LIKE(i.title, \"%" + e + "%\") sort i.seen desc limit 5 return i)" +
+	query := "let a=(for i in productSearch Search LIKE(i.title, \"%" + f + "%\") or LIKE(i.title, \"%" + e + "%\") sort i.seen desc limit 15 return i)" +
 		"let b = (for j in categories filter LIKE(j.name, \"%" + f + "%\") or LIKE(j.name, \"%" + e + "%\") limit 5 return j)" +
 		"let ms=(for k in mostSearch sort k.searchCount limit 16 return k)\nreturn {products:a,categories:b,mostSearch:ms}"
 

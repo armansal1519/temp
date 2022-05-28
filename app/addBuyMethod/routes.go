@@ -12,6 +12,30 @@ import (
 func Routes(app fiber.Router) {
 	r := app.Group("/add-buy-method")
 
+	r.Post("/get-price", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
+
+		offset := c.Query("offset")
+		limit := c.Query("limit")
+		if offset == "" || limit == "" {
+			return c.Status(400).SendString("offset or query must have value")
+		}
+		supplierId := c.Locals("supplierId").(string)
+		b := new(brandFilter)
+		fmt.Println(111, string(c.Body()))
+		if err := utils.ParseBodyAndValidate(c, b); err != nil {
+			return c.JSON(err)
+		}
+
+		resp, err := getAllPricesWithProductsBySupplierKey(supplierId, b.Brand, b.Search, offset, limit)
+
+		if err != nil {
+			return c.JSON(fmt.Sprintf("%v", err))
+		}
+		return c.JSON(resp)
+	})
+
+	r.Get("/price/brand", middleware.GetSupplierByEmployee, getPriceBrandsBySupplierKey)
+
 	r.Get("/price/:categoryUrl", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
 		offset := c.Query("offset")
 		limit := c.Query("limit")
@@ -86,6 +110,34 @@ func Routes(app fiber.Router) {
 		return c.Status(204).SendString("document deleted")
 	})
 
+	//******************************************************************************************************************
+	//estelam
+	//******************************************************************************************************************
+
+	r.Post("/get-estelam", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
+
+		offset := c.Query("offset")
+		limit := c.Query("limit")
+		if offset == "" || limit == "" {
+			return c.Status(400).SendString("offset or query must have value")
+		}
+		supplierId := c.Locals("supplierId").(string)
+		b := new(brandFilter)
+		fmt.Println(111, string(c.Body()))
+		if err := utils.ParseBodyAndValidate(c, b); err != nil {
+			return c.JSON(err)
+		}
+
+		resp, err := getAllEstelamsWithProductsBySupplierKey(supplierId, b.Brand, b.Search, offset, limit)
+
+		if err != nil {
+			return c.JSON(fmt.Sprintf("%v", err))
+		}
+		return c.JSON(resp)
+	})
+
+	r.Get("/estelam/brand", middleware.GetSupplierByEmployee, getEstelamBrandsBySupplierKey)
+
 	r.Get("/estelam/:categoryUrl", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
 		offset := c.Query("offset")
 		limit := c.Query("limit")
@@ -112,6 +164,11 @@ func Routes(app fiber.Router) {
 		if err := utils.ParseBodyAndValidate(c, est); err != nil {
 			log.Println(1, err)
 			return c.JSON(err)
+		}
+		fmt.Println(string(c.Body()))
+		if est.ProductId == "" {
+			log.Println("product id" + est.ProductId)
+			return c.Status(400).JSON("productId cant be empty")
 		}
 		resp, err := AddEstelamToProduct(*est, supplierId)
 

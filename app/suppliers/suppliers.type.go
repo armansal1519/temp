@@ -6,8 +6,8 @@ type SupplierIn struct {
 	Address          string   `json:"address" validate:"required"`
 	State            string   `json:"state"`
 	City             string   `json:"city"`
-	Latitude         float64  `json:"latitude" validate:"required"`
-	Longitude        float64  `json:"longitude" validate:"required"`
+	Latitude         float64  `json:"latitude" `
+	Longitude        float64  `json:"longitude" `
 	Name             string   `json:"name" validate:"required"`
 	Code             string   `json:"code" validate:"required"`
 	Area             float64  `json:"area" validate:"required"`
@@ -35,7 +35,7 @@ type updateSupplier struct {
 	CreateAt int64 `json:"CreateAt"`
 }
 
-type supplier struct {
+type Supplier struct {
 	driver.DocumentMeta
 	SupplierIn
 }

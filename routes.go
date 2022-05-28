@@ -13,6 +13,7 @@ import (
 	"bamachoub-backend-go-v1/app/discountCode"
 	"bamachoub-backend-go-v1/app/driversRegister"
 	"bamachoub-backend-go-v1/app/estelam"
+	"bamachoub-backend-go-v1/app/gOrderItem"
 	"bamachoub-backend-go-v1/app/graphOrder"
 	"bamachoub-backend-go-v1/app/graphPayment"
 	homepage "bamachoub-backend-go-v1/app/homePage"
@@ -29,6 +30,7 @@ import (
 	"bamachoub-backend-go-v1/app/sendingUnit"
 	"bamachoub-backend-go-v1/app/similarityGraph"
 	"bamachoub-backend-go-v1/app/supplierEmployees"
+	"bamachoub-backend-go-v1/app/supplierRequests"
 	"bamachoub-backend-go-v1/app/suppliers"
 	"bamachoub-backend-go-v1/app/transportation"
 	"bamachoub-backend-go-v1/app/userAddress"
@@ -83,7 +85,11 @@ func InitRoutes(v1 fiber.Router) {
 	approvedOrders.Routes(v1)
 
 	graphOrder.Routes(v1)
+	graphOrder.AdminRoutes(v1)
 	discountCode.Routes(v1)
 	graphPayment.Routes(v1)
+
+	gOrderItem.Routes(v1)
+	supplierRequests.Routes(v1)
 
 }

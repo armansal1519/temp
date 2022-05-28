@@ -3411,6 +3411,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/homepage/base": {
+            "post": {
+                "description": "create homepage data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "homepage"
+                ],
+                "summary": "create homepage data",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/homepage.homepageBase"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/msg/by-phone": {
             "post": {
                 "security": [
@@ -4413,6 +4456,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/payment/by-check": {
+            "post": {
+                "description": "create check by image",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "create check by image",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "checkByImage",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.checkByImage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.paymentOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/payment/by-image": {
             "post": {
                 "security": [
@@ -4465,6 +4548,246 @@ const docTemplate = `{
                 }
             }
         },
+        "/payment/by-url": {
+            "post": {
+                "description": "get payment by url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "get payment by url",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "createPaymentByPortal",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.createPaymentByPortal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/filter": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "fet filtered payment if filter is empty return all\nget payment key by user and optionally by order key (orderkey in route is optional)",
+                "consumes": [
+                    "application/json",
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/json"
+                ],
+                "tags": [
+                    "payment",
+                    "payment"
+                ],
+                "summary": "get payment key by user and optionally by order key",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "data",
+                        "name": "filter",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.filter"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "orderKey",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/user/{key}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "fet filtered payment if filter is empty return all\nget payment key by user and optionally by order key (orderkey in route is optional)",
+                "consumes": [
+                    "application/json",
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/json"
+                ],
+                "tags": [
+                    "payment",
+                    "payment"
+                ],
+                "summary": "get payment key by user and optionally by order key",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "data",
+                        "name": "filter",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.filter"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "orderKey",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/verify-check/{key}": {
+            "post": {
+                "description": "verity check",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "verity check",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/payment/verify-image/{key}": {
             "post": {
                 "description": "verity payment",
@@ -4478,6 +4801,47 @@ const docTemplate = `{
                     "payment"
                 ],
                 "summary": "verity payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/verify-url/{key}": {
+            "post": {
+                "description": "verity payment by url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "verity payment by url",
                 "parameters": [
                     {
                         "type": "string",
@@ -5506,6 +5870,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/products/advance-filter-brand": {
+            "post": {
+                "description": "advance filter in products for brand page",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "advance filter in products for brand page",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/products.advanceFilter"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/products.productOut"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/products/advance-filter/{categoryurl}/{categorykey}": {
             "post": {
                 "description": "advance filter in products",
@@ -5561,6 +5982,13 @@ const docTemplate = `{
                         "type": "boolean",
                         "description": "sample",
                         "name": "sample",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "length",
+                        "name": "length",
                         "in": "query",
                         "required": true
                     }
@@ -7017,6 +7445,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/supplier-request/remove-from-wallet/{amount}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create supplier request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supplierRequest"
+                ],
+                "summary": "create supplier request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "amount",
+                        "name": "amount",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/suppliers-confirmation": {
             "get": {
                 "security": [
@@ -7170,7 +7651,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "add Favorite product to supplier",
+                "description": "add Favorite product to Supplier",
                 "consumes": [
                     "application/json"
                 ],
@@ -7178,9 +7659,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "supplier"
+                    "Supplier"
                 ],
-                "summary": "add Favorite product to supplier",
+                "summary": "add Favorite product to Supplier",
                 "parameters": [
                     {
                         "type": "string",
@@ -7227,7 +7708,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "add supplier to update pool",
+                "description": "add Supplier to update pool",
                 "consumes": [
                     "application/json"
                 ],
@@ -7235,9 +7716,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "supplier"
+                    "Supplier"
                 ],
-                "summary": "add supplier to update pool",
+                "summary": "add Supplier to update pool",
                 "parameters": [
                     {
                         "description": "data",
@@ -7279,7 +7760,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "get Favorite product to supplier",
+                "description": "get Favorite product to Supplier",
                 "consumes": [
                     "application/json"
                 ],
@@ -7287,9 +7768,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "supplier"
+                    "Supplier"
                 ],
-                "summary": "get Favorite product to supplier",
+                "summary": "get Favorite product to Supplier",
                 "parameters": [
                     {
                         "type": "integer",
@@ -7346,7 +7827,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "get Favorite product to supplier",
+                "description": "get Favorite product to Supplier",
                 "consumes": [
                     "application/json"
                 ],
@@ -7354,9 +7835,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "supplier"
+                    "Supplier"
                 ],
-                "summary": "get Favorite product to supplier",
+                "summary": "get Favorite product to Supplier",
                 "parameters": [
                     {
                         "type": "string",
@@ -7413,7 +7894,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "remove Favorite product to supplier",
+                "description": "remove Favorite product to Supplier",
                 "consumes": [
                     "application/json"
                 ],
@@ -7421,9 +7902,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "supplier"
+                    "Supplier"
                 ],
-                "summary": "remove Favorite product to supplier",
+                "summary": "remove Favorite product to Supplier",
                 "parameters": [
                     {
                         "type": "string",
@@ -8626,7 +9107,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "commissionPercent": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "completeSpec": {
                     "type": "array",
@@ -8694,9 +9175,6 @@ const docTemplate = `{
         },
         "addBuyMethod.estelamIn": {
             "type": "object",
-            "required": [
-                "productId"
-            ],
             "properties": {
                 "codeForSupplier": {
                     "type": "string"
@@ -10228,6 +10706,182 @@ const docTemplate = `{
                 }
             }
         },
+        "homepage.Banners": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.Data"
+                    }
+                },
+                "numberOfBanners": {
+                    "type": "integer"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.BlogContent": {
+            "type": "object",
+            "properties": {
+                "show": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "homepage.BrandSlider": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.Carousel": {
+            "type": "object",
+            "properties": {
+                "imageUrl": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.CategorySlider": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.Data": {
+            "type": "object",
+            "properties": {
+                "imageUrl": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.Email": {
+            "type": "object",
+            "properties": {
+                "show": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "homepage.ProductSlider": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.Text": {
+            "type": "object",
+            "properties": {
+                "btnText": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "homepage.homepageBase": {
+            "type": "object",
+            "properties": {
+                "banners": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.Banners"
+                    }
+                },
+                "blogContent": {
+                    "$ref": "#/definitions/homepage.BlogContent"
+                },
+                "brandSlider": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.BrandSlider"
+                    }
+                },
+                "carousel": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.Carousel"
+                    }
+                },
+                "categorySlider": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.CategorySlider"
+                    }
+                },
+                "email": {
+                    "$ref": "#/definitions/homepage.Email"
+                },
+                "productSlider": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.ProductSlider"
+                    }
+                },
+                "text": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/homepage.Text"
+                    }
+                }
+            }
+        },
         "massage.sendMsgByPhoneNumberReq": {
             "type": "object",
             "properties": {
@@ -10291,6 +10945,64 @@ const docTemplate = `{
             "properties": {
                 "amount": {
                     "type": "integer"
+                }
+            }
+        },
+        "paymentAndWallet.checkByImage": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "checkNumber": {
+                    "type": "string"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "orderKey": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "paymentAndWallet.createPaymentByPortal": {
+            "type": "object",
+            "properties": {
+                "includeTransportation": {
+                    "description": "Amount                int64  ` + "`" + `json:\"amount\"` + "`" + `\nStatus                string ` + "`" + `json:\"status\"` + "`" + `",
+                    "type": "boolean"
+                },
+                "orderKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "paymentAndWallet.filter": {
+            "type": "object",
+            "properties": {
+                "checkNumber": {
+                    "type": "string"
+                },
+                "orderKey": {
+                    "type": "string"
+                },
+                "payerKey": {
+                    "type": "string"
+                },
+                "shaparakRefId": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "txType": {
+                    "type": "string"
                 }
             }
         },
@@ -12053,6 +12765,9 @@ const docTemplate = `{
         },
         "userFav.uf": {
             "type": "object",
+            "required": [
+                "productId"
+            ],
             "properties": {
                 "productId": {
                     "type": "string"

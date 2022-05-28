@@ -9,7 +9,6 @@ import (
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
 	"log"
-	"strings"
 	"time"
 )
 
@@ -149,7 +148,9 @@ func getPaymentUrlForSupplierWallet(c *fiber.Ctx) error {
 		return c.JSON(err)
 	}
 	supplierId := c.Locals("supplierId").(string)
-	supplierKey := strings.Split(supplierId, "/")[1]
+	//supplierKey := strings.Split(supplierId, "/")[1]
+	supplierKey := supplierId
+
 	p := paymentHistory{
 		PayerKey:      supplierKey,
 		OrderKey:      "-",
@@ -162,7 +163,7 @@ func getPaymentUrlForSupplierWallet(c *fiber.Ctx) error {
 		ImageUrl:      "-",
 		CheckNumber:   "-",
 	}
-	paymentCol := database.GetCollection("payment")
+	paymentCol := database.GetCollection("paymentHistory")
 
 	meta, err := paymentCol.CreateDocument(context.Background(), p)
 	if err != nil {
@@ -198,9 +199,9 @@ func getPaymentUrlForSupplierWallet(c *fiber.Ctx) error {
 func VerifyPaymentAndAddToWallet(c *fiber.Ctx) error {
 	PaymentKey := c.Params("key")
 	supplierId := c.Locals("supplierId").(string)
-	supplierKey := strings.Split(supplierId, "/")[1]
+	//supplierId := strings.Split(supplierId, "/")[1]
 	var p paymentOut
-	paymentCol := database.GetCollection("payment")
+	paymentCol := database.GetCollection("paymentHistory")
 	_, err := paymentCol.ReadDocument(context.Background(), PaymentKey, &p)
 	if err != nil {
 		return c.JSON(err)
@@ -220,7 +221,7 @@ func VerifyPaymentAndAddToWallet(c *fiber.Ctx) error {
 	}
 	sw := SupplierWalletHistory{
 		Amount:      p.Amount,
-		SupplierKey: supplierKey,
+		SupplierKey: supplierId,
 		PaymentKey:  meta.Key,
 		CreatedAt:   time.Now().Unix(),
 		Income:      true,
@@ -232,7 +233,7 @@ func VerifyPaymentAndAddToWallet(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(err)
 	}
-	query := fmt.Sprintf("for i in suppliers filter i._key==\"%v\" update i with {walletAmount: i.walletAmount + %v } in suppliers ", supplierKey, p.Amount)
+	query := fmt.Sprintf("for i in suppliers filter i._key==\"%v\" update i with {walletAmount: i.walletAmount + %v } in suppliers ", supplierId, p.Amount)
 	database.ExecuteGetQuery(query)
 	return c.JSON(fiber.Map{"status": "ok"})
 

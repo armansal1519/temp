@@ -21,6 +21,7 @@ func Routes(app fiber.Router) {
 		res.HashPassword = ""
 		return c.JSON(res)
 	})
+	r.Get("/s-e", middleware.SupplierEmployeeAuth([]string{}), getSupplierAndEmployeeByKey)
 	r.Put("/add-update-pool", middleware.SupplierEmployeeAuth([]string{}), addToUpdatePool)
 
 	r.Post("/create-by-admin/:key", func(c *fiber.Ctx) error {
@@ -45,6 +46,7 @@ func AuthRoutes(app fiber.Router) {
 	r := app.Group("/supplier-employee-auth")
 
 	r.Get("/get-supplier-preview", getSupplierPreview)
+	r.Get("check-phone-number/:phoneNumber", checkPhoneNumberExist)
 
 	r.Post("/create-supplier-preview", func(c *fiber.Ctx) error {
 		ce := new(createSupplierPreview)
@@ -54,7 +56,7 @@ func AuthRoutes(app fiber.Router) {
 		}
 		resp, err := CreateSupplierPreview(*ce)
 		if err != nil {
-			return c.JSON(err)
+			return c.Status(500).JSON(err)
 		}
 		return c.JSON(resp)
 	})

@@ -101,7 +101,7 @@ definitions:
       categoryName:
         type: string
       commissionPercent:
-        type: integer
+        type: number
       completeSpec:
         items:
           $ref: '#/definitions/addBuyMethod.csType'
@@ -162,8 +162,6 @@ definitions:
         type: boolean
       variant:
         type: string
-    required:
-    - productId
     type: object
   addBuyMethod.f:
     properties:
@@ -1177,6 +1175,120 @@ definitions:
       type:
         type: string
     type: object
+  homepage.Banners:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/homepage.Data'
+        type: array
+      numberOfBanners:
+        type: integer
+      position:
+        type: integer
+      title:
+        type: string
+    type: object
+  homepage.BlogContent:
+    properties:
+      show:
+        type: boolean
+    type: object
+  homepage.BrandSlider:
+    properties:
+      categoryName:
+        type: string
+      position:
+        type: integer
+      sort:
+        type: string
+      title:
+        type: string
+    type: object
+  homepage.Carousel:
+    properties:
+      imageUrl:
+        type: string
+      link:
+        type: string
+    type: object
+  homepage.CategorySlider:
+    properties:
+      categoryName:
+        type: string
+      position:
+        type: integer
+      sort:
+        type: string
+      title:
+        type: string
+    type: object
+  homepage.Data:
+    properties:
+      imageUrl:
+        type: string
+      link:
+        type: string
+    type: object
+  homepage.Email:
+    properties:
+      show:
+        type: boolean
+    type: object
+  homepage.ProductSlider:
+    properties:
+      categoryName:
+        type: string
+      position:
+        type: integer
+      sort:
+        type: string
+      title:
+        type: string
+    type: object
+  homepage.Text:
+    properties:
+      btnText:
+        type: string
+      link:
+        type: string
+      position:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  homepage.homepageBase:
+    properties:
+      banners:
+        items:
+          $ref: '#/definitions/homepage.Banners'
+        type: array
+      blogContent:
+        $ref: '#/definitions/homepage.BlogContent'
+      brandSlider:
+        items:
+          $ref: '#/definitions/homepage.BrandSlider'
+        type: array
+      carousel:
+        items:
+          $ref: '#/definitions/homepage.Carousel'
+        type: array
+      categorySlider:
+        items:
+          $ref: '#/definitions/homepage.CategorySlider'
+        type: array
+      email:
+        $ref: '#/definitions/homepage.Email'
+      productSlider:
+        items:
+          $ref: '#/definitions/homepage.ProductSlider'
+        type: array
+      text:
+        items:
+          $ref: '#/definitions/homepage.Text'
+        type: array
+    type: object
   massage.sendMsgByPhoneNumberReq:
     properties:
       adminDescription:
@@ -1219,6 +1331,46 @@ definitions:
     properties:
       amount:
         type: integer
+    type: object
+  paymentAndWallet.checkByImage:
+    properties:
+      amount:
+        type: integer
+      checkNumber:
+        type: string
+      imageUrl:
+        type: string
+      orderKey:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
+  paymentAndWallet.createPaymentByPortal:
+    properties:
+      includeTransportation:
+        description: |-
+          Amount                int64  `json:"amount"`
+          Status                string `json:"status"`
+        type: boolean
+      orderKey:
+        type: string
+    type: object
+  paymentAndWallet.filter:
+    properties:
+      checkNumber:
+        type: string
+      orderKey:
+        type: string
+      payerKey:
+        type: string
+      shaparakRefId:
+        type: string
+      status:
+        type: string
+      txType:
+        type: string
     type: object
   paymentAndWallet.getSupplierConfirmationResponse:
     properties:
@@ -2384,6 +2536,8 @@ definitions:
     properties:
       productId:
         type: string
+    required:
+    - productId
     type: object
   users.AuthenticationDto:
     properties:
@@ -4728,6 +4882,34 @@ paths:
       summary: return homepage data
       tags:
       - homepage
+  /homepage/base:
+    post:
+      consumes:
+      - application/json
+      description: create homepage data
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/homepage.homepageBase'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create homepage data
+      tags:
+      - homepage
   /msg/by-phone:
     post:
       consumes:
@@ -5378,6 +5560,32 @@ paths:
       summary: create similarity node by admin
       tags:
       - product similarity
+  /payment/by-check:
+    post:
+      consumes:
+      - application/json
+      description: create check by image
+      parameters:
+      - description: data
+        in: body
+        name: checkByImage
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.checkByImage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/paymentAndWallet.paymentOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: create check by image
+      tags:
+      - payment
   /payment/by-image:
     post:
       consumes:
@@ -5412,6 +5620,169 @@ paths:
       summary: get payment by image
       tags:
       - payment
+  /payment/by-url:
+    post:
+      consumes:
+      - application/json
+      description: get payment by url
+      parameters:
+      - description: data
+        in: body
+        name: createPaymentByPortal
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.createPaymentByPortal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get payment by url
+      tags:
+      - payment
+  /payment/filter:
+    post:
+      consumes:
+      - application/json
+      - application/json
+      description: |-
+        fet filtered payment if filter is empty return all
+        get payment key by user and optionally by order key (orderkey in route is optional)
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: data
+        in: body
+        name: filter
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.filter'
+      - description: key
+        in: path
+        name: orderKey
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get payment key by user and optionally by order key
+      tags:
+      - payment
+      - payment
+  /payment/user/{key}:
+    get:
+      consumes:
+      - application/json
+      - application/json
+      description: |-
+        fet filtered payment if filter is empty return all
+        get payment key by user and optionally by order key (orderkey in route is optional)
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: data
+        in: body
+        name: filter
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.filter'
+      - description: key
+        in: path
+        name: orderKey
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get payment key by user and optionally by order key
+      tags:
+      - payment
+      - payment
+  /payment/verify-check/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verity check
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: verity check
+      tags:
+      - payment
   /payment/verify-image/{key}:
     post:
       consumes:
@@ -5437,6 +5808,33 @@ paths:
           schema:
             type: string
       summary: verity payment
+      tags:
+      - payment
+  /payment/verify-url/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verity payment by url
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: verity payment by url
       tags:
       - payment
   /product-comment:
@@ -6161,6 +6559,44 @@ paths:
       summary: updates product
       tags:
       - products
+  /products/advance-filter-brand:
+    post:
+      consumes:
+      - application/json
+      description: advance filter in products for brand page
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/products.advanceFilter'
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/products.productOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: advance filter in products for brand page
+      tags:
+      - products
   /products/advance-filter/{categoryurl}/{categorykey}:
     post:
       consumes:
@@ -6196,6 +6632,11 @@ paths:
       - description: sample
         in: query
         name: sample
+        required: true
+        type: boolean
+      - description: length
+        in: query
+        name: length
         required: true
         type: boolean
       produces:
@@ -7092,6 +7533,40 @@ paths:
       summary: get supplier employee  by key
       tags:
       - supplier
+  /supplier-request/remove-from-wallet/{amount}:
+    post:
+      consumes:
+      - application/json
+      description: create supplier request
+      parameters:
+      - description: amount
+        in: path
+        name: amount
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create supplier request
+      tags:
+      - supplierRequest
   /suppliers-confirmation:
     get:
       consumes:
@@ -7189,7 +7664,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: add Favorite product to supplier
+      description: add Favorite product to Supplier
       parameters:
       - description: key of product you want to add
         in: path
@@ -7219,14 +7694,14 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: add Favorite product to supplier
+      summary: add Favorite product to Supplier
       tags:
-      - supplier
+      - Supplier
   /suppliers/add-update-pool:
     put:
       consumes:
       - application/json
-      description: add supplier to update pool
+      description: add Supplier to update pool
       parameters:
       - description: data
         in: body
@@ -7252,14 +7727,14 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: add supplier to update pool
+      summary: add Supplier to update pool
       tags:
-      - supplier
+      - Supplier
   /suppliers/fav-product/{categoryUrl}:
     get:
       consumes:
       - application/json
-      description: get Favorite product to supplier
+      description: get Favorite product to Supplier
       parameters:
       - description: Offset
         in: query
@@ -7296,14 +7771,14 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: get Favorite product to supplier
+      summary: get Favorite product to Supplier
       tags:
-      - supplier
+      - Supplier
   /suppliers/fav/{categoryUrl}:
     get:
       consumes:
       - application/json
-      description: get Favorite product to supplier
+      description: get Favorite product to Supplier
       parameters:
       - description: categoryUrl
         in: path
@@ -7340,14 +7815,14 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: get Favorite product to supplier
+      summary: get Favorite product to Supplier
       tags:
-      - supplier
+      - Supplier
   /suppliers/remove-fav/{key}:
     post:
       consumes:
       - application/json
-      description: remove Favorite product to supplier
+      description: remove Favorite product to Supplier
       parameters:
       - description: fav key
         in: path
@@ -7372,9 +7847,9 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: remove Favorite product to supplier
+      summary: remove Favorite product to Supplier
       tags:
-      - supplier
+      - Supplier
   /transportation:
     post:
       consumes:

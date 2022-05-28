@@ -3,8 +3,10 @@ package userFav
 import (
 	"bamachoub-backend-go-v1/config/database"
 	"bamachoub-backend-go-v1/utils"
+	"context"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"strings"
 )
 
 // removeFromUserFav add productId from fav field in user
@@ -24,6 +26,27 @@ func addToUserFav(c *fiber.Ctx) error {
 	if err := utils.ParseBodyAndValidate(c, lr); err != nil {
 		return c.JSON(err)
 	}
+	db := database.GetDB()
+	ctx := context.Background()
+	if !strings.Contains(lr.ProductId, "/") {
+		return c.Status(400).JSON(" you must send document Id like sheet/1234")
+	}
+
+	colName := strings.Split(lr.ProductId, "/")[0]
+	key := strings.Split(lr.ProductId, "/")[1]
+
+	col, err := db.Collection(ctx, colName)
+	if err != nil {
+		return c.Status(404).JSON("collection not found you must send document Id")
+	}
+	flag, err := col.DocumentExists(ctx, key)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	if !flag {
+		return c.Status(404).JSON("document not found you must send document Id")
+	}
+
 	userKey := c.Locals("userKey").(string)
 	q := fmt.Sprintf("for u in users\nfilter u._key==\"%v\"\nupdate u with {fav:PUSH(u.fav, \"%v\", true)} in users\nreturn NEW", userKey, lr.ProductId)
 	res := database.ExecuteGetQuery(q)

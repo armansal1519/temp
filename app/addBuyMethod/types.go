@@ -49,7 +49,7 @@ type PriceOut struct {
 }
 
 type estelamIn struct {
-	ProductId       string `json:"productId" validate:"required"`
+	ProductId       string `json:"productId" `
 	CodeForSupplier string `json:"codeForSupplier"`
 	Variant         string `json:"variant"`
 	Price           bool   `json:"price"`
@@ -148,7 +148,7 @@ type Product struct {
 	CreatedAt         int64    `json:"createdAt"`
 	SeenNumber        int      `json:"seenNumber"`
 	BuyNumber         int      `json:"buyNumber"`
-	CommissionPercent int      `json:"commissionPercent"`
+	CommissionPercent float32  `json:"commissionPercent"`
 	LowestPrice       int64    `json:"lowestPrice"`
 	FilterString      string   `json:"filterString"`
 }
@@ -199,4 +199,9 @@ type groupUpdatePriceIn struct {
 
 type groupUpdatePrice1 struct {
 	Show bool `json:"show" `
+}
+
+type brandFilter struct {
+	Brand  string `json:"brand" `
+	Search string `json:"search" `
 }

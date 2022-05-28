@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/arangodb/go-driver"
+	"github.com/gofiber/fiber/v2"
 	"log"
 	"strings"
 	"time"
@@ -46,6 +47,57 @@ func getEstelamWithProductBySupplierKey(categoryUrl string, supplierKey string, 
 		data = append(data, doc)
 	}
 	return &data, nil
+}
+
+func getAllEstelamsWithProductsBySupplierKey(supplierKey string, brand string, search string, offset string, limit string) (*[]estelamAndProduct, error) {
+	catNameArr, err := getCategoriesName(false)
+	if err != nil {
+		return nil, err
+	}
+	var s string
+	if search != "" {
+		s = fmt.Sprintf("and like(s.title,\"%v\")", "%"+search+"%")
+	}
+	var b string
+	if brand != "" {
+		b = fmt.Sprintf("and s.brand==\"%v\"", brand)
+	}
+
+	q := fmt.Sprintf("for cat in [%v]\nfor j in cat filter j._from==\"supplier/%v\" for s in sheet filter s._id==j._to %v  %v limit %v,%v return {product:s,estelam:j}", strings.Join(catNameArr, ","), supplierKey, b, s, offset, limit)
+	fmt.Println(q)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close()
+	var data []estelamAndProduct
+	for {
+		var doc estelamAndProduct
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			return nil, err
+
+		}
+		data = append(data, doc)
+	}
+	return &data, nil
+}
+
+func getEstelamBrandsBySupplierKey(c *fiber.Ctx) error {
+
+	catNameArr, err := getCategoriesName(false)
+	supplierId := c.Locals("supplierId").(string)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	q := fmt.Sprintf("for cat in [%v]\nfor j in cat filter j._from==\"supplier/%v\" for s in sheet filter s._id==j._to collect b=s.brand return b", strings.Join(catNameArr, ","), supplierId)
+
+	log.Println(q)
+	return c.JSON(database.ExecuteGetQuery(q))
 }
 
 // AddEstelamToProduct   add estelam from supplier to product

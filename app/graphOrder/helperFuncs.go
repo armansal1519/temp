@@ -68,3 +68,28 @@ func GetOrderItemsAndPaymentByPaymentKey(paymentKey string, filter string) (Orde
 
 	return doc, nil
 }
+
+func GetOrderAndPayments(orderKey string) (getOrderAndPayments, error) {
+	q := fmt.Sprintf("\nfor o in gOrder \nfilter o._key==\"%v\"\nlet payment =(for v,e in 1..1 outbound o graph \"orderGraph\"  return v)\nreturn {order:o,payment:payment} ", orderKey)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		return getOrderAndPayments{}, err
+	}
+	defer cursor.Close()
+
+	var doc getOrderAndPayments
+	_, err = cursor.ReadDocument(ctx, &doc)
+	if err != nil {
+		return getOrderAndPayments{}, err
+	}
+
+	return doc, nil
+
+}
+
+type getOrderAndPayments struct {
+	Order   GOrderOut
+	Payment []graphPayment.GPaymentOut
+}

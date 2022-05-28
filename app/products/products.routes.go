@@ -69,5 +69,6 @@ func Routes(app fiber.Router) {
 	r.Post("/basic-search/:dbName", basicSearchProducts)
 	r.Post("/basic-filter/:dbName", basicFilter)
 	r.Post("/advance-filter/:dbName/:categoryKey", AdvanceFilter)
+	r.Post("/advance-filter-brand", AdvanceFilterWithBrand)
 
 }

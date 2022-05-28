@@ -125,6 +125,29 @@ func CheckValidationCode(c *fiber.Ctx) error {
 	})
 }
 
+func checkPhoneNumberExist(c *fiber.Ctx) error {
+	phoneNumber := c.Params("phoneNumber")
+
+	q := fmt.Sprintf("for i in supplierEmployee filter i.phoneNumber==\"%v\" return i", phoneNumber)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+	defer cursor.Close()
+	var doc interface{}
+	_, err = cursor.ReadDocument(ctx, &doc)
+	if driver.IsNoMoreDocuments(err) {
+		return c.Status(404).JSON("phone number not found")
+	} else if err != nil {
+		return c.Status(500).JSON("unknown error")
+	} else {
+		return c.Status(200).JSON("ok")
+	}
+
+}
+
 // CreateSupplierPreview create supplier preview
 // @Summary create supplier preview
 // @Description create supplier preview for management
@@ -158,6 +181,7 @@ func CreateSupplierPreview(data createSupplierPreview) (*createSupplierPreviewIn
 		IdBookPageOneImage: data.IdBookPageOneImage,
 		IdBookPageTwoImage: data.IdBookPageTwoImage,
 		SalesPermitImage:   data.SalesPermitImage,
+		ShenasNameCode:     data.ShenasNameCode,
 		CreateAt:           time.Now().Unix(),
 	}
 	spCol := database.GetCollection("supplierPreview")

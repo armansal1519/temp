@@ -41,3 +41,10 @@ func Routes(app fiber.Router) {
 	r.Patch("/sending-info", middleware.Auth, addSendingInfoToOrder)
 
 }
+
+func AdminRoutes(app fiber.Router) {
+	r := app.Group("/order/admin")
+
+	r.Get("/by-users", getOrderForAdmin)
+
+}

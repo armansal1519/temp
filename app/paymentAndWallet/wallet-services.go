@@ -184,6 +184,58 @@ func getPaymentUrlForSupplierWallet(c *fiber.Ctx) error {
 
 }
 
+// getPaymentUrlForSupplierWallet  get payment url for wallet
+// @Summary get payment url for wallet
+// @Description get payment url for wallet
+// @Tags wallet
+// @Accept json
+// @Produce json
+// @Param data body addToWallet true "data"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /wallet/user/url [post]
+func getPaymentUrlForUserWallet(c *fiber.Ctx) error {
+	w := new(addToWallet)
+	if err := utils.ParseBodyAndValidate(c, w); err != nil {
+		return c.JSON(err)
+	}
+	userKey := c.Locals("userKey").(string)
+
+	p := paymentHistory{
+		PayerKey:      userKey,
+		OrderKey:      "-",
+		TxType:        "user-wallet-add",
+		Amount:        w.Amount,
+		Status:        "not",
+		CardHolder:    "",
+		ShaparakRefId: "",
+		TransId:       "",
+		ImageUrl:      "-",
+		CheckNumber:   "-",
+	}
+	paymentCol := database.GetCollection("paymentHistory")
+
+	meta, err := paymentCol.CreateDocument(context.Background(), p)
+	if err != nil {
+		return c.JSON(err)
+	}
+	transId, err := payment.GetPaymentUrl(fmt.Sprintf("%v", w.Amount), meta.Key, fmt.Sprintf("http://localhost:3000/payment/verify/%v", meta.Key))
+	if err != nil {
+		return c.JSON(err)
+	}
+	ut := updateTransId{TransId: transId}
+	_, err = paymentCol.UpdateDocument(context.Background(), meta.Key, ut)
+	if err != nil {
+		return c.JSON(err)
+	}
+	return c.JSON(fiber.Map{
+		"paymentUrl": fmt.Sprintf("https://nextpay.org/nx/gateway/payment/%v", transId),
+	})
+
+}
+
 // VerifyPaymentAndAddToWallet  verify tx to wallet
 // @Summary verify tx to wallet
 // @Description verify tx to wallet
@@ -237,4 +289,108 @@ func VerifyPaymentAndAddToWallet(c *fiber.Ctx) error {
 	database.ExecuteGetQuery(query)
 	return c.JSON(fiber.Map{"status": "ok"})
 
+}
+
+// VerifyUserPaymentAndAddToWallet  verify tx to wallet
+// @Summary verify tx to wallet
+// @Description verify tx to wallet
+// @Tags wallet
+// @Accept json
+// @Produce json
+// @Param   key      path   string     true  "key"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /wallet/user/verify/{key} [post]
+func VerifyUserPaymentAndAddToWallet(c *fiber.Ctx) error {
+	PaymentKey := c.Params("key")
+	userKey := c.Locals("userKey").(string)
+	//supplierId := strings.Split(supplierId, "/")[1]
+	var p paymentOut
+	paymentCol := database.GetCollection("paymentHistory")
+	_, err := paymentCol.ReadDocument(context.Background(), PaymentKey, &p)
+	if err != nil {
+		return c.JSON(err)
+	}
+	v, err := payment.Verify(p.Amount, p.TransId)
+	if err != nil {
+		return c.JSON(err)
+	}
+	up := updatePaymentHistory{
+		CardHolder:    v.CardHolder,
+		ShaparakRefId: v.ShaparakRefId,
+		Status:        "valid",
+	}
+	meta, err := paymentCol.UpdateDocument(context.Background(), PaymentKey, up)
+	if err != nil {
+		return c.JSON(err)
+	}
+	sw := UserWalletHistory{
+		Amount:     p.Amount,
+		UserKey:    userKey,
+		PaymentKey: meta.Key,
+		CreatedAt:  time.Now().Unix(),
+		Income:     true,
+		TxType:     p.TxType,
+		TxStatus:   "done",
+	}
+	walletCol := database.GetCollection("userWalletHistory")
+	_, err = walletCol.CreateDocument(context.Background(), sw)
+	if err != nil {
+		return c.JSON(err)
+	}
+	query := fmt.Sprintf("for i in users filter i._key==\"%v\" update i with {walletAmount: i.walletAmount + %v } in users ", userKey, p.Amount)
+	database.ExecuteGetQuery(query)
+	return c.JSON(fiber.Map{"status": "ok"})
+
+}
+
+// GetUserWalletHistoryByUserKey   get user wallet history
+// @Summary get user wallet history
+// @Description get user wallet history
+// @Tags wallet
+// @Accept json
+// @Produce json
+// @Param   offset     query    int     true        "Offset"
+// @Param   limit      query    int     true        "limit"
+//@Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} []userWalletOut{}
+// @Failure 404 {object} string{}
+// @Router /wallet/user/history [get]
+func GetUserWalletHistoryByUserKey(supplierKey string, offset string, limit string) (*[]userWalletOut, temp1, error) {
+	query := fmt.Sprintf("for i in userWalletHistory  filter i.userKey==\"%v\" limit %v,%v return i", supplierKey, offset, limit)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, query, nil)
+	if err != nil {
+		return nil, temp1{}, fmt.Errorf("error while running query:%v", query)
+	}
+	defer cursor.Close()
+	var data []userWalletOut
+	for {
+		var doc userWalletOut
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			return nil, temp1{}, fmt.Errorf("error while getting data from query:%v", err)
+
+		}
+		data = append(data, doc)
+	}
+	t := time.Now().Add(-30 * 24 * time.Hour).Unix()
+	q := fmt.Sprintf("let income=( for i in userWalletHistory filter i.userKey==\"%v\" and i.income==true and i.createdAt> %v  return i.amount)\nlet outcome=( for i in userWalletHistory filter i.userKey==\"%v\" and i.income==false and i.createdAt> %v   return i.amount)\nreturn {income:sum(income),outcome:sum(outcome)}", supplierKey, t, supplierKey, t)
+	cursor, err = db.Query(ctx, q, nil)
+	if err != nil {
+		return nil, temp1{}, fmt.Errorf("error while running query:%v", query)
+	}
+	var d temp1
+	_, err = cursor.ReadDocument(ctx, &d)
+	if err != nil {
+		return nil, temp1{}, fmt.Errorf("error while running query:%v", query)
+	}
+
+	return &data, d, err
 }

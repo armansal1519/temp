@@ -84,6 +84,7 @@ func getProductComment(c *fiber.Ctx) error {
 		sortStr = "sort length(k.likes ) desc"
 	}
 	q := fmt.Sprintf("let raw=(for i in productComment  filter i.productId==\"%v/%v\" return i)\nlet r=(for k in raw %v limit %v,%v return k) ", categoryUrl, productKey, sortStr, offset, limit)
+	q1 := fmt.Sprintf("let raw=(for i in productComment  filter i.productId==\"%v/%v\" return i) return length(raw)", categoryUrl, productKey)
 
 	if score == "true" {
 		q += " let s=(let data=FLATTEN(for i in raw return i.scoreArr)\nfor i in data\ncollect names= i.title into g\nlet scoreArr= (for j in g[*].i return j.score)  return{names:names,scoreArr:AVERAGE(scoreArr)})\nreturn {score:s,comments:r} "
@@ -91,7 +92,8 @@ func getProductComment(c *fiber.Ctx) error {
 		q += " return r "
 	}
 	log.Println(q)
-	return c.JSON(database.ExecuteGetQuery(q))
+	res := database.ExecuteGetQuery(q1)
+	return c.JSON(fiber.Map{"data": database.ExecuteGetQuery(q), "length": res[0]})
 }
 
 // getAll get all comment

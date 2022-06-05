@@ -134,23 +134,33 @@ type updateLowestPriceInProduct struct {
 }
 
 type Product struct {
-	CategoryKey       string   `json:"categoryKey" `
-	CategoryPath      string   `json:"categoryName" `
-	Title             string   `json:"title"`
-	CompleteSpec      []csType `json:"completeSpec"`
-	MainSpecs         []f      `json:"mainSpecs"`
-	VariationObj      v        `json:"variationsObj"`
-	ImageArr          []string `json:"imageArr"`
-	Status            string   `json:"status" `
-	Description       string   `json:"description"`
-	Brand             string   `json:"brand"`
-	Tags              []string `json:"tags"`
-	CreatedAt         int64    `json:"createdAt"`
-	SeenNumber        int      `json:"seenNumber"`
-	BuyNumber         int      `json:"buyNumber"`
-	CommissionPercent float32  `json:"commissionPercent"`
-	LowestPrice       int64    `json:"lowestPrice"`
-	FilterString      string   `json:"filterString"`
+	CategoryKey       string     `json:"categoryKey" `
+	CategoryPath      string     `json:"categoryName" `
+	Title             string     `json:"title"`
+	CompleteSpec      []csType   `json:"completeSpec"`
+	MainSpecs         []f        `json:"mainSpecs"`
+	VariationObj      v          `json:"variationsObj"`
+	ImageArr          []string   `json:"imageArr"`
+	Status            string     `json:"status" `
+	Description       string     `json:"description"`
+	Brand             string     `json:"brand"`
+	Tags              []string   `json:"tags"`
+	CreatedAt         int64      `json:"createdAt"`
+	SeenNumber        int        `json:"seenNumber"`
+	BuyNumber         int        `json:"buyNumber"`
+	CommissionPercent float32    `json:"commissionPercent"`
+	LowestPrice       int64      `json:"lowestPrice"`
+	LowestCheckPrice  checkPrice `json:"lowestCheckPrice"`
+
+	FilterString string `json:"filterString"`
+}
+
+type checkPrice struct {
+	Type  string `json:"type"`
+	Price int64  `json:"price"`
+}
+type updateCheckPrice struct {
+	LowestCheckPrice checkPrice `json:"lowestCheckPrice"`
 }
 
 type priceAndProduct struct {

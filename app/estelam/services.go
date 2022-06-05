@@ -38,6 +38,7 @@ func createEstelamRequest(c *fiber.Ctx) error {
 
 	productColName := strings.Split(cer.ProductId, "/")[0]
 	productKey := strings.Split(cer.ProductId, "/")[1]
+	log.Println(cer.ProductId)
 	userKey := c.Locals("userKey").(string)
 
 	if !cer.Price && !cer.ThreeMonthPrice && !cer.TwoMonthPrice && !cer.OneMonthPrice {
@@ -50,13 +51,13 @@ func createEstelamRequest(c *fiber.Ctx) error {
 		query += "j.price==true ||"
 	}
 	if cer.OneMonthPrice {
-		query += "j.oneMoundPrice==true ||"
+		query += "j.oneMonthPrice==true ||"
 	}
 	if cer.TwoMonthPrice {
-		query += "j.twoMoundPrice==true ||"
+		query += "j.twoMonthPrice==true ||"
 	}
 	if cer.ThreeMonthPrice {
-		query += "j.threeMoundPrice ==true ||"
+		query += "j.threeMonthPrice ==true ||"
 	}
 
 	chars := []rune(query)
@@ -90,10 +91,10 @@ func createEstelamRequest(c *fiber.Ctx) error {
 		supplierIds = append(supplierIds, doc)
 	}
 
-	if len(supplierIds) <= 0 {
+	if len(supplierIds) <= 0 || supplierIds[0] == "" {
 		return c.Status(409).SendString("no supplier was found")
 	}
-
+	log.Println("supplier Ides", len(supplierIds), supplierIds[0] == "")
 	aec := addToEstelamCart{
 		Key:              userKey + productKey,
 		UserKey:          userKey,

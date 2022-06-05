@@ -111,6 +111,7 @@ func createSupplierEmployeeFromSupplierPreview(spKey string) error {
 		PhoneNumber:        sp.PhoneNumber,
 		ShenasNameCode:     sp.ShenasNameCode,
 		Email:              sp.Email,
+		PostalCode:         sp.PostalCode,
 		NationalCode:       sp.NationalCode,
 		BirthDate:          sp.BirthDate,
 		ShabaNumber:        sp.ShabaNumber,

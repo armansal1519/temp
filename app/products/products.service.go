@@ -535,7 +535,7 @@ func AdvanceFilterWithBrand(c *fiber.Ctx) error {
 		} else if f.Sort == "spId-desc" {
 			s = "spId desc "
 		} else if f.Sort == "spId" {
-			s = "spId "
+			s = "spId"
 		} else {
 			return c.Status(400).SendString("sort in not acceptable only : discount / less / high  / new / buy / spId desc / spId  and default : seen number")
 		}

@@ -3505,6 +3505,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/msg/by-phone-supplier": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "send message for suppliers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "massage"
+                ],
+                "summary": "send message for suppliers",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/massage.sendMsgByPhoneNumberReq"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/msg/user": {
             "get": {
                 "security": [
@@ -8653,6 +8704,119 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-request/admin/{key}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create user request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "userRequest"
+                ],
+                "summary": "create user request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "done or reject",
+                        "name": "op",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-request/remove-from-wallet/{amount}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create user request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "userRequest"
+                ],
+                "summary": "create user request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "amount",
+                        "name": "amount",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/auth": {
             "post": {
                 "security": [
@@ -8878,6 +9042,168 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/paymentAndWallet.addToWallet"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/wallet/user/history": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get user wallet history",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "get user wallet history",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/paymentAndWallet.userWalletOut"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/wallet/user/url": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get payment url for wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "get payment url for wallet",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.addToWallet"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/wallet/user/verify/{key}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "verify tx to wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "verify tx to wallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -9130,6 +9456,9 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "lowestCheckPrice": {
+                    "$ref": "#/definitions/addBuyMethod.checkPrice"
+                },
                 "lowestPrice": {
                     "type": "integer"
                 },
@@ -9156,6 +9485,17 @@ const docTemplate = `{
                 },
                 "variationsObj": {
                     "$ref": "#/definitions/addBuyMethod.v"
+                }
+            }
+        },
+        "addBuyMethod.checkPrice": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -9922,6 +10262,9 @@ const docTemplate = `{
         "contactUs.contactIn": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "fullName": {
                     "type": "string"
                 },
@@ -9942,6 +10285,12 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "website": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -9960,6 +10309,9 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "integer"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "fullName": {
                     "type": "string"
                 },
@@ -9980,6 +10332,12 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "website": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -11195,6 +11553,41 @@ const docTemplate = `{
                 }
             }
         },
+        "paymentAndWallet.userWalletOut": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "_key": {
+                    "type": "string"
+                },
+                "_rev": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "integer"
+                },
+                "income": {
+                    "type": "boolean"
+                },
+                "paymentKey": {
+                    "type": "string"
+                },
+                "supplierKey": {
+                    "type": "string"
+                },
+                "txStatus": {
+                    "type": "string"
+                },
+                "txType": {
+                    "type": "string"
+                }
+            }
+        },
         "productQA.adminUpdateDto": {
             "type": "object",
             "properties": {
@@ -11225,6 +11618,15 @@ const docTemplate = `{
                     }
                 },
                 "productId": {
+                    "type": "string"
+                },
+                "productImageArr": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "productTitle": {
                     "type": "string"
                 },
                 "questionKey": {
@@ -11465,6 +11867,9 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "lowestCheckPrice": {
+                    "$ref": "#/definitions/products.checkPrice"
+                },
                 "lowestPrice": {
                     "type": "integer"
                 },
@@ -11522,6 +11927,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sort": {
+                    "type": "string"
+                }
+            }
+        },
+        "products.checkPrice": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -11709,6 +12125,9 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "lowestCheckPrice": {
+                    "$ref": "#/definitions/products.checkPrice"
                 },
                 "lowestPrice": {
                     "type": "integer"
@@ -12451,6 +12870,9 @@ const docTemplate = `{
                 "phoneNumber": {
                     "type": "string"
                 },
+                "postalCode": {
+                    "type": "string"
+                },
                 "role": {
                     "type": "string"
                 },
@@ -12855,6 +13277,9 @@ const docTemplate = `{
                 },
                 "userCards": {
                     "$ref": "#/definitions/users.cardInfo"
+                },
+                "walletAmount": {
+                    "type": "integer"
                 }
             }
         },

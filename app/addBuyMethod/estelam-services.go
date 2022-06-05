@@ -25,14 +25,15 @@ import (
 // @Success 200 {object} []priceAndProduct{}
 // @Failure 404 {object} string{}
 // @Router /add-buy-method/estelam/{categoryurl} [get]
-func getEstelamWithProductBySupplierKey(categoryUrl string, supplierKey string, offset string, limit string) (*[]estelamAndProduct, error) {
+func getEstelamWithProductBySupplierKey(categoryUrl string, supplierKey string, offset string, limit string) (*[]estelamAndProduct, int, error) {
 	query := fmt.Sprintf("for j in supplier_%v_estelam filter j._from==\"suppliers/%v\" for s in %v filter s._id==j._to sort j.createAt  limit %v,%v return {product:s,estelam:j}", categoryUrl, supplierKey, categoryUrl, offset, limit)
+	querylength := fmt.Sprintf("let data=(for j in supplier_%v_estelam filter j._from==\"suppliers/%v\" for s in %v filter s._id==j._to sort j.createAt  return {product:s,estelam:j}) return length(data)", categoryUrl, supplierKey, categoryUrl)
 	log.Println(query)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, query, nil)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 	defer cursor.Close()
 	var data []estelamAndProduct
@@ -46,13 +47,24 @@ func getEstelamWithProductBySupplierKey(categoryUrl string, supplierKey string, 
 		}
 		data = append(data, doc)
 	}
-	return &data, nil
+	cursor, err = db.Query(ctx, querylength, nil)
+	if err != nil {
+		return nil, -1, err
+	}
+	defer cursor.Close()
+
+	var l int
+	_, err = cursor.ReadDocument(ctx, &l)
+	if err != nil {
+		return nil, -1, err
+	}
+	return &data, l, nil
 }
 
-func getAllEstelamsWithProductsBySupplierKey(supplierKey string, brand string, search string, offset string, limit string) (*[]estelamAndProduct, error) {
+func getAllEstelamsWithProductsBySupplierKey(supplierKey string, brand string, search string, offset string, limit string) (*[]estelamAndProduct, int, error) {
 	catNameArr, err := getCategoriesName(false)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 	var s string
 	if search != "" {
@@ -64,12 +76,13 @@ func getAllEstelamsWithProductsBySupplierKey(supplierKey string, brand string, s
 	}
 
 	q := fmt.Sprintf("for cat in [%v]\nfor j in cat filter j._from==\"supplier/%v\" for s in sheet filter s._id==j._to %v  %v limit %v,%v return {product:s,estelam:j}", strings.Join(catNameArr, ","), supplierKey, b, s, offset, limit)
+	ql := fmt.Sprintf("let data=(for cat in [%v]\nfor j in cat filter j._from==\"supplier/%v\" for s in sheet filter s._id==j._to %v  %v return {product:s,estelam:j}) return length(data)", strings.Join(catNameArr, ","), supplierKey, b, s)
 	fmt.Println(q)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, q, nil)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 	defer cursor.Close()
 	var data []estelamAndProduct
@@ -79,12 +92,24 @@ func getAllEstelamsWithProductsBySupplierKey(supplierKey string, brand string, s
 		if driver.IsNoMoreDocuments(err) {
 			break
 		} else if err != nil {
-			return nil, err
+			return nil, -1, err
 
 		}
 		data = append(data, doc)
 	}
-	return &data, nil
+
+	cursor, err = db.Query(ctx, ql, nil)
+	if err != nil {
+		return nil, -1, err
+	}
+	defer cursor.Close()
+
+	var l int
+	_, err = cursor.ReadDocument(ctx, &l)
+	if err != nil {
+		return nil, -1, err
+	}
+	return &data, l, nil
 }
 
 func getEstelamBrandsBySupplierKey(c *fiber.Ctx) error {

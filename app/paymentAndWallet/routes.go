@@ -11,8 +11,27 @@ func WalletRoutes(app fiber.Router) {
 	r := app.Group("/wallet")
 
 	r.Get("/data", middleware.GetSupplierByEmployee, getDataForSupplierWalletPage)
+	r.Get("/user/history/", middleware.Auth, func(c *fiber.Ctx) error {
+		userKey := c.Locals("userKey").(string)
+		offset := c.Query("offset")
+		limit := c.Query("limit")
+		if limit == "" || offset == "" {
+			return c.Status(400).SendString("offset or limit is empty")
+		}
+		res, t, err := GetUserWalletHistoryByUserKey(userKey, offset, limit)
+		if err != nil {
+			return c.Status(500).JSON(err)
+		}
+		return c.JSON(fiber.Map{
+			"history": res,
+			"income":  t.Income,
+			"outcome": t.Outcome,
+		})
+	})
 	r.Post("/url", middleware.GetSupplierByEmployee, getPaymentUrlForSupplierWallet)
+	r.Post("/user/url", middleware.Auth, getPaymentUrlForUserWallet)
 	r.Post("/verify/:key", middleware.GetSupplierByEmployee, VerifyPaymentAndAddToWallet)
+	r.Post("/user/verify/:key", middleware.Auth, VerifyUserPaymentAndAddToWallet)
 
 }
 

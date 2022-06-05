@@ -61,6 +61,19 @@ func sendMsgByPhoneNumberUsers(c *fiber.Ctx) error {
 	database.ExecuteGetQuery(query)
 	return c.JSON(fiber.Map{"msg": "پیام ها با موفقیت ثبت شد"})
 }
+
+// sendMsgByPhoneNumberSuppliers  send message for suppliers
+// @Summary send message for suppliers
+// @Description send message for suppliers
+// @Tags massage
+// @Accept json
+// @Produce json
+// @Param data body sendMsgByPhoneNumberReq true "data"
+// @Security ApiKeyAuth
+// @param Authorization header string false "Authorization"
+// @Success 200 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /msg/by-phone-supplier [post]
 func sendMsgByPhoneNumberSuppliers(c *fiber.Ctx) error {
 	m := new(sendMsgByPhoneNumberReq)
 	if err := utils.ParseBodyAndValidate(c, m); err != nil {
@@ -96,7 +109,7 @@ func sendMsgByPhoneNumberSuppliers(c *fiber.Ctx) error {
 		}
 	}
 	pnStr += "] "
-	query := fmt.Sprintf("let userIds=(for u in users filter u.phoneNumber in %v return u._id)\nfor i in userIds\nINSERT { _from: \"%v\", _to: i , seen:false } INTO massageUserEdge OPTIONS { ignoreErrors: true }\n ", pnStr, meta.ID.String())
+	query := fmt.Sprintf("let userIds=(for u in supplierEmployee filter u.phoneNumber in %v return u._id)\nfor i in userIds\nINSERT { _from: \"%v\", _to: i , seen:false } INTO massageSupplierEdge OPTIONS { ignoreErrors: true }\n ", pnStr, meta.ID.String())
 	database.GetCollection(query)
 	return c.JSON(fiber.Map{"msg": "پیام ها با موفقیت ثبت شد"})
 }
@@ -144,7 +157,7 @@ func sendMessageAll(c *fiber.Ctx) error {
 
 }
 
-// addToCart get massages by jwt
+// getMassageByUserKey get massages by jwt
 // @Summary get massages by jwt
 // @Description get massages by jwt , set seen to true if to mark massage as seen
 // @Tags massage

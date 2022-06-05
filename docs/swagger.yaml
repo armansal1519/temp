@@ -116,6 +116,8 @@ definitions:
         items:
           type: string
         type: array
+      lowestCheckPrice:
+        $ref: '#/definitions/addBuyMethod.checkPrice'
       lowestPrice:
         type: integer
       mainSpecs:
@@ -134,6 +136,13 @@ definitions:
         type: string
       variationsObj:
         $ref: '#/definitions/addBuyMethod.v'
+    type: object
+  addBuyMethod.checkPrice:
+    properties:
+      price:
+        type: integer
+      type:
+        type: string
     type: object
   addBuyMethod.csType:
     properties:
@@ -644,6 +653,8 @@ definitions:
     type: object
   contactUs.contactIn:
     properties:
+      email:
+        type: string
       fullName:
         type: string
       imageArr:
@@ -658,6 +669,10 @@ definitions:
         type: string
       title:
         type: string
+      website:
+        items:
+          type: string
+        type: array
     type: object
   contactUs.contactOut:
     properties:
@@ -669,6 +684,8 @@ definitions:
         type: string
       createdAt:
         type: integer
+      email:
+        type: string
       fullName:
         type: string
       imageArr:
@@ -683,6 +700,10 @@ definitions:
         type: string
       title:
         type: string
+      website:
+        items:
+          type: string
+        type: array
     type: object
   discountCode.DiscountOut:
     properties:
@@ -1496,6 +1517,29 @@ definitions:
       txType:
         type: string
     type: object
+  paymentAndWallet.userWalletOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      amount:
+        type: integer
+      createdAt:
+        type: integer
+      income:
+        type: boolean
+      paymentKey:
+        type: string
+      supplierKey:
+        type: string
+      txStatus:
+        type: string
+      txType:
+        type: string
+    type: object
   productQA.adminUpdateDto:
     properties:
       rejectionText:
@@ -1516,6 +1560,12 @@ definitions:
           type: string
         type: array
       productId:
+        type: string
+      productImageArr:
+        items:
+          type: string
+        type: array
+      productTitle:
         type: string
       questionKey:
         type: string
@@ -1673,6 +1723,8 @@ definitions:
         items:
           type: string
         type: array
+      lowestCheckPrice:
+        $ref: '#/definitions/products.checkPrice'
       lowestPrice:
         type: integer
       mainSpecs:
@@ -1711,6 +1763,13 @@ definitions:
       priceTo:
         type: integer
       sort:
+        type: string
+    type: object
+  products.checkPrice:
+    properties:
+      price:
+        type: integer
+      type:
         type: string
     type: object
   products.colorOut:
@@ -1833,6 +1892,8 @@ definitions:
         items:
           type: string
         type: array
+      lowestCheckPrice:
+        $ref: '#/definitions/products.checkPrice'
       lowestPrice:
         type: integer
       mainSpecs:
@@ -2319,6 +2380,8 @@ definitions:
         type: string
       phoneNumber:
         type: string
+      postalCode:
+        type: string
       role:
         type: string
       salesPermitImage:
@@ -2594,6 +2657,8 @@ definitions:
         type: string
       userCards:
         $ref: '#/definitions/users.cardInfo'
+      walletAmount:
+        type: integer
     type: object
   users.cardInfo:
     properties:
@@ -4940,6 +5005,38 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: adds to massage
+      tags:
+      - massage
+  /msg/by-phone-supplier:
+    post:
+      consumes:
+      - application/json
+      description: send message for suppliers
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/massage.sendMsgByPhoneNumberReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: send message for suppliers
       tags:
       - massage
   /msg/user:
@@ -8313,6 +8410,79 @@ paths:
       summary: remove productId from fav field in user
       tags:
       - user-fav
+  /user-request/admin/{key}:
+    post:
+      consumes:
+      - application/json
+      description: create user request
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: done or reject
+        in: query
+        name: op
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create user request
+      tags:
+      - userRequest
+  /user-request/remove-from-wallet/{amount}:
+    post:
+      consumes:
+      - application/json
+      description: create user request
+      parameters:
+      - description: amount
+        in: path
+        name: amount
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: create user request
+      tags:
+      - userRequest
   /user/auth:
     post:
       consumes:
@@ -8470,6 +8640,110 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get payment url for wallet
+      tags:
+      - wallet
+  /wallet/user/history:
+    get:
+      consumes:
+      - application/json
+      description: get user wallet history
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/paymentAndWallet.userWalletOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get user wallet history
+      tags:
+      - wallet
+  /wallet/user/url:
+    post:
+      consumes:
+      - application/json
+      description: get payment url for wallet
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.addToWallet'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get payment url for wallet
+      tags:
+      - wallet
+  /wallet/user/verify/{key}:
+    post:
+      consumes:
+      - application/json
+      description: verify tx to wallet
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: verify tx to wallet
       tags:
       - wallet
   /wallet/verify/{key}:

@@ -26,14 +26,15 @@ import (
 // @Success 200 {object} []priceAndProduct{}
 // @Failure 404 {object} string{}
 // @Router /add-buy-method/price/{categoryurl} [get]
-func getPriceWithProductBySupplierKey(categoryUrl string, supplierKey string, offset string, limit string) (*[]priceAndProduct, error) {
+func getPriceWithProductBySupplierKey(categoryUrl string, supplierKey string, offset string, limit string) (*[]priceAndProduct, int, error) {
 	query := fmt.Sprintf("for j in supplier_%v_price filter j._from==\"supplier/%v\" for s in %v filter s._id==j._to  limit %v,%v return {product:s,price:j}", categoryUrl, supplierKey, categoryUrl, offset, limit)
+	querylength := fmt.Sprintf("let data=(for j in supplier_%v_price filter j._from==\"supplier/%v\" for s in %v filter s._id==j._to   return {product:s,price:j}) return length(data)", categoryUrl, supplierKey, categoryUrl)
 	fmt.Println(query)
 	db := database.GetDB()
 	ctx := context.Background()
 	cursor, err := db.Query(ctx, query, nil)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 	defer cursor.Close()
 	var data []priceAndProduct
@@ -43,12 +44,23 @@ func getPriceWithProductBySupplierKey(categoryUrl string, supplierKey string, of
 		if driver.IsNoMoreDocuments(err) {
 			break
 		} else if err != nil {
-			return nil, err
+			return nil, -1, err
 
 		}
 		data = append(data, doc)
 	}
-	return &data, nil
+	cursor, err = db.Query(ctx, querylength, nil)
+	if err != nil {
+		return nil, -1, err
+	}
+	defer cursor.Close()
+
+	var l int
+	_, err = cursor.ReadDocument(ctx, &l)
+	if err != nil {
+		return nil, -1, err
+	}
+	return &data, l, nil
 }
 
 func getAllPricesWithProductsBySupplierKey(supplierKey string, brand string, search string, offset string, limit string) (*[]priceAndProduct, error) {
@@ -162,6 +174,11 @@ func AddPriceToProduct(pg PriceIn, supplierId string) (*PriceOut, error) {
 	pc := database.GetCollection(productCol)
 	log.Println(ulp)
 	_, err = pc.UpdateDocument(context.Background(), productKey, ulp)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkAndUpdateLowestCheckPrice(productKey, productCol, pg)
 	if err != nil {
 		return nil, err
 	}

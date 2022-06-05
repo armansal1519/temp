@@ -17,6 +17,23 @@ type supplierWalletOut struct {
 	SupplierWalletHistory
 }
 
+type UserWalletHistory struct {
+	Amount     int64  `json:"amount"`
+	UserKey    string `json:"userKey"`
+	PaymentKey string `json:"paymentKey"`
+	CreatedAt  int64  `json:"createdAt"`
+	Income     bool   `json:"income"`
+	TxType     string `json:"txType"`
+	TxStatus   string `json:"txStatus"`
+}
+
+type userWalletOut struct {
+	Key string `json:"_key,omitempty"`
+	ID  string `json:"_id,omitempty"`
+	Rev string `json:"_rev,omitempty"`
+	SupplierWalletHistory
+}
+
 type supplierPageResponse struct {
 	WalletAmount int64               `json:"walletAmount"`
 	TotalIn      int64               `json:"totalIn"`

@@ -35,6 +35,7 @@ import (
 	"bamachoub-backend-go-v1/app/transportation"
 	"bamachoub-backend-go-v1/app/userAddress"
 	"bamachoub-backend-go-v1/app/userFav"
+	"bamachoub-backend-go-v1/app/userRequests"
 	"bamachoub-backend-go-v1/app/users"
 
 	"github.com/gofiber/fiber/v2"
@@ -91,5 +92,6 @@ func InitRoutes(v1 fiber.Router) {
 
 	gOrderItem.Routes(v1)
 	supplierRequests.Routes(v1)
+	userRequests.Routes(v1)
 
 }

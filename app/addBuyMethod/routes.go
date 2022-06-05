@@ -46,12 +46,15 @@ func Routes(app fiber.Router) {
 		supplierId := c.Locals("supplierId").(string)
 		// supplierKey := strings.Split(supplierId, "/")[1]
 
-		resp, err := getPriceWithProductBySupplierKey(categoryUrl, supplierId, offset, limit)
+		resp, l, err := getPriceWithProductBySupplierKey(categoryUrl, supplierId, offset, limit)
 
 		if err != nil {
 			return c.JSON(fmt.Sprintf("%v", err))
 		}
-		return c.JSON(resp)
+		return c.JSON(fiber.Map{
+			"data":   resp,
+			"length": l,
+		})
 	})
 
 	r.Post("/price", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
@@ -128,12 +131,15 @@ func Routes(app fiber.Router) {
 			return c.JSON(err)
 		}
 
-		resp, err := getAllEstelamsWithProductsBySupplierKey(supplierId, b.Brand, b.Search, offset, limit)
+		resp, l, err := getAllEstelamsWithProductsBySupplierKey(supplierId, b.Brand, b.Search, offset, limit)
 
 		if err != nil {
 			return c.JSON(fmt.Sprintf("%v", err))
 		}
-		return c.JSON(resp)
+		return c.JSON(fiber.Map{
+			"data":   resp,
+			"length": l,
+		})
 	})
 
 	r.Get("/estelam/brand", middleware.GetSupplierByEmployee, getEstelamBrandsBySupplierKey)
@@ -149,12 +155,15 @@ func Routes(app fiber.Router) {
 		// fmt.Println("33333333333333", supplierId)
 		// supplierKey := strings.Split(supplierId, "/")[1]
 
-		resp, err := getEstelamWithProductBySupplierKey(categoryUrl, supplierId, offset, limit)
+		resp, l, err := getEstelamWithProductBySupplierKey(categoryUrl, supplierId, offset, limit)
 
 		if err != nil {
 			return c.JSON(fmt.Sprintf("%v", err))
 		}
-		return c.JSON(resp)
+		return c.JSON(fiber.Map{
+			"data":   resp,
+			"length": l,
+		})
 	})
 
 	r.Post("/estelam", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {

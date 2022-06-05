@@ -29,7 +29,7 @@ func createBannerQuery(b Banners) string {
 }
 
 func createProductQuery(p ProductSlider) string {
-	return fmt.Sprintf("for i in %v sort i.%v limit 15 return i", p.CategoryName, p.Sort)
+	return fmt.Sprintf("for i in %v filter i.lowestPrice!=-1 sort i.%v limit 15 return i", p.CategoryName, p.Sort)
 }
 
 func CreateCategoryQuery(c CategorySlider) string {

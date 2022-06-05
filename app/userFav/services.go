@@ -102,5 +102,10 @@ func getUserFav(c *fiber.Ctx) error {
 	userKey := c.Locals("userKey").(string)
 
 	q := fmt.Sprintf("for i in users filter i._key==\"%v\" \nfor p in productSearch filter p._id in i.fav limit %v,%v return p", userKey, offset, limit)
-	return c.JSON(database.ExecuteGetQuery(q))
+	ql := fmt.Sprintf("let data=(for i in users filter i._key==\"%v\" \nfor p in productSearch filter p._id in i.fav return p ) return length(data)", userKey)
+	res := database.ExecuteGetQuery(ql)
+	return c.JSON(fiber.Map{
+		"data": database.ExecuteGetQuery(q),
+		"l":    res[0],
+	})
 }

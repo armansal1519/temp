@@ -12,6 +12,11 @@ func Routes(app fiber.Router) {
 		//middleware.CheckAdmin, middleware.AdminHasAccess([]string{"write-massageAndFAQ"}),
 		middleware.TestAdmin,
 		sendMsgByPhoneNumberUsers)
+	r.Post("by-phone-supplier",
+		//middleware.CheckAdmin, middleware.AdminHasAccess([]string{"write-massageAndFAQ"}),
+		middleware.TestAdmin,
+		sendMsgByPhoneNumberSuppliers)
+
 	r.Get("user", middleware.Auth, getMassageByUserKey)
 	r.Get("supplier", middleware.GetSupplierByEmployee, getMassageBySupplierKey)
 

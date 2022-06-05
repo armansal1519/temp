@@ -71,6 +71,7 @@ type employeeIn struct {
 	PhoneNumber        string   `json:"phoneNumber" validate:"required"`
 	Email              string   `json:"email"  `
 	NationalCode       string   `json:"nationalCode" validate:"required"`
+	PostalCode         string   `json:"postalCode"`
 	ShenasNameCode     string   `json:"shenasNameCode" validate:"required"`
 	BirthDate          string   `json:"birthDate" validate:"required"`
 	ShabaNumber        string   `json:"shabaNumber" validate:"required"`

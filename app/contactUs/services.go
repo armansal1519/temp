@@ -32,6 +32,8 @@ func create(c *fiber.Ctx) error {
 		Text:        ci.Text,
 		ImageArr:    ci.ImageArr,
 		CreatedAt:   time.Now().Unix(),
+		Website:     ci.Website,
+		Email:       ci.Email,
 	}
 	meta, err := contactCol.CreateDocument(context.Background(), contact)
 	if err != nil {

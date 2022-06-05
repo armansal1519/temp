@@ -7,6 +7,8 @@ type contactIn struct {
 	Text        string   `json:"text"`
 	Status      string   `json:"status"`
 	ImageArr    []string `json:"imageArr"`
+	Website     []string `json:"website"`
+	Email       string   `json:"email"`
 }
 
 type contact struct {
@@ -16,6 +18,8 @@ type contact struct {
 	Text        string   `json:"text"`
 	ImageArr    []string `json:"imageArr"`
 	Status      string   `json:"status"`
+	Website     []string `json:"website"`
+	Email       string   `json:"email"`
 	CreatedAt   int64    `json:"createdAt"`
 }
 

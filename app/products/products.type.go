@@ -88,25 +88,31 @@ type productInfo struct {
 }
 
 type Product struct {
-	CategoryKey            string   `json:"categoryKey" `
-	CategoryPath           string   `json:"categoryName" `
-	Title                  string   `json:"title"`
-	CompleteSpec           []csType `json:"completeSpec"`
-	MainSpecs              []f      `json:"mainSpecs"`
-	VariationObj           v        `json:"variationsObj"`
-	ImageArr               []string `json:"imageArr"`
-	SpId                   string   `json:"spId"`
-	Status                 string   `json:"status" `
-	Description            string   `json:"description"`
-	Brand                  string   `json:"brand"`
-	Tags                   []string `json:"tags"`
-	CreatedAt              int64    `json:"createdAt"`
-	SeenNumber             int      `json:"seenNumber"`
-	BuyNumber              int      `json:"buyNumber"`
-	CommissionPercent      float64  `json:"commissionPercent"`
-	CheckCommissionPercent float64  `json:"checkCommissionPercent"`
-	LowestPrice            int64    `json:"lowestPrice"`
-	FilterArr              []string `json:"filterArr"`
+	CategoryKey            string     `json:"categoryKey" `
+	CategoryPath           string     `json:"categoryName" `
+	Title                  string     `json:"title"`
+	CompleteSpec           []csType   `json:"completeSpec"`
+	MainSpecs              []f        `json:"mainSpecs"`
+	VariationObj           v          `json:"variationsObj"`
+	ImageArr               []string   `json:"imageArr"`
+	SpId                   string     `json:"spId"`
+	Status                 string     `json:"status" `
+	Description            string     `json:"description"`
+	Brand                  string     `json:"brand"`
+	Tags                   []string   `json:"tags"`
+	CreatedAt              int64      `json:"createdAt"`
+	SeenNumber             int        `json:"seenNumber"`
+	BuyNumber              int        `json:"buyNumber"`
+	CommissionPercent      float64    `json:"commissionPercent"`
+	CheckCommissionPercent float64    `json:"checkCommissionPercent"`
+	LowestPrice            int64      `json:"lowestPrice"`
+	LowestCheckPrice       checkPrice `json:"lowestCheckPrice"`
+	FilterArr              []string   `json:"filterArr"`
+}
+
+type checkPrice struct {
+	Type  string `json:"type"`
+	Price int64  `json:"price"`
 }
 
 type productOut struct {

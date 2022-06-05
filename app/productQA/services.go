@@ -1,12 +1,14 @@
 package productQA
 
 import (
+	"bamachoub-backend-go-v1/app/products"
 	"bamachoub-backend-go-v1/app/users"
 	"bamachoub-backend-go-v1/config/database"
 	"bamachoub-backend-go-v1/utils"
 	"context"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"strings"
 	"time"
 )
 
@@ -70,10 +72,22 @@ func createQA(c *fiber.Ctx) error {
 	var u users.UserOut
 	_, err := userCol.ReadDocument(context.Background(), userKey, &u)
 
+	key := strings.Split(pqa.ProductId, "/")[1]
+	colName := strings.Split(pqa.ProductId, "/")[0]
+
+	productCol := database.GetCollection(colName)
+
+	var p products.Product
+	_, err = productCol.ReadDocument(context.Background(), key, &p)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
 	pqa.FullName = u.FirstName + " " + u.LastName
 	pqa.UserKey = userKey
 	pqa.CreatedAt = time.Now().Unix()
 	pqa.Status = "wait"
+	pqa.ProductTitle = p.Title
+	pqa.ProductImageArr = p.ImageArr
 
 	col := database.GetCollection("productQA")
 	meta, err := col.CreateDocument(context.Background(), pqa)
@@ -128,8 +142,8 @@ func getAll(c *fiber.Ctx) error {
 	if offset == "" || limit == "" {
 		return c.Status(400).SendString("Offset and Limit must have a value")
 	}
-	if valid == "not" {
-		valid = "not"
+	if valid == "rejected" {
+		valid = "rejected"
 	} else if valid == "wait" {
 		valid = "wait"
 	} else {
@@ -183,7 +197,7 @@ func likes(c *fiber.Ctx) error {
 // @Failure 404 {object} string{}
 // @Router /products-q-a/user/{qa} [get]
 func getQAForUser(c *fiber.Ctx) error {
-	qa := c.Params("qa")
+	qa := c.Params("op")
 	offset := c.Query("offset")
 	limit := c.Query("limit")
 	if offset == "" || limit == "" {
@@ -191,11 +205,11 @@ func getQAForUser(c *fiber.Ctx) error {
 	}
 	userKey := c.Locals("userKey").(string)
 	if qa == "a" {
-		query := fmt.Sprintf("let data=(for i in productQA filter i.userKey==\"%v\" filter i.questionKey!=\"\"  sort i.createdAt desc return i) \nlet docs=(for j in data  limit %v,%v return j)\nreturn {len:LENGTH(data),data:docs}", userKey, offset, limit)
+		query := fmt.Sprintf("let data=(for i in productQA filter i.userKey==\"%v\" filter i.questionKey!=\"\"  sort i.createdAt desc return i) \nlet docs=(for j in data  limit %v,%v return j)\nreturn {length:LENGTH(data),data:docs}", userKey, offset, limit)
 		return c.JSON(database.ExecuteGetQuery(query))
 	}
 	if qa == "q" {
-		query := fmt.Sprintf("let data=(for i in productQA filter i.userKey==\"%v\" filter i.questionKey==\"\"  sort i.createdAt desc return i) \nlet docs=(for j in data  limit %v,%v return j)\nreturn {len:LENGTH(data),data:docs}", userKey, offset, limit)
+		query := fmt.Sprintf("let data=(for i in productQA filter i.userKey==\"%v\" filter i.questionKey==\"\"  sort i.createdAt desc return i) \nlet docs=(for j in data  limit %v,%v return j)\nreturn {length:LENGTH(data),data:docs}", userKey, offset, limit)
 		return c.JSON(database.ExecuteGetQuery(query))
 	}
 	return c.Status(400).SendString("op must be q or a")

@@ -121,9 +121,9 @@ func setBaseData(c *fiber.Ctx) error {
 		}
 		q := ""
 		if v.CategoryName != "all" {
-			q = fmt.Sprintf("for i in categories filter i.url==\"%v\" for v in 1..1 inbound i graph \"brandCategory\" sort v.seen limit 8 return v", v.CategoryName)
+			q = fmt.Sprintf("for i in categories filter i.url==\"%v\" for v in 1..1 inbound i graph \"brandCategory\" filter v!=null sort v.seen limit 8 return v", v.CategoryName)
 		} else {
-			q = "for i in brands sort i.seen limit 8 return i "
+			q = "for i in brands sort i.seen filter v!=null limit 8 return i "
 		}
 
 		queryMap[v.Position] = saveQuery{
@@ -149,7 +149,7 @@ func setBaseData(c *fiber.Ctx) error {
 	saveQueryArr = insert(saveQueryArr, 1, saveQuery{
 		Title: "حراجی",
 		Type:  "discount",
-		Query: "for i in productSearch limit 15 return {discount:5,product:i}",
+		Query: "for i in productSearch filter i.lowestPrice!=-1 limit 15 return {discount:5,product:i}",
 	})
 
 	saveQueryArr = append(saveQueryArr, saveQuery{

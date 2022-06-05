@@ -124,10 +124,14 @@ func getAllFavBySupplierKey(c *fiber.Ctx) error {
 	key := c.Locals("supplierId").(string)
 	log.Println(key)
 
-	q := fmt.Sprintf("for f in fav\nfilter f.supplierKey==\"%v\"\nfor i in %v\nfilter i._key==f.productKey\nreturn i", key, categoryUrl)
-
+	q := fmt.Sprintf("for f in fav filter f.supplierKey==\"%v\" for i in %v filter i._key==f.productKey limit %v,%v return i", key, categoryUrl, offset, limit)
+	ql := fmt.Sprintf("let data=(for f in fav filter f.supplierKey==\"%v\" for i in %v filter i._key==f.productKey  return i) return length(data)", key, categoryUrl)
+	res := database.ExecuteGetQuery(ql)
 	log.Println(q)
-	return c.JSON(database.ExecuteGetQuery(q))
+	return c.JSON(fiber.Map{
+		"data":   database.ExecuteGetQuery(q),
+		"length": res[0],
+	})
 }
 
 func getAllFavProductIdBysupplierKey(c *fiber.Ctx) error {

@@ -32,6 +32,7 @@ type user struct {
 	LastLogin        int64    `json:"lastLogin"`
 	IsAuthenticated  bool     `json:"isAuthenticated"`
 	HashRefreshToken string   `json:"hashRefreshToken"`
+	WalletAmount     int64    `json:"walletAmount"`
 	UserCards        cardInfo `json:"userCards"`
 }
 

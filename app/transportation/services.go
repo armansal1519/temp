@@ -8,7 +8,7 @@ import (
 //TODO fix transportation price
 
 func GetTransportationPrice() int64 {
-	return 100000
+	return 1000
 }
 
 // getTransportationPrice get transportation price
@@ -37,7 +37,7 @@ func getTransportationPrice(c *fiber.Ctx) error {
 	}
 	var p int64
 	if s.TransportationType == "user-address" {
-		p = 1000000
+		p = 1000
 	} else {
 		p = 0
 	}

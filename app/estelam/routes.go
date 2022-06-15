@@ -23,17 +23,8 @@ func Routes(app fiber.Router) {
 
 	})
 
-	r.Get("/supplier", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
-		supplierId := c.Locals("supplierId").(string)
+	r.Get("/supplier", middleware.GetSupplierByEmployee, getEstelamForSupplier)
 
-		resp, err := getEstelamForSupplier(supplierId)
-		if err != nil {
-			return c.JSON(err)
-		}
-		return c.JSON(resp)
-
-	})
-
-	r.Get("/supplier/response", middleware.GetSupplierByEmployee, responseToEstelam)
+	//r.Get("/supplier/response", middleware.GetSupplierByEmployee, responseToEstelam)
 
 }

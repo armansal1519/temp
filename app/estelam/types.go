@@ -1,5 +1,7 @@
 package estelam
 
+import "bamachoub-backend-go-v1/app/products"
+
 type onlineSuppliers struct {
 	Uuid        string `json:"uuid"`
 	SupplierKey string `json:"supplierKey"`
@@ -42,19 +44,21 @@ type estelamCartOut struct {
 }
 
 type estelamSupplier struct {
-	SupplierKey     string `json:"supplierKey"`
-	EstelamCartKey  string `json:"estelamCartKey"`
-	Variant         string `json:"variant" `
-	ProductId       string `json:"productId" `
-	ImageUrl        string `json:"imageUrl"`
-	ProductTitle    string `json:"productTitle"`
-	Price           bool   `json:"price"`
-	OneMonthPrice   bool   `json:"oneMonthPrice"`
-	TwoMonthPrice   bool   `json:"twoMonthPrice"`
-	ThreeMonthPrice bool   `json:"threeMonthPrice"`
-	Number          int    `json:"number"`
-	CreatedAt       int64  `json:"createdAt"`
-	WillExpireAt    int64  `json:"willExpireAt"`
+	SupplierKey          string   `json:"supplierKey"`
+	EstelamCartKey       string   `json:"estelamCartKey"`
+	Variant              string   `json:"variant" `
+	ProductId            string   `json:"productId" `
+	ImageUrl             string   `json:"imageUrl"`
+	ProductTitle         string   `json:"productTitle"`
+	Price                bool     `json:"price"`
+	OneMonthPrice        bool     `json:"oneMonthPrice"`
+	TwoMonthPrice        bool     `json:"twoMonthPrice"`
+	ThreeMonthPrice      bool     `json:"threeMonthPrice"`
+	Number               int      `json:"number"`
+	CreatedAt            int64    `json:"createdAt"`
+	WillExpireAt         int64    `json:"willExpireAt"`
+	SupplierResponseKeys []string `json:"supplierResponseKey"`
+	State                string   `json:"state"`
 }
 
 type estelamSupplierOut struct {
@@ -64,14 +68,25 @@ type estelamSupplierOut struct {
 	estelamSupplier
 }
 
+type updateEstelamSupplier struct {
+	SupplierResponseKeys []string `json:"supplierResponseKey"`
+	State                string   `json:"state"`
+}
+
+type estelamSupplierResp struct {
+	Estelam estelamSupplierOut `json:"estelam"`
+	Product products.Product   `json:"product"`
+}
+
 type responseToEstelamIn struct {
-	FromNumber      int    `json:"fromNumber"`
-	ToNumber        int    `json:"ToNumber"`
-	EstelamCartKey  string `json:"estelamCartKey" validate:"required"`
-	Price           int64  `json:"price"`
-	OneMonthPrice   int64  `json:"oneMonthPrice"`
-	TwoMonthPrice   int64  `json:"twoMonthPrice"`
-	ThreeMonthPrice int64  `json:"threeMonthPrice"`
+	FromNumber         int    `json:"fromNumber"`
+	ToNumber           int    `json:"ToNumber"`
+	EstelamCartKey     string `json:"estelamCartKey" validate:"required"`
+	EstelamSupplierKey string `json:"estelamSupplierKey"`
+	Price              int64  `json:"price"`
+	OneMonthPrice      int64  `json:"oneMonthPrice"`
+	TwoMonthPrice      int64  `json:"twoMonthPrice"`
+	ThreeMonthPrice    int64  `json:"threeMonthPrice"`
 }
 
 type createResponseToEstelam struct {

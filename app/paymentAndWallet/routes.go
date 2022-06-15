@@ -64,15 +64,7 @@ func PaymentRoutes(app fiber.Router) {
 
 func SupplierConfirmationRoute(app fiber.Router) {
 	r := app.Group("/suppliers-confirmation")
-	r.Get("", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
-		supplierId := c.Locals("supplierId").(string)
-
-		resp, err := GetOrderConfirmationBySupplierKey(supplierId)
-		if err != nil {
-			return c.JSON(err)
-		}
-		return c.JSON(resp)
-	})
+	r.Get("", middleware.GetSupplierByEmployee, GetOrderConfirmationBySupplierKey)
 
 	r.Post("/approve/:infoKey", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
 		infoKey := c.Params("infoKey")

@@ -166,28 +166,12 @@ func createEstelamRequest(c *fiber.Ctx) error {
 // @Success 200 {object} []estelamSupplierOut{}
 // @Failure 404 {object} string{}
 // @Router /estelam/supplier [get]
-func getEstelamForSupplier(supplierKey string) (*[]estelamSupplierOut, error) {
-	query := fmt.Sprintf("for i in supplierEstelam filter i.supplierKey==\"%v\" return i", supplierKey)
-	db := database.GetDB()
-	ctx := context.Background()
-	cursor, err := db.Query(ctx, query, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error while running query:%v", query)
-	}
-	defer cursor.Close()
-	var data []estelamSupplierOut
-	for {
-		var doc estelamSupplierOut
-		_, err := cursor.ReadDocument(ctx, &doc)
-		if driver.IsNoMoreDocuments(err) {
-			break
-		} else if err != nil {
-			return nil, fmt.Errorf("error while running query:%v", query)
-
-		}
-		data = append(data, doc)
-	}
-	return &data, err
+func getEstelamForSupplier(c *fiber.Ctx) error {
+	supplierKey := c.Locals("supplierId").(string)
+	//query := fmt.Sprintf("for i in supplierEstelam filter i.supplierKey==\"%v\" for j in productSearch filter i.productId==j._id\nreturn {estelam:i,product:j}", supplierKey)
+	query := fmt.Sprintf("for i in supplierEstelam filter i.supplierKey==\"%v\"\nfor j in productSearch filter i.productId==j._id let res=(for k in estelamResponse filter k._key in i.supplierResponseKey return k)\nreturn {estelam:i,product:j,responses:}", supplierKey)
+	log.Println(query)
+	return c.JSON(database.ExecuteGetQuery(query))
 }
 
 // getEstelamForUser  get estelam request for user
@@ -358,6 +342,16 @@ func responseToEstelam(c *fiber.Ctx) error {
 		}
 		sms.SendSms(u.PhoneNumber, "57117", []sms.ParameterArray{pArr})
 
+	}
+
+	u := updateEstelamSupplier{
+		SupplierResponseKeys: meta.Keys(),
+		State:                "have-response",
+	}
+	supplierEstelamCol := database.GetCollection("supplierEstelam")
+	_, err = supplierEstelamCol.UpdateDocument(ctx, rte.EstelamSupplierKey, u)
+	if err != nil {
+		return c.Status(500).JSON(err)
 	}
 
 	return c.JSON(meta)

@@ -87,6 +87,20 @@ import (
 //	return c.JSON(rpo)
 //}
 //
+
+// rejectPaymentImage reject an image payment
+// @Summary rejects an image payment
+// @Description rejects an image payment
+// @Tags payment rejection
+// @Accept json
+// @Produce json
+// @Param rejectRequest body rejectRequest true "data"
+// @Param key path string true "payment key"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+//@Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /rejection/by-image/{key} [post]
 func rejectPaymentImage(c *fiber.Ctx) error {
 	PaymentKey := c.Params("key")
 	ms := new(rejectRequest)

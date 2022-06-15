@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
 	"time"
 )
@@ -31,7 +30,10 @@ func supplierConfirmation(oi []graphOrder.GOrderItemOut, orderKey string) error 
 
 	for _, meta := range metaArr {
 		time.AfterFunc(24*time.Hour, func() {
-			rejectOrder(meta.Key, "", "system")
+			err := rejectOrder(meta.Key, "", "system")
+			if err != nil {
+				return
+			}
 		})
 	}
 	return nil
@@ -49,27 +51,12 @@ func supplierConfirmation(oi []graphOrder.GOrderItemOut, orderKey string) error 
 // @Success 200 {object} []getSupplierConfirmationResponse{}
 // @Failure 404 {object} string{}
 // @Router /suppliers-confirmation [get]
-func GetOrderConfirmationBySupplierKey(supplierKey string) (*[]getSupplierConfirmationResponse, error) {
-	query := fmt.Sprintf("for i in supplierConfirmation filter i.supplierKey==\"%v\" for j in cart filter j._key==i.cartKey return {cart:j,info:i}", supplierKey)
-	db := database.GetDB()
-	ctx := context.Background()
-	cursor, err := db.Query(ctx, query, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error while running query:%v", query)
-	}
-	defer cursor.Close()
-	var data []getSupplierConfirmationResponse
-	for {
-		var doc getSupplierConfirmationResponse
-		_, err := cursor.ReadDocument(ctx, &doc)
-		if driver.IsNoMoreDocuments(err) {
-			break
-		} else if err != nil {
-			return nil, fmt.Errorf("error in cursor -in GetAll")
-		}
-		data = append(data, doc)
-	}
-	return &data, nil
+func GetOrderConfirmationBySupplierKey(c *fiber.Ctx) error {
+	supplierKey := c.Locals("supplierId").(string)
+
+	query := fmt.Sprintf("for i in gOrderItem filter i.supplierKey==\"%v\" and i.isWaitingForPayment==false and i.isApprovedBySupplier==false \nlet data=(for v,e,p  in 0..3 inbound i graph \"orderGraph\"  return v)\nreturn data ", supplierKey)
+	return c.JSON(database.ExecuteGetQuery(query))
+
 }
 
 // approveOrder approve order

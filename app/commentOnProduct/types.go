@@ -1,18 +1,20 @@
 package commentOnProduct
 
 type comment struct {
-	ProductId    string   `json:"productId"`
-	Title        string   `json:"title"`
-	Text         string   `json:"text"`
-	ImageUrls    []string `json:"imageUrls"`
-	UserFullName string   `json:"userFullName"`
-	UserKey      string   `json:"userKey"`
-	IsAnonymous  bool     `json:"isAnonymous"`
-	IsBuyer      bool     `json:"isBuyer"`
-	ScoreArr     []score  `json:"scoreArr"`
-	Likes        []string `json:"likes"`
-	CreatedAt    int64    `json:"createdAt"`
-	Status       string   `json:"status"`
+	ProductId       string   `json:"productId"`
+	ProductTitle    string   `json:"productTitle"`
+	ProductImageArr string   `json:"productImageArr"`
+	Title           string   `json:"title"`
+	Text            string   `json:"text"`
+	ImageUrls       []string `json:"imageUrls"`
+	UserFullName    string   `json:"userFullName"`
+	UserKey         string   `json:"userKey"`
+	IsAnonymous     bool     `json:"isAnonymous"`
+	IsBuyer         bool     `json:"isBuyer"`
+	ScoreArr        []score  `json:"scoreArr"`
+	Likes           []string `json:"likes"`
+	CreatedAt       int64    `json:"createdAt"`
+	Status          string   `json:"status"`
 }
 
 type commentOut struct {

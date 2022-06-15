@@ -608,6 +608,10 @@ definitions:
         type: array
       productId:
         type: string
+      productImageArr:
+        type: string
+      productTitle:
+        type: string
       scoreArr:
         items:
           $ref: '#/definitions/commentOnProduct.score'
@@ -922,8 +926,14 @@ definitions:
         type: string
       productTitle:
         type: string
+      state:
+        type: string
       supplierKey:
         type: string
+      supplierResponseKey:
+        items:
+          type: string
+        type: array
       threeMonthPrice:
         type: boolean
       twoMonthPrice:
@@ -1007,6 +1017,8 @@ definitions:
       ToNumber:
         type: integer
       estelamCartKey:
+        type: string
+      estelamSupplierKey:
         type: string
       fromNumber:
         type: integer
@@ -1431,6 +1443,11 @@ definitions:
       transId:
         type: string
       txType:
+        type: string
+    type: object
+  paymentAndWallet.rejectRequest:
+    properties:
+      rejectionReason:
         type: string
     type: object
   paymentAndWallet.rejectionPoolItemOut:
@@ -4975,6 +4992,42 @@ paths:
       summary: create homepage data
       tags:
       - homepage
+  /msg:
+    get:
+      consumes:
+      - application/json
+      description: gets all msg for admin
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: gets all msg for admin
+      tags:
+      - massage
   /msg/by-phone:
     post:
       consumes:
@@ -5037,6 +5090,46 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: send message for suppliers
+      tags:
+      - massage
+  /msg/supplier:
+    get:
+      consumes:
+      - application/json
+      description: get massages by jwt , set seen to true if to mark massage as seen
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: seen
+        in: query
+        name: seen
+        type: boolean
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get massages by jwt
       tags:
       - massage
   /msg/user:
@@ -6137,6 +6230,42 @@ paths:
       summary: update comment
       tags:
       - product comment
+  /product-comment/user:
+    get:
+      consumes:
+      - application/json
+      description: return all comment for one user
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: return all comment for one user
+      tags:
+      - product comment
   /product-suggestion:
     get:
       consumes:
@@ -6960,6 +7089,46 @@ paths:
       summary: return Product by key
       tags:
       - products
+  /rejection/by-image/{key}:
+    post:
+      consumes:
+      - application/json
+      description: rejects an image payment
+      parameters:
+      - description: data
+        in: body
+        name: rejectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/paymentAndWallet.rejectRequest'
+      - description: payment key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: rejects an image payment
+      tags:
+      - payment rejection
   /rejection/pool:
     get:
       consumes:

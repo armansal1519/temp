@@ -3454,6 +3454,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/msg": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "gets all msg for admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "massage"
+                ],
+                "summary": "gets all msg for admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/msg/by-phone": {
             "post": {
                 "security": [
@@ -3532,6 +3588,68 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/massage.sendMsgByPhoneNumberReq"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/msg/supplier": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get massages by jwt , set seen to true if to mark massage as seen",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "massage"
+                ],
+                "summary": "get massages by jwt",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "seen",
+                        "name": "seen",
+                        "in": "query"
                     },
                     {
                         "type": "string",
@@ -5070,6 +5188,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/product-comment/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "return all comment for one user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product comment"
+                ],
+                "summary": "return all comment for one user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/product-comment/{categoryUrl}/{productKey}": {
             "get": {
                 "description": "return all comment for a product from faq",
@@ -6460,6 +6634,68 @@ const docTemplate = `{
                         "description": "No Content",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/rejection/by-image/{key}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "rejects an image payment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment rejection"
+                ],
+                "summary": "rejects an image payment",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "rejectRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/paymentAndWallet.rejectRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "payment key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
@@ -10193,6 +10429,12 @@ const docTemplate = `{
                 "productId": {
                     "type": "string"
                 },
+                "productImageArr": {
+                    "type": "string"
+                },
+                "productTitle": {
+                    "type": "string"
+                },
                 "scoreArr": {
                     "type": "array",
                     "items": {
@@ -10649,8 +10891,17 @@ const docTemplate = `{
                 "productTitle": {
                     "type": "string"
                 },
+                "state": {
+                    "type": "string"
+                },
                 "supplierKey": {
                     "type": "string"
+                },
+                "supplierResponseKey": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "threeMonthPrice": {
                     "type": "boolean"
@@ -10781,6 +11032,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "estelamCartKey": {
+                    "type": "string"
+                },
+                "estelamSupplierKey": {
                     "type": "string"
                 },
                 "fromNumber": {
@@ -11421,6 +11675,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "txType": {
+                    "type": "string"
+                }
+            }
+        },
+        "paymentAndWallet.rejectRequest": {
+            "type": "object",
+            "properties": {
+                "rejectionReason": {
                     "type": "string"
                 }
             }

@@ -17,6 +17,7 @@ func Routes(app fiber.Router) {
 		middleware.TestAdmin,
 		sendMsgByPhoneNumberSuppliers)
 
+	r.Get("/", middleware.CheckAdmin, getAllMsg)
 	r.Get("user", middleware.Auth, getMassageByUserKey)
 	r.Get("supplier", middleware.GetSupplierByEmployee, getMassageBySupplierKey)
 

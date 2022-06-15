@@ -60,7 +60,6 @@ func addInterval(c *fiber.Ctx) error {
 		return c.JSON(err)
 	}
 	return c.JSON(meta)
-
 }
 
 // removeInterval remove sending interval
@@ -150,7 +149,7 @@ func CreateSendingInfo(c *fiber.Ctx) error {
 		return c.JSON(err)
 	}
 	u := updateSendingInfoKey{SendingInfoKey: meta.Key}
-	orderCol := database.GetCollection("order")
+	orderCol := database.GetCollection("gOrder")
 	orderMeta, err := orderCol.UpdateDocument(context.Background(), orderKey, u)
 	if err != nil {
 		return c.JSON(err)

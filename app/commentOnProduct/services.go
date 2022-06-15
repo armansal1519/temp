@@ -123,8 +123,40 @@ func getAll(c *fiber.Ctx) error {
 	if sort == "likes" {
 		sortStr = "sort length(i.likes ) desc"
 	}
-	query := fmt.Sprintf("for i in productComment sort %v limit %v,%v return i", sortStr, offset, limit)
+	query := fmt.Sprintf("for i in productComment  %v limit %v,%v return i", sortStr, offset, limit)
 	return c.JSON(database.ExecuteGetQuery(query))
+}
+
+// getAll get all comment for one user
+// @Summary return all comment for one user
+// @Description return all comment for one user
+// @Tags product comment
+// @Accept json
+// @Produce json
+// @Param offset query int    true  "Offset"
+// @Param limit  query int    true  "limit"
+// @Security ApiKeyAuth
+// @param Authorization header string false "Authorization"
+// @Success 200 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /product-comment/user [get]
+func getByUserKey(c *fiber.Ctx) error {
+	offset := c.Query("offset")
+	limit := c.Query("limit")
+	userKey := c.Locals("userKey").(string)
+
+	if offset == "" || limit == "" {
+		return c.Status(400).SendString("Offset and Limit must have a value")
+	}
+
+	q := fmt.Sprintf("for i in productComment filter i.userKey==\"%v\" sort i.createdAt desc limit %v,%v return i", userKey, offset, limit)
+	ql := fmt.Sprintf("let data=(for i in productComment filter i.userKey==\"%v\" return i) return length(data)", userKey)
+	res := database.ExecuteGetQuery(ql)
+	return c.JSON(fiber.Map{
+		"data":   database.ExecuteGetQuery(q),
+		"length": res[0],
+	})
+
 }
 
 // updateComment update comment

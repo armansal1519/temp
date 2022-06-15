@@ -82,3 +82,7 @@ type updateTransportationStatusInOrder struct {
 	IsTransportationPriceIsPayed bool
 	TransportationPriceWithPrice bool
 }
+
+type updateOrderItem struct {
+	IsWaitingForPayment bool `json:"isWaitingForPayment"`
+}

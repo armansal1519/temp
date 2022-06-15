@@ -87,7 +87,7 @@ func getPaymentUrl(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(err)
 	}
-	transId, err := payment.GetPaymentUrl(fmt.Sprintf("%v", amount), p.Key, fmt.Sprintf("https://localhost:3000/payment-varification/%v", p.Key))
+	transId, err := payment.GetPaymentUrl(fmt.Sprintf("%v", amount), p.Key, fmt.Sprintf("https://localhost:3000/payment/verify/%v", p.Key))
 	if err != nil {
 		return c.JSON(err)
 	}
@@ -191,6 +191,22 @@ func verifyPaymentUrl(c *fiber.Ctx) error {
 	}
 
 	oi, err := graphOrder.GetOrderItemsAndPaymentByPaymentKey(gp.Key, "")
+	//update gOrderItems
+	updateItemsArr := make([]updateOrderItem, 0)
+	itemKeyArr := make([]string, 0)
+	for _, item := range oi.OrderItems {
+		itemKeyArr = append(itemKeyArr, item.Key)
+		updateItemsArr = append(updateItemsArr, updateOrderItem{
+			IsWaitingForPayment: false,
+		})
+	}
+	orderItemCol := database.GetCollection("gOrderItem")
+
+	_, errArr, err := orderItemCol.UpdateDocuments(context.Background(), itemKeyArr, updateItemsArr)
+	if err != nil {
+		return c.Status(500).JSON(errArr)
+	}
+
 	if err != nil {
 		return c.Status(500).JSON(err)
 	}
@@ -501,7 +517,7 @@ func getPaymentByUserKey(c *fiber.Ctx) error {
 		orderQ = fmt.Sprintf("\n filter i.orderKey==\"%v\"\n")
 	}
 
-	return c.JSON(database.ExecuteGetQuery(fmt.Sprintf("for i in payment \n %v \n %v\nreturn i", userQ, orderQ)))
+	return c.JSON(database.ExecuteGetQuery(fmt.Sprintf("for i in paymentHistory \n %v \n %v\nreturn i", userQ, orderQ)))
 
 }
 

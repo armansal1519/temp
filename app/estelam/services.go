@@ -169,7 +169,7 @@ func createEstelamRequest(c *fiber.Ctx) error {
 func getEstelamForSupplier(c *fiber.Ctx) error {
 	supplierKey := c.Locals("supplierId").(string)
 	//query := fmt.Sprintf("for i in supplierEstelam filter i.supplierKey==\"%v\" for j in productSearch filter i.productId==j._id\nreturn {estelam:i,product:j}", supplierKey)
-	query := fmt.Sprintf("for i in supplierEstelam filter i.supplierKey==\"%v\"\nfor j in productSearch filter i.productId==j._id let res=(for k in estelamResponse filter k._key in i.supplierResponseKey return k)\nreturn {estelam:i,product:j,responses:}", supplierKey)
+	query := fmt.Sprintf("for i in supplierEstelam filter i.supplierKey==\"%v\"\nfor j in productSearch filter i.productId==j._id let res=(for k in estelamResponse filter k._key in i.supplierResponseKey return k)\nreturn {estelam:i,product:j,responses:res}", supplierKey)
 	log.Println(query)
 	return c.JSON(database.ExecuteGetQuery(query))
 }

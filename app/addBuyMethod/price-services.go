@@ -368,8 +368,55 @@ func groupUpdatePrice(data groupUpdatePriceIn, priceCol string) (*[]PriceOut, er
 func deletePrice(productKey string, productCol string) error {
 	//productKey := strings.Split(productId, "/")[1]
 	//productCol :=strings.Split(productId, "/")[0]
+
+	var p PriceOut
+
 	edgeCol := database.GetCollection("supplier_" + productCol + "_price")
-	_, err := edgeCol.RemoveDocument(context.Background(), productKey)
+
+	_, err := edgeCol.ReadDocument(context.Background(), productKey, &p)
+	rp, err := getRemainingPrices(productKey, productCol)
+	pKey := strings.Split(p.To, "/")[1]
+	col := database.GetCollection(productCol)
+	if len(rp) == 0 {
+		up := updatePriceAndCheckPrice{
+			LowestPrice:      -1,
+			LowestCheckPrice: checkPrice{},
+		}
+
+		_, err = col.UpdateDocument(context.Background(), pKey, up)
+		if err != nil {
+			return err
+		}
+	} else {
+		lowestPrice := rp[0].Price
+
+		pl := []checkPrice{
+			{
+				Price: rp[1].OneMonthPrice,
+				Type:  "one",
+			},
+			{
+				Price: rp[2].TwoMonthPrice,
+				Type:  "two",
+			},
+			{
+				Price: rp[3].ThreeMonthPrice,
+				Type:  "three",
+			},
+		}
+		lowestCheckPrice := getLowestCheckPrice(pl)
+		up := updatePriceAndCheckPrice{
+			LowestPrice:      lowestPrice,
+			LowestCheckPrice: lowestCheckPrice,
+		}
+
+		_, err = col.UpdateDocument(context.Background(), pKey, up)
+		if err != nil {
+			return err
+		}
+	}
+	_, err = edgeCol.RemoveDocument(context.Background(), productKey)
+
 	if err != nil {
 		return err
 	}

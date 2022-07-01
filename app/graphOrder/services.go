@@ -150,6 +150,9 @@ func InitOrder(userKey string) ([]edgeData, error) {
 		return []edgeData{}, errors.New(fmt.Sprintf("%v", errArr))
 	}
 
+	q := fmt.Sprintf("for i in cart filter  i.userKey==\"%v\" remove i in cart", userKey)
+	database.ExecuteGetQuery(q)
+
 	return edArr, nil
 }
 
@@ -288,7 +291,127 @@ func getOrdersByUserKey(userKey string, filter string, offset string, limit stri
 	return &final, nil
 }
 
-// getOrderByUserKey get order by order key
+// getAllOrdersForAdmin get order for admin
+// @Summary get order for admin
+// @Description get order for admin
+// @Tags order
+// @Accept json
+// @Produce json
+// @Param   offset     query    int     true        "Offset"
+// @Param   limit      query    int     true        "limit"
+// @Success 200 {object} GOrder{}
+// @Failure 500 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /order/admin [get]
+func getAllOrdersForAdmin(c *fiber.Ctx) error {
+	offset := c.Query("offset")
+	limit := c.Query("limit")
+	if offset == "" || limit == "" {
+		return c.Status(400).SendString("Offset and Limit must have a value")
+	}
+
+	q := fmt.Sprintf("for u in users \nlet orderl=(for i in gOrder return i)\nlet order =(for v,e in 1..1 outbound u graph \"orderGraph\" return v)\nfor o in order \nlet payment =(for v,e in 1..1 outbound o graph \"orderGraph\" return v)\nlet result=(for p in payment let oi=(for v,e in 1..1 outbound p graph \"orderGraph\" return v) return {payment:p,orderItems:oi})\n  sort o.createdAt desc limit %v,%v  return {user:u,order:o,items:result,length:length(orderl)}", offset, limit)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		//fmt.Println(q)
+		return c.Status(500).JSON(err)
+	}
+	defer cursor.Close()
+	var data []GOrderAdminRespOut
+	for {
+		var doc GOrderAdminRespOut
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			panic("error in cursor -in GetAll")
+		}
+		data = append(data, doc)
+	}
+
+	for i, datum := range data {
+		var totalPrice int64
+		for _, i := range datum.Items {
+
+			totalPrice += i.Payment.TotalPrice
+
+		}
+
+		data[i].Order.TotalAmount = totalPrice
+
+	}
+
+	//remove empty orders
+	final := make([]GOrderAdminRespOut, 0)
+	for _, datum := range data {
+		flag := false
+		for _, item := range datum.Items {
+			if len(item.OrderItems) > 0 {
+				flag = true
+			}
+		}
+		if flag {
+			final = append(final, datum)
+		}
+	}
+
+	//calc status
+	statusMap := make(map[int]string)
+	statusMap[1] = "WaitingForPayment"
+	statusMap[2] = "ApprovedBySupplier"
+	statusMap[3] = "Processing"
+	statusMap[4] = "Arrived"
+	statusMap[5] = "Cancelled"
+	statusMap[6] = "Referred"
+	for ii, f := range final {
+		statusArr := make([]int, 0)
+		for _, i := range f.Items {
+			for _, item := range i.OrderItems {
+				if item.IsReferred {
+					statusArr = append(statusArr, 6)
+				} else if item.IsCancelled {
+					statusArr = append(statusArr, 5)
+				} else if item.IsArrived {
+					statusArr = append(statusArr, 4)
+				} else if item.IsProcessing {
+					statusArr = append(statusArr, 3)
+				} else if item.IsApprovedBySupplier {
+					statusArr = append(statusArr, 2)
+				} else if item.IsWaitingForPayment {
+					statusArr = append(statusArr, 1)
+				}
+			}
+		}
+
+		statusScore := 6
+		for _, i := range statusArr {
+			if i < statusScore {
+				statusScore = i
+			}
+		}
+		final[ii].Order.Status = statusMap[statusScore]
+
+	}
+
+	//add reserved
+	for i, out := range final {
+		for _, out2 := range out.Items {
+			if out2.Payment.IsRejected {
+				if time.Now().Unix() < out2.Payment.RejectionTime {
+					final[i].Reserved = reservedInfo{
+						IsReserved: true,
+						TimeToEnd:  out2.Payment.RejectionTime - time.Now().Unix(),
+					}
+				}
+			}
+		}
+	}
+	return c.JSON(final)
+}
+
+// getOrderByKey get order by order key
 // @Summary get order by order key
 // @Description get order by order key
 // @Tags order

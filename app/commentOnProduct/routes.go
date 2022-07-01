@@ -10,6 +10,7 @@ func Routes(app fiber.Router) {
 
 	r.Post("/", middleware.Auth, createCommit)
 	r.Get("/:categoryUrl/:productKey", getProductComment)
+	r.Get("/images/:categoryUrl/:productKey", getImagesFromProductComment)
 	r.Get("/user", middleware.Auth, getByUserKey)
 	r.Get("/", getAll)
 	r.Put("/:key", middleware.Auth, updateComment)

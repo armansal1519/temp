@@ -2672,6 +2672,8 @@ definitions:
         type: string
       phoneNumber:
         type: string
+      telephoneNumber:
+        type: string
       userCards:
         $ref: '#/definitions/users.cardInfo'
       walletAmount:
@@ -2720,17 +2722,16 @@ definitions:
         type: string
       firstName:
         type: string
-      homeNumber:
-        type: string
       lastName:
         type: string
       nationalCode:
+        type: string
+      telephoneNumber:
         type: string
     required:
     - birthDate
     - email
     - firstName
-    - homeNumber
     - lastName
     - nationalCode
     type: object
@@ -4887,6 +4888,83 @@ paths:
       summary: return questions similar with given input
       tags:
       - question
+  /gpayment:
+    get:
+      consumes:
+      - application/json
+      description: get all  payments
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphPayment.GPaymentOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get all  payments
+      tags:
+      - graph payment
+  /gpayment/{key}:
+    get:
+      consumes:
+      - application/json
+      description: get all  payments by id
+      parameters:
+      - description: payment key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphPayment.GPaymentOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get all  payments by id
+      tags:
+      - graph payment
   /gpayment/add-discount/{key}/{paymentkey}:
     post:
       consumes:
@@ -5270,6 +5348,40 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get order by order key
+      tags:
+      - order
+  /order/admin:
+    get:
+      consumes:
+      - application/json
+      description: get order for admin
+      parameters:
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphOrder.GOrder'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get order for admin
       tags:
       - order
   /order/init:
@@ -6228,6 +6340,38 @@ paths:
           schema:
             type: string
       summary: update comment
+      tags:
+      - product comment
+  /product-comment/images/{categoryUrl}/{productKey}:
+    get:
+      consumes:
+      - application/json
+      description: return all the images from comment for a product from faq
+      parameters:
+      - description: categoryUrl
+        in: path
+        name: categoryUrl
+        required: true
+        type: string
+      - description: productKey
+        in: path
+        name: productKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: return all the images from comment for a product
       tags:
       - product comment
   /product-comment/user:

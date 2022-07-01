@@ -186,7 +186,10 @@ func addCardInfo(c *fiber.Ctx) error {
 	var newUser UserOut
 	userCol := database.GetCollection("users")
 	ctx := driver.WithReturnNew(context.Background(), &newUser)
-	_, err := userCol.UpdateDocument(ctx, userKey, b)
+	newUser.UserCards.CardUserName = b.CardUserName
+	newUser.UserCards.Number = b.Number
+	newUser.UserCards.BankName = b.BankName
+	_, err := userCol.UpdateDocument(ctx, userKey, newUser)
 	if err != nil {
 		return c.Status(500).JSON(err)
 

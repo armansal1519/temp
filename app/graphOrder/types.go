@@ -87,6 +87,17 @@ type GOrderResponseOut struct {
 	Reserved reservedInfo `json:"reserved"`
 }
 
+type GOrderAdminRespOut struct {
+	Order GOrderOut `json:"order"`
+	Items []struct {
+		Payment    graphPayment.GPaymentOut `json:"payment"`
+		OrderItems []GOrderItemOut          `json:"orderItems"`
+	} `json:"items"`
+	Reserved reservedInfo  `json:"reserved"`
+	User     users.UserOut `json:"user"`
+	Length   int           `json:"length"`
+}
+
 type sendingInfo struct {
 	OrderKey       string `json:"orderKey"`
 	SendingInfoKey string `json:"sendingInfoKey"`

@@ -3296,6 +3296,69 @@ const docTemplate = `{
                 }
             }
         },
+        "/gpayment": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get all  payments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "graph payment"
+                ],
+                "summary": "get all  payments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphPayment.GPaymentOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/gpayment/add-discount/{key}/{paymentkey}": {
             "post": {
                 "security": [
@@ -3334,6 +3397,62 @@ const docTemplate = `{
                         "description": " if amount of discount is  more than payment amount this overwrites error",
                         "name": "use-less-discount",
                         "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphPayment.GPaymentOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/gpayment/{key}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get all  payments by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "graph payment"
+                ],
+                "summary": "get all  payments by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "payment key",
+                        "name": "key",
+                        "in": "path",
                         "required": true
                     },
                     {
@@ -3831,6 +3950,57 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/admin": {
+            "get": {
+                "description": "get order for admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "get order for admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphOrder.GOrder"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
                         }
@@ -5177,6 +5347,54 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/product-comment/images/{categoryUrl}/{productKey}": {
+            "get": {
+                "description": "return all the images from comment for a product from faq",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product comment"
+                ],
+                "summary": "return all the images from comment for a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "categoryUrl",
+                        "name": "categoryUrl",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "productKey",
+                        "name": "productKey",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
@@ -13537,6 +13755,9 @@ const docTemplate = `{
                 "phoneNumber": {
                     "type": "string"
                 },
+                "telephoneNumber": {
+                    "type": "string"
+                },
                 "userCards": {
                     "$ref": "#/definitions/users.cardInfo"
                 },
@@ -13605,7 +13826,6 @@ const docTemplate = `{
                 "birthDate",
                 "email",
                 "firstName",
-                "homeNumber",
                 "lastName",
                 "nationalCode"
             ],
@@ -13619,13 +13839,13 @@ const docTemplate = `{
                 "firstName": {
                     "type": "string"
                 },
-                "homeNumber": {
-                    "type": "string"
-                },
                 "lastName": {
                     "type": "string"
                 },
                 "nationalCode": {
+                    "type": "string"
+                },
+                "telephoneNumber": {
                     "type": "string"
                 }
             }

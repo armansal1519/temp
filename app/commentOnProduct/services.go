@@ -96,6 +96,26 @@ func getProductComment(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"data": database.ExecuteGetQuery(q), "length": res[0]})
 }
 
+// getProductComment get all the images from comment for a product
+// @Summary return all the images from comment for a product
+// @Description return all the images from comment for a product from faq
+// @Tags product comment
+// @Accept json
+// @Produce json
+// @Param categoryUrl path string true "categoryUrl"
+// @Param productKey path string true "productKey"
+// @Success 200 {object} []string{}
+// @Failure 404 {object} string{}
+// @Router /product-comment/images/{categoryUrl}/{productKey} [get]
+func getImagesFromProductComment(c *fiber.Ctx) error {
+	categoryUrl := c.Params("categoryUrl")
+	productKey := c.Params("productKey")
+
+	q := fmt.Sprintf("let data=(for i in productComment  filter i.productId==\"%v/%v\" return i.imageUrls)\n\nreturn UNIQUE(FLATTEN(data)) ", categoryUrl, productKey)
+
+	return c.JSON(database.ExecuteGetQuery(q))
+}
+
 // getAll get all comment
 // @Summary return all comment
 // @Description return all comment

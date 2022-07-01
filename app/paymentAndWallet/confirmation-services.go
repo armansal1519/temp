@@ -54,7 +54,7 @@ func supplierConfirmation(oi []graphOrder.GOrderItemOut, orderKey string) error 
 func GetOrderConfirmationBySupplierKey(c *fiber.Ctx) error {
 	supplierKey := c.Locals("supplierId").(string)
 
-	query := fmt.Sprintf("for i in gOrderItem filter i.supplierKey==\"%v\" and i.isWaitingForPayment==false and i.isApprovedBySupplier==false \nlet data=(for v,e,p  in 0..3 inbound i graph \"orderGraph\"  return v)\nreturn data ", supplierKey)
+	query := fmt.Sprintf("for i in gOrderItem filter i.supplierKey==\"%v\"  sort i.isApprovedBySupplier  \nlet data=(for v,e,p  in 0..3 inbound i graph \"orderGraph\"  return v)\nreturn data ", supplierKey)
 	return c.JSON(database.ExecuteGetQuery(query))
 
 }
@@ -71,17 +71,17 @@ func GetOrderConfirmationBySupplierKey(c *fiber.Ctx) error {
 // @Success 200 {object} string{}
 // @Failure 404 {object} string{}
 // @Router /suppliers-confirmation/approve/{infoKey} [post]
-func approveOrder(infoKey string, supplierKey string, supplierEmployeeId string) error {
-	var sc supplierInfoForConfirmationOut
-	col := database.GetCollection("supplierConfirmation")
-	_, err := col.ReadDocument(context.Background(), infoKey, &sc)
-	if err != nil {
-		return err
-	}
+func approveOrder(orderItemKey string, supplierKey string, supplierEmployeeId string) error {
+	//var sc supplierInfoForConfirmationOut
+	//col := database.GetCollection("supplierConfirmation")
+	//_, err := col.ReadDocument(context.Background(), orderItem, &sc)
+	//if err != nil {
+	//	return err
+	//}
 
 	var o graphOrder.GOrderItem
 	gOrderItemCol := database.GetCollection("gOrderItem")
-	_, err = gOrderItemCol.ReadDocument(context.Background(), sc.OrderItemKey, &o)
+	_, err := gOrderItemCol.ReadDocument(context.Background(), orderItemKey, &o)
 
 	if o.SupplierKey != supplierKey {
 		return errors.New("different suppliers")
@@ -91,7 +91,7 @@ func approveOrder(infoKey string, supplierKey string, supplierEmployeeId string)
 		IsApprovedBySupplier: true,
 		SupplierEmployeeId:   supplierEmployeeId,
 	}
-	_, err = gOrderItemCol.UpdateDocument(context.Background(), sc.OrderItemKey, u)
+	_, err = gOrderItemCol.UpdateDocument(context.Background(), orderItemKey, u)
 	if err != nil {
 		return err
 	}

@@ -103,15 +103,17 @@ func Routes(app fiber.Router) {
 		return c.JSON(resp)
 	})
 
-	r.Delete("/price/:col/:key", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
-		productKey := c.Params("key")
-		productCol := c.Params("col")
-		err := deletePrice(productKey, productCol)
-		if err != nil {
-			return c.JSON(fmt.Sprintf("%v", err))
-		}
-		return c.Status(204).SendString("document deleted")
-	})
+	r.Delete("/price/:col/:key",
+		//middleware.GetSupplierByEmployee,
+		func(c *fiber.Ctx) error {
+			productKey := c.Params("key")
+			productCol := c.Params("col")
+			err := deletePrice(productKey, productCol)
+			if err != nil {
+				return c.JSON(fmt.Sprintf("%v", err))
+			}
+			return c.Status(204).SendString("document deleted")
+		})
 
 	//******************************************************************************************************************
 	//estelam

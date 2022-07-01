@@ -50,7 +50,7 @@ func addToCart(cartIn cartIn, isLogin bool, userKey string, tempUserKey string, 
 			Status:    400,
 			ErrorCode: 1,
 			DevInfo:   fmt.Sprintf("%v  %v  %v", cartIn.Number, price.TotalNumber, price.TotalNumberInCart),
-			UserMsg:   "تعداد انتخاب شده از تعداد مچاز بیشتر است",
+			UserMsg:   "تعداد انتخاب شده از تعداد مجاز بیشتر است",
 		}
 	}
 
@@ -315,7 +315,7 @@ func update(c *fiber.Ctx) error {
 			Status:    400,
 			ErrorCode: 1,
 			DevInfo:   fmt.Sprintf("%v  %v  %v", uc.Number, price.TotalNumber, price.TotalNumberInCart),
-			UserMsg:   "تعداد انتخاب شده از تعداد مچاز بیشتر است",
+			UserMsg:   "تعداد انتخاب شده از تعداد مجاز بیشتر است",
 		})
 	}
 

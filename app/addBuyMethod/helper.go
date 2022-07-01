@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/arangodb/go-driver"
+	"log"
 	"sort"
 )
 
@@ -96,3 +97,38 @@ type DirRange []int64
 func (a DirRange) Len() int           { return len(a) }
 func (a DirRange) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a DirRange) Less(i, j int) bool { return a[i] < a[j] }
+
+func getRemainingPrices(productKey string, productCol string) ([]PriceOut, error) {
+	q := fmt.Sprintf("let to=(for i in supplier_%v_price filter i._key==\"%v\" return i._to) let pl=( for i in supplier_%v_price filter i._to in to and i._key!=\"%v\" return i)\nlet p=(for i in pl sort i.price  return i)\nlet p1=(for i in pl sort i.oneMonthPrice  return i)\nlet p2=(for i in pl sort i.twoMonthPrice return i)\nlet p3=(for i in pl sort i.threeMonthPrice  return i) let res= [p[0],p1[0],p2[0],p3[0]]\n\nfor i in res filter i!=null return i", productCol, productKey, productCol, productKey)
+	log.Println(q)
+	db := database.GetDB()
+	ctx := context.Background()
+	cursor, err := db.Query(ctx, q, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close()
+	var data []PriceOut
+	for {
+		var doc PriceOut
+		_, err := cursor.ReadDocument(ctx, &doc)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			panic(err)
+		}
+		data = append(data, doc)
+	}
+	return data, nil
+}
+
+type PriceList []checkPrice
+
+func (a PriceList) Len() int           { return len(a) }
+func (a PriceList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a PriceList) Less(i, j int) bool { return a[i].Price < a[j].Price }
+
+func getLowestCheckPrice(list PriceList) checkPrice {
+	sort.Sort(list)
+	return list[0]
+}

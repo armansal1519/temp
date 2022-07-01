@@ -163,6 +163,11 @@ type updateCheckPrice struct {
 	LowestCheckPrice checkPrice `json:"lowestCheckPrice"`
 }
 
+type updatePriceAndCheckPrice struct {
+	LowestPrice      int64      `json:"lowestPrice"`
+	LowestCheckPrice checkPrice `json:"lowestCheckPrice"`
+}
+
 type priceAndProduct struct {
 	Product Product  `json:"product"`
 	Price   PriceOut `json:"price"`

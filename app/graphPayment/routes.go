@@ -9,5 +9,7 @@ func Routes(app fiber.Router) {
 	r := app.Group("/gpayment")
 
 	r.Post("/add-discount/:key/:paymentkey", middleware.Auth, addDiscountToPayment)
+	r.Get("/", getPayments)
+	r.Get("/:id", getPaymentById)
 
 }

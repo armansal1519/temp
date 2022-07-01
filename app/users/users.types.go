@@ -27,6 +27,7 @@ type user struct {
 	Email            string   `json:"email"`
 	BirthDate        string   `json:"birthDate"`
 	NationalCode     string   `json:"nationalCode"`
+	TelephoneNumber  string   `json:"telephoneNumber"`
 	Level            string   `json:"level"`
 	CreatedAt        int64    `json:"createdAt"`
 	LastLogin        int64    `json:"lastLogin"`
@@ -77,12 +78,12 @@ type updateLastLogin struct {
 }
 
 type updateUserDTO struct {
-	FirstName    string `json:"firstName" validate:"required"`
-	LastName     string `json:"lastName" validate:"required"`
-	Email        string `json:"email" validate:"required"`
-	BirthDate    string `json:"birthDate" validate:"required"`
-	NationalCode string `json:"nationalCode" validate:"required"`
-	HomeNumber   string `json:"homeNumber" validate:"required"`
+	FirstName       string `json:"firstName" validate:"required"`
+	LastName        string `json:"lastName" validate:"required"`
+	Email           string `json:"email" validate:"required"`
+	BirthDate       string `json:"birthDate" validate:"required"`
+	NationalCode    string `json:"nationalCode" validate:"required"`
+	TelephoneNumber string `json:"telephoneNumber"`
 }
 
 type AuthenticationDto struct {

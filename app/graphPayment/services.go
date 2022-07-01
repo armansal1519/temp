@@ -94,3 +94,48 @@ func addDiscountToPayment(c *fiber.Ctx) error {
 	return c.JSON(newPayment)
 
 }
+
+// getPayments get all  payments
+// @Summary get all  payments
+// @Description get all  payments
+// @Tags graph payment
+// @Accept json
+// @Produce json
+// @Param   offset      query   string     true  "offset"
+// @Param   limit      query   string     true  "limit"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} GPaymentOut{}
+// @Failure 500 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /gpayment [get]
+func getPayments(c *fiber.Ctx) error {
+	offset := c.Query("offset")
+	limit := c.Query("limit")
+	if limit == "" || offset == "" {
+		return c.Status(400).SendString("offset or limit is empty")
+	}
+
+	q := fmt.Sprintf("let data=(for p in gPayment for i in paymentHistory filter p.paymentKey==i._key  return {paymeny:p,paymentHistory:i})\nreturn{data:(for j in data limit %v,%v return j),length:length(data)}", offset, limit)
+	return c.JSON(database.ExecuteGetQuery(q))
+}
+
+// getPayments get all  payments by id
+// @Summary get all  payments by id
+// @Description get all  payments by id
+// @Tags graph payment
+// @Accept json
+// @Produce json
+// @Param   key      path   string     true  "payment key"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} GPaymentOut{}
+// @Failure 500 {object} string{}
+// @Failure 404 {object} string{}
+// @Router /gpayment/{key} [get]
+func getPaymentById(c *fiber.Ctx) error {
+	key := c.Params("key")
+
+	q := fmt.Sprintf("for p in gPayment filter p._key==\"%v\" for i in paymentHistory filter p.paymentKey==i._key  return {paymeny:p,paymentHistory:i}", key)
+	return c.JSON(database.ExecuteGetQuery(q))
+}

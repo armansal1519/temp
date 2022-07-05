@@ -1170,6 +1170,73 @@ definitions:
       userKey:
         type: string
     type: object
+  graphOrder.GOrderItemOut:
+    properties:
+      _id:
+        type: string
+      _key:
+        type: string
+      _rev:
+        type: string
+      acceptedAt:
+        type: integer
+      acceptedById:
+        type: string
+      cancelledById:
+        type: string
+      checkCommissionPercent:
+        type: number
+      commissionPercent:
+        type: number
+      createdAt:
+        type: integer
+      isAcceptedAfterRejection:
+        type: boolean
+      isApprovedBySupplier:
+        type: boolean
+      isArrived:
+        type: boolean
+      isCancelled:
+        type: boolean
+      isProcessing:
+        type: boolean
+      isReferred:
+        type: boolean
+      isRejected:
+        type: boolean
+      isRejectedBySystem:
+        type: boolean
+      isWaitingForPayment:
+        type: boolean
+      number:
+        type: integer
+      priceId:
+        type: string
+      pricePerNumber:
+        type: integer
+      productId:
+        type: string
+      productImageUrl:
+        type: string
+      productTitle:
+        type: string
+      referredReason:
+        type: string
+      rejectedAt:
+        type: integer
+      rejectedById:
+        type: string
+      supplierEmployeeId:
+        type: string
+      supplierKey:
+        type: string
+      userAuthType:
+        type: string
+      userKey:
+        type: string
+      variant:
+        type: string
+    type: object
   graphOrder.sendingInfo:
     properties:
       orderKey:
@@ -1348,9 +1415,8 @@ definitions:
   paymentAndWallet.PaymentByImage:
     properties:
       imageUrl:
+        description: IncludeTransportation bool   `json:"includeTransportation"`
         type: string
-      includeTransportation:
-        type: boolean
       orderKey:
         type: string
       overwritePaymentKey:
@@ -1382,11 +1448,6 @@ definitions:
     type: object
   paymentAndWallet.createPaymentByPortal:
     properties:
-      includeTransportation:
-        description: |-
-          Amount                int64  `json:"amount"`
-          Status                string `json:"status"`
-        type: boolean
       orderKey:
         type: string
     type: object
@@ -8036,6 +8097,121 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: approve order
+      tags:
+      - supplier confirmation
+  /suppliers-confirmation/g-accept/{orderItemKey}:
+    post:
+      consumes:
+      - application/json
+      description: accept a  rejected order
+      parameters:
+      - description: orderItemKey
+        in: path
+        name: orderItemKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphOrder.GOrderItemOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: accept a  rejected order
+      tags:
+      - supplier confirmation
+  /suppliers-confirmation/g-reject:
+    get:
+      consumes:
+      - application/json
+      description: get reject orders
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: 'key of supplier you want to filter '
+        in: query
+        name: rejected-by
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/graphOrder.GOrderItemOut'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: get reject orders
+      tags:
+      - supplier confirmation
+  /suppliers-confirmation/g-reject/{orderItemKey}:
+    post:
+      consumes:
+      - application/json
+      description: new reject order
+      parameters:
+      - description: orderItemKey
+        in: path
+        name: orderItemKey
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graphOrder.GOrderItemOut'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: new reject order
       tags:
       - supplier confirmation
   /suppliers-confirmation/reject/{infoKey}:

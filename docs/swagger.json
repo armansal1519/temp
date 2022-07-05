@@ -8091,6 +8091,184 @@
                 }
             }
         },
+        "/suppliers-confirmation/g-accept/{orderItemKey}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "accept a  rejected order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supplier confirmation"
+                ],
+                "summary": "accept a  rejected order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "orderItemKey",
+                        "name": "orderItemKey",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphOrder.GOrderItemOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers-confirmation/g-reject": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get reject orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supplier confirmation"
+                ],
+                "summary": "get reject orders",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "key of supplier you want to filter ",
+                        "name": "rejected-by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/graphOrder.GOrderItemOut"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers-confirmation/g-reject/{orderItemKey}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "new reject order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "supplier confirmation"
+                ],
+                "summary": "new reject order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "orderItemKey",
+                        "name": "orderItemKey",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/graphOrder.GOrderItemOut"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/suppliers-confirmation/reject/{infoKey}": {
             "post": {
                 "security": [
@@ -11470,6 +11648,107 @@
                 }
             }
         },
+        "graphOrder.GOrderItemOut": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "_key": {
+                    "type": "string"
+                },
+                "_rev": {
+                    "type": "string"
+                },
+                "acceptedAt": {
+                    "type": "integer"
+                },
+                "acceptedById": {
+                    "type": "string"
+                },
+                "cancelledById": {
+                    "type": "string"
+                },
+                "checkCommissionPercent": {
+                    "type": "number"
+                },
+                "commissionPercent": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "type": "integer"
+                },
+                "isAcceptedAfterRejection": {
+                    "type": "boolean"
+                },
+                "isApprovedBySupplier": {
+                    "type": "boolean"
+                },
+                "isArrived": {
+                    "type": "boolean"
+                },
+                "isCancelled": {
+                    "type": "boolean"
+                },
+                "isProcessing": {
+                    "type": "boolean"
+                },
+                "isReferred": {
+                    "type": "boolean"
+                },
+                "isRejected": {
+                    "type": "boolean"
+                },
+                "isRejectedBySystem": {
+                    "type": "boolean"
+                },
+                "isWaitingForPayment": {
+                    "type": "boolean"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "priceId": {
+                    "type": "string"
+                },
+                "pricePerNumber": {
+                    "type": "integer"
+                },
+                "productId": {
+                    "type": "string"
+                },
+                "productImageUrl": {
+                    "type": "string"
+                },
+                "productTitle": {
+                    "type": "string"
+                },
+                "referredReason": {
+                    "type": "string"
+                },
+                "rejectedAt": {
+                    "type": "integer"
+                },
+                "rejectedById": {
+                    "type": "string"
+                },
+                "supplierEmployeeId": {
+                    "type": "string"
+                },
+                "supplierKey": {
+                    "type": "string"
+                },
+                "userAuthType": {
+                    "type": "string"
+                },
+                "userKey": {
+                    "type": "string"
+                },
+                "variant": {
+                    "type": "string"
+                }
+            }
+        },
         "graphOrder.sendingInfo": {
             "type": "object",
             "properties": {
@@ -11743,10 +12022,8 @@
             "type": "object",
             "properties": {
                 "imageUrl": {
+                    "description": "IncludeTransportation bool   `json:\"includeTransportation\"`",
                     "type": "string"
-                },
-                "includeTransportation": {
-                    "type": "boolean"
                 },
                 "orderKey": {
                     "type": "string"
@@ -11796,10 +12073,6 @@
         "paymentAndWallet.createPaymentByPortal": {
             "type": "object",
             "properties": {
-                "includeTransportation": {
-                    "description": "Amount                int64  `json:\"amount\"`\nStatus                string `json:\"status\"`",
-                    "type": "boolean"
-                },
                 "orderKey": {
                     "type": "string"
                 }

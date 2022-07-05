@@ -79,11 +79,11 @@ func getPaymentUrl(c *fiber.Ctx) error {
 
 	amount := gp.RemainingPrice
 
-	if cpp.IncludeTransportation {
+	if gpArr.Order.TransportationPriceWithPrice {
 		amount += gpArr.Order.TransportationPrice
 	}
 	userKey := c.Locals("userKey").(string)
-	p, err := createPayment(userKey, gp.Key, cpp.OrderKey, amount, "price-portal", "", cpp.IncludeTransportation)
+	p, err := createPayment(userKey, gp.Key, cpp.OrderKey, amount, "price-portal", "", gpArr.Order.TransportationPriceWithPrice)
 	if err != nil {
 		return c.JSON(err)
 	}
@@ -99,7 +99,7 @@ func getPaymentUrl(c *fiber.Ctx) error {
 	}
 
 	log.Println(1)
-	if cpp.IncludeTransportation {
+	if gpArr.Order.TransportationPriceWithPrice {
 		u := updateTransportationInOrder{TransportationPaymentId: fmt.Sprintf("paymentHistory/%v", p.Key)}
 		orderCol := database.GetCollection("gOrder")
 		_, err = orderCol.UpdateDocument(context.Background(), cpp.OrderKey, u)
@@ -261,18 +261,18 @@ func createPaymentByImage(c *fiber.Ctx) error {
 		return c.Status(409).SendString("this already payed")
 	}
 
-	if pbi.IncludeTransportation {
+	if o.TransportationPriceWithPrice {
 		amount += o.TransportationPrice
 	}
 	if pbi.Type != "santa-or-paya" && pbi.Type != "card-to-card" && pbi.Type != "pay-in-place" {
 		return c.Status(409).SendString("only santa-or-paya or card-to-card or pay-in-place is allowed as type")
 	}
 	userKey := c.Locals("userKey").(string)
-	newPayment, err := createPayment(userKey, pbi.PaymentKey, pbi.OrderKey, amount, fmt.Sprintf("price-%v", pbi.Type), pbi.ImageUrl, pbi.IncludeTransportation)
+	newPayment, err := createPayment(userKey, pbi.PaymentKey, pbi.OrderKey, amount, fmt.Sprintf("price-%v", pbi.Type), pbi.ImageUrl, o.TransportationPriceWithPrice)
 	if err != nil {
 		return c.JSON(err)
 	}
-	if pbi.IncludeTransportation {
+	if o.TransportationPriceWithPrice {
 		u := updateTransportationInOrder{TransportationPaymentId: fmt.Sprintf("payment/%v", newPayment.Key)}
 		orderCol := database.GetCollection("gOrder")
 		_, err := orderCol.UpdateDocument(context.Background(), pbi.OrderKey, u)

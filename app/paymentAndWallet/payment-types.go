@@ -40,16 +40,16 @@ type createPaymentByPortal struct {
 	OrderKey string `json:"orderKey"`
 	//Amount                int64  `json:"amount"`
 	//Status                string `json:"status"`
-	IncludeTransportation bool `json:"includeTransportation"`
+	//IncludeTransportation bool `json:"includeTransportation"`
 }
 
 type PaymentByImage struct {
-	OrderKey              string `json:"orderKey"`
-	Type                  string `json:"type"`
-	PaymentKey            string `json:"paymentKey"`
-	IncludeTransportation bool   `json:"includeTransportation"`
-	ImageUrl              string `json:"imageUrl"`
-	OverwritePaymentKey   bool   `json:"overwritePaymentKey"`
+	OrderKey   string `json:"orderKey"`
+	Type       string `json:"type"`
+	PaymentKey string `json:"paymentKey"`
+	//IncludeTransportation bool   `json:"includeTransportation"`
+	ImageUrl            string `json:"imageUrl"`
+	OverwritePaymentKey bool   `json:"overwritePaymentKey"`
 }
 type updateTransportationInOrder struct {
 	TransportationPaymentId string `json:"transportationPaymentId"`
@@ -85,4 +85,5 @@ type updateTransportationStatusInOrder struct {
 
 type updateOrderItem struct {
 	IsWaitingForPayment bool `json:"isWaitingForPayment"`
+	//IsWaitingForSupplierApprove bool `json:"isWaitingForSupplierApprove"`
 }

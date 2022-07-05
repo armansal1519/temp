@@ -19,6 +19,7 @@ type GOrderItem struct {
 	CommissionPercent      float64 `json:"commissionPercent"`
 	CheckCommissionPercent float64 `json:"checkCommissionPercent"`
 	IsWaitingForPayment    bool    `json:"isWaitingForPayment"`
+	//IsWaitingForSupplierApprove bool    `json:"isWaitingForSupplierApprove"`
 
 	IsApprovedBySupplier bool   `json:"isApprovedBySupplier"`
 	SupplierEmployeeId   string `json:"supplierEmployeeId"`
@@ -32,6 +33,15 @@ type GOrderItem struct {
 
 	IsReferred     bool   `json:"isReferred"`
 	ReferredReason string `json:"referredReason"`
+
+	IsRejected         bool   `json:"isRejected"`
+	IsRejectedBySystem bool   `json:"isRejectedBySystem"`
+	RejectedById       string `json:"rejectedById"`
+	RejectedAt         int64  `json:"rejectedAt"`
+
+	IsAcceptedAfterRejection bool   `json:"isAcceptedAfterRejection"`
+	AcceptedById             string `json:"acceptedById"`
+	AcceptedAt               int64  `json:"acceptedAt"`
 
 	CreatedAt int64 `json:"createdAt"`
 }
@@ -104,8 +114,9 @@ type sendingInfo struct {
 }
 
 type updateOrderBySendingInfo struct {
-	TransportationPrice int64  `json:"transportationPrice"`
-	SendingInfoKey      string `json:"sendingInfoKey"`
+	TransportationPrice          int64  `json:"transportationPrice"`
+	TransportationPriceWithPrice bool   `json:"transportationPriceWithPrice"`
+	SendingInfoKey               string `json:"sendingInfoKey"`
 }
 
 type OrderPaymentAndOrderItem struct {

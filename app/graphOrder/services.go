@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
+	"log"
 	"time"
 )
 
@@ -238,7 +239,8 @@ func getOrdersByUserKey(userKey string, filter string, offset string, limit stri
 
 	//calc status
 	statusMap := make(map[int]string)
-	statusMap[1] = "WaitingForPayment"
+	statusMap[0] = "WaitingForPayment"
+	statusMap[1] = "WaitingForSupplierToApprove"
 	statusMap[2] = "ApprovedBySupplier"
 	statusMap[3] = "Processing"
 	statusMap[4] = "Arrived"
@@ -258,8 +260,10 @@ func getOrdersByUserKey(userKey string, filter string, offset string, limit stri
 					statusArr = append(statusArr, 3)
 				} else if item.IsApprovedBySupplier {
 					statusArr = append(statusArr, 2)
-				} else if item.IsWaitingForPayment {
+				} else if !item.IsWaitingForPayment && !item.IsApprovedBySupplier {
 					statusArr = append(statusArr, 1)
+				} else if item.IsWaitingForPayment {
+					statusArr = append(statusArr, 0)
 				}
 			}
 		}
@@ -359,7 +363,8 @@ func getAllOrdersForAdmin(c *fiber.Ctx) error {
 
 	//calc status
 	statusMap := make(map[int]string)
-	statusMap[1] = "WaitingForPayment"
+	statusMap[0] = "WaitingForPayment"
+	statusMap[1] = "WaitingForSupplierToApprove"
 	statusMap[2] = "ApprovedBySupplier"
 	statusMap[3] = "Processing"
 	statusMap[4] = "Arrived"
@@ -379,8 +384,10 @@ func getAllOrdersForAdmin(c *fiber.Ctx) error {
 					statusArr = append(statusArr, 3)
 				} else if item.IsApprovedBySupplier {
 					statusArr = append(statusArr, 2)
-				} else if item.IsWaitingForPayment {
+				} else if !item.IsWaitingForPayment && !item.IsApprovedBySupplier {
 					statusArr = append(statusArr, 1)
+				} else if item.IsWaitingForPayment {
+					statusArr = append(statusArr, 0)
 				}
 			}
 		}
@@ -466,7 +473,8 @@ func getOrderByKey(c *fiber.Ctx) error {
 
 	//calc status
 	statusMap := make(map[int]string)
-	statusMap[1] = "WaitingForPayment"
+	statusMap[0] = "WaitingForPayment"
+	statusMap[1] = "WaitingForSupplierToApprove"
 	statusMap[2] = "ApprovedBySupplier"
 	statusMap[3] = "Processing"
 	statusMap[4] = "Arrived"
@@ -486,8 +494,10 @@ func getOrderByKey(c *fiber.Ctx) error {
 					statusArr = append(statusArr, 3)
 				} else if item.IsApprovedBySupplier {
 					statusArr = append(statusArr, 2)
-				} else if item.IsWaitingForPayment {
+				} else if !item.IsWaitingForPayment && !item.IsApprovedBySupplier {
 					statusArr = append(statusArr, 1)
+				} else if item.IsWaitingForPayment {
+					statusArr = append(statusArr, 0)
 				}
 			}
 		}
@@ -566,32 +576,58 @@ func addSendingInfoToOrder(c *fiber.Ctx) error {
 	if !flag {
 		return c.Status(404).JSON("order not found")
 	}
-	flag, err = sendingInfoCol.DocumentExists(context.Background(), s.OrderKey)
+	flag, err = sendingInfoCol.DocumentExists(context.Background(), s.SendingInfoKey)
 	if err != nil {
 		return c.Status(404).JSON("error asserting sending info is exist")
 	}
+	log.Println(s.SendingInfoKey)
 	if !flag {
 		return c.Status(404).JSON("sending info not found")
 	}
 	tp := transportation.GetTransportationPrice()
-	uos := updateOrderBySendingInfo{
-		TransportationPrice: tp,
-		SendingInfoKey:      s.SendingInfoKey,
-	}
-	var o GOrder
-	_, err = orderCol.ReadDocument(context.Background(), s.OrderKey, &o)
+	o, err := GetOrderAndPayments(s.OrderKey)
 	if err != nil {
 		return c.Status(500).JSON(err)
 	}
-	if o.UserKey != userKey {
-		return c.Status(403).JSON("Unauthorized")
+	hasPrice := false
+	for _, out := range o.Payment {
+		if out.Type == "price" {
+			hasPrice = true
+		}
+	}
+	fmt.Println(11111)
+	if hasPrice {
+		_, err = orderCol.UpdateDocument(context.Background(), o.Order.Key, updateOrderBySendingInfo{TransportationPrice: tp, TransportationPriceWithPrice: true, SendingInfoKey: s.SendingInfoKey})
+		if err != nil {
+			return c.Status(500).JSON(err)
+		}
+	} else {
+		_, err = orderCol.UpdateDocument(context.Background(), o.Order.Key, updateOrderBySendingInfo{TransportationPrice: tp, TransportationPriceWithPrice: false, SendingInfoKey: s.SendingInfoKey})
+		if err != nil {
+			return c.Status(500).JSON(err)
+		}
 	}
 
-	ctx := driver.WithReturnNew(context.Background(), &o)
-	_, err = orderCol.UpdateDocument(ctx, s.OrderKey, uos)
+	//uos := updateOrderBySendingInfo{
+	//	TransportationPrice: tp,
+	//	SendingInfoKey:      s.SendingInfoKey,
+	//}
+	//var o GOrder
+	//_, err = orderCol.ReadDocument(context.Background(), s.OrderKey, &o)
+	//if err != nil {
+	//	return c.Status(500).JSON(err)
+	//}
+	//if o.UserKey != userKey {
+	//	return c.Status(403).JSON("Unauthorized")
+	//}
+
+	//ctx := driver.WithReturnNew(context.Background(), &o)
+	//_, err = orderCol.UpdateDocument(ctx, s.OrderKey, uos)
+
+	res, err := getOrderByKeyHelper(s.OrderKey, userKey)
 	if err != nil {
 		return c.Status(500).JSON(err)
 	}
-	return c.JSON(o)
+	return c.JSON(res)
 
 }

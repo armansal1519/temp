@@ -143,7 +143,7 @@ type greedyItem struct {
 	Volume   float64  `json:"volume"`
 }
 
-type updateTransportationPrice struct {
-	TransportationPrice          int64 `json:"transportationPrice"`
-	TransportationPriceWithPrice bool  `json:"transportationPriceWithPrice"`
-}
+//type updateTransportationPrice struct {
+//	TransportationPrice          int64 `json:"transportationPrice"`
+//	TransportationPriceWithPrice bool  `json:"transportationPriceWithPrice"`
+//}

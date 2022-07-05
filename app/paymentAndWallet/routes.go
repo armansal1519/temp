@@ -2,9 +2,7 @@ package paymentAndWallet
 
 import (
 	"bamachoub-backend-go-v1/utils/middleware"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"strings"
 )
 
 func WalletRoutes(app fiber.Router) {
@@ -70,7 +68,6 @@ func SupplierConfirmationRoute(app fiber.Router) {
 		infoKey := c.Params("infoKey")
 		supplierId := c.Locals("supplierId").(string)
 		supplierEmployeeId := c.Locals("supplierEmployeeKey").(string)
-		fmt.Println("Aaaaaaaaaaaaaaaaaaaaa")
 		err := approveOrder(infoKey, supplierId, supplierEmployeeId)
 		if err != nil {
 			return c.JSON(err)
@@ -80,15 +77,29 @@ func SupplierConfirmationRoute(app fiber.Router) {
 	})
 	r.Post("/reject/:infoKey", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
 		infoKey := c.Params("infoKey")
-		supplierId := c.Locals("supplierId").(string)
-		supplierKey := strings.Split(supplierId, "/")[1]
+		supplierKey := c.Locals("supplierId").(string)
+
 		err := rejectOrder(infoKey, supplierKey, "user")
 		if err != nil {
-			return c.JSON(err)
+			return c.Status(500).JSON(err)
 		}
 		return c.SendString("ok")
 
 	})
+
+	r.Post("/g-reject/:orderItemKey", middleware.GetSupplierByEmployee, func(c *fiber.Ctx) error {
+		orderItemKey := c.Params("orderItemKey")
+		supplierKey := c.Locals("supplierId").(string)
+
+		newOrderItem, err := graphRejectOrder(orderItemKey, supplierKey, false)
+		if err != nil {
+			return c.Status(500).JSON(err)
+		}
+		return c.JSON(newOrderItem)
+
+	})
+	r.Get("/g-reject", middleware.IsAdmin, middleware.GetSupplierByEmployee, getGraphRejectedOrder)
+	r.Post("/g-accept/:orderItemKey", middleware.GetSupplierByEmployee, acceptARejectedOrder)
 
 }
 

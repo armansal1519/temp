@@ -15,6 +15,13 @@ func SupplierEmployeeAccess(c *fiber.Ctx) error {
 }
 
 func GetSupplierByEmployee(c *fiber.Ctx) error {
+	isAdmin := c.Locals("isAdmin")
+	if isAdmin != nil {
+		if isAdmin.(bool) {
+			return c.Next()
+		}
+	}
+
 	h := c.Get("Authorization")
 	if h == "" {
 		return fiber.ErrUnauthorized

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/arangodb/go-driver"
 	"github.com/gofiber/fiber/v2"
 	"time"
 )
@@ -244,6 +245,135 @@ func rejectOrder(infoKey string, supplierKey string, callBy string) error {
 		return err
 	}
 	return nil
+
+}
+
+// rejectOrder new reject order
+// @Summary new reject order
+// @Description new reject order
+// @Tags supplier confirmation
+// @Accept json
+// @Produce json
+// @Param orderItemKey path string true "orderItemKey"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} graphOrder.GOrderItemOut
+// @Failure 404 {object} string{}
+// @Router /suppliers-confirmation/g-reject/{orderItemKey} [post]
+func graphRejectOrder(orderItemKey string, supplierKey string, callBySystem bool) (*graphOrder.GOrderItemOut, error) {
+	goiCol := database.GetCollection("gOrderItem")
+	var orderItemOut graphOrder.GOrderItemOut
+	ctx := driver.WithReturnNew(context.Background(), &orderItemOut)
+	if callBySystem {
+		u := updateOrderItemFromRejection{
+			IsRejected:         true,
+			IsRejectedBySystem: true,
+			RejectedById:       "",
+			RejectedAt:         time.Now().Unix(),
+		}
+		_, err := goiCol.UpdateDocument(ctx, orderItemKey, u)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		u := updateOrderItemFromRejection{
+			IsRejected:         true,
+			IsRejectedBySystem: false,
+			RejectedById:       "suppliers/" + supplierKey,
+			RejectedAt:         time.Now().Unix(),
+		}
+		_, err := goiCol.UpdateDocument(ctx, orderItemKey, u)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &orderItemOut, nil
+}
+
+// rejectOrder get reject orders
+// @Summary get reject orders
+// @Description get reject orders
+// @Tags supplier confirmation
+// @Accept json
+// @Produce json
+// @Param offset query string true "offset"
+// @Param limit query string true "limit"
+// @Param rejected-by query string false "key of supplier you want to filter "
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} []graphOrder.GOrderItemOut
+// @Failure 404 {object} string{}
+// @Router /suppliers-confirmation/g-reject [get]
+func getGraphRejectedOrder(c *fiber.Ctx) error {
+	isAdmin := c.Locals("isAdmin").(bool)
+
+	offset := c.Query("offset")
+	limit := c.Query("limit")
+	rejectedBy := c.Query("rejected-by")
+
+	if offset == "" || limit == "" {
+		return c.Status(400).SendString("offset or limit is empty")
+	}
+	if isAdmin {
+
+		f := ""
+		if rejectedBy != "" {
+			f = fmt.Sprintf(" filter i.supplierKey == \"%v\" ", rejectedBy)
+		}
+		q := fmt.Sprintf("for i in gOrderItem %v sort i.rejectedAt limit %v,%v return i", f, offset, limit)
+		return c.JSON(database.ExecuteGetQuery(q))
+	}
+	supplierKey := c.Locals("supplierId").(string)
+	q := fmt.Sprintf("for i in gOrderItem filter i.supplierKey != \"%v\" sort i.rejectedAt limit %v,%v return i", supplierKey, offset, limit)
+	return c.JSON(database.ExecuteGetQuery(q))
+
+}
+
+// rejectOrder accept a  rejected order
+// @Summary accept a  rejected order
+// @Description accept a  rejected order
+// @Tags supplier confirmation
+// @Accept json
+// @Produce json
+// @Param orderItemKey path string true "orderItemKey"
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} graphOrder.GOrderItemOut
+// @Failure 404 {object} string{}
+// @Failure 409 {object} string{}
+// @Failure 500 {object} string{}
+// @Router /suppliers-confirmation/g-accept/{orderItemKey} [post]
+func acceptARejectedOrder(c *fiber.Ctx) error {
+	orderItemKey := c.Params("orderItemKey")
+	supplierKey := c.Locals("supplierId").(string)
+	orderItemCol := database.GetCollection("gOrderItem")
+	var oi graphOrder.GOrderItemOut
+
+	_, err := orderItemCol.ReadDocument(context.Background(), orderItemKey, &oi)
+	if err != nil {
+		if driver.IsNotFound(err) {
+			return c.Status(404).JSON(err)
+		}
+		return c.Status(500).JSON(err)
+	}
+
+	if !oi.IsRejected {
+		return c.Status(409).SendString("you can not accept a nor rejected order item")
+	}
+	u := updateOrderItemFromAccept{
+		IsAcceptedAfterRejection: true,
+		AcceptedById:             "supplier/" + supplierKey,
+		AcceptedAt:               time.Now().Unix(),
+	}
+	var newOI graphOrder.GOrderItemOut
+	ctx := driver.WithReturnNew(context.Background(), &newOI)
+	_, err = orderItemCol.UpdateDocument(ctx, orderItemKey, u)
+	if err != nil {
+		return c.Status(500).JSON(err)
+	}
+
+	return c.JSON(newOI)
 
 }
 

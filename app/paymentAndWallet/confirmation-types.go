@@ -70,3 +70,15 @@ type rejectionPoolItemOut struct {
 	Rev string `json:"_rev,omitempty"`
 	rejectionPoolItem
 }
+
+type updateOrderItemFromRejection struct {
+	IsRejected         bool   `json:"isRejected"`
+	IsRejectedBySystem bool   `json:"isRejectedBySystem"`
+	RejectedById       string `json:"rejectedById"`
+	RejectedAt         int64  `json:"rejectedAt"`
+}
+type updateOrderItemFromAccept struct {
+	IsAcceptedAfterRejection bool   `json:"isAcceptedAfterRejection"`
+	AcceptedById             string `json:"acceptedById"`
+	AcceptedAt               int64  `json:"acceptedAt"`
+}
